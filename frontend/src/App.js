@@ -8,7 +8,7 @@ const App = () => {
     <Router>
       <Routes>
         <Route path="/" element={<EmailPage />} />
-        <Route path="/rsvp/:eventId" component={RSVPPage} />
+        <Route path="/rsvp/:eventId" element={<RSVPPage/>} />
       </Routes>
     </Router>
   );
