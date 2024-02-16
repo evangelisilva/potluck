@@ -6,7 +6,7 @@ class EmailPage extends React.Component {
     return (
       <div>
         <br /><SendEmailButton
-                invitee="John"
+                invitee="Jacob"
                 host="Evangeli Silva"
                 date="2021-06-10"
                 time="10:00 AM"
