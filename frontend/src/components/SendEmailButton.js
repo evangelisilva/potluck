@@ -15,7 +15,7 @@ class SendEmailButton extends React.Component {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        to: 'silvaevangeli@gmail.com',
+        to: 'jkoplik@albany.edu',
         templateName: 'ICSI518-Potluck-InvitationTemplate', 
         templateData: JSON.stringify({ invitee, host, date, time, address, theme, rsvpLink, rsvpDeadline }) 
       })
