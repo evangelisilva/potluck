@@ -12,8 +12,8 @@ class EmailPage extends React.Component {
                 time="10:00 AM"
                 address="1234 Main Street, Anytown, USA"
                 theme="International Cuisine"
-                rsvpLink="https://www.google.com"
-                rsvpDeadline="June 15, 2021"/>
+                rsvpDeadline="June 15, 2021"
+                eventId="1234567890" /> 
       </div>
     );
   }

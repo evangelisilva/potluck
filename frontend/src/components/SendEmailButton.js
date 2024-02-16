@@ -4,7 +4,9 @@ import { Button } from 'react-bootstrap';
 
 class SendEmailButton extends React.Component {
   handleClick = () => {
-    const { invitee, host, date, time, address, theme, rsvpLink, rsvpDeadline } = this.props;
+    const { invitee, host, date, time, address, theme, rsvpDeadline, eventId } = this.props;
+
+    const rsvpLink = 'http://localhost:3000/rsvp/' + eventId;
 
     // Make a request to the server-side endpoint to send the email
     fetch('http://localhost:8000/api/send-email', {
@@ -14,7 +16,7 @@ class SendEmailButton extends React.Component {
       },
       body: JSON.stringify({
         to: 'silvaevangeli@gmail.com',
-        templateName: 'ICSI518-Potluck-InvitationTemplate', // Specify the template name
+        templateName: 'ICSI518-Potluck-InvitationTemplate', 
         templateData: JSON.stringify({ invitee, host, date, time, address, theme, rsvpLink, rsvpDeadline }) 
       })
     })
