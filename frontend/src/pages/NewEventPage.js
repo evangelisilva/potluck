@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import { Button } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom'; 
 import NewEventPage1 from './NewEventPage1';
-import Page2Content from './Page2Content';
-import Page3Content from './Page3Content'; 
-import Page4Content from './Page4Content'; 
+import NewEventPage2 from './NewEventPage2';
+import NewEventPage3 from './NewEventPage3'; 
+import NewEventPage4 from './NewEventPage4'; 
 import SignupNavbar from '../components/SignupNavbar';
 
 // Component for managing a multi-page event creation form
@@ -36,11 +36,11 @@ function NewEvent() {
             case 1:
                 return <NewEventPage1 />;
             case 2:
-                return <Page2Content />;
+                return <NewEventPage2 />;
             case 3:
-                return <Page3Content />;
+                return <NewEventPage3 />;
             case 4:
-                return <Page4Content />;
+                return <NewEventPage4 />;
             default:
                 return <div>No content available for this page</div>;
         }
@@ -63,10 +63,8 @@ function NewEvent() {
                                         variant="primary" 
                                         onClick={prevPage}
                                         style={{ 
-                                            paddingLeft: '17px', 
-                                            paddingRight: '18px', 
-                                            paddingTop: '8px', 
-                                            paddingBottom: '8px', 
+                                            paddingLeft: '20px', 
+                                            paddingRight: '20px',  
                                             borderRadius: '30px', 
                                             backgroundColor: 'transparent', 
                                             borderColor: '#4D515A', 
@@ -80,10 +78,8 @@ function NewEvent() {
                     onClick={nextPage}
                     style={{ 
                         marginLeft: '10px',
-                        paddingLeft: '17px', 
-                        paddingRight: '18px', 
-                        paddingTop: '8px', 
-                        paddingBottom: '8px', 
+                        paddingLeft: '20px', 
+                        paddingRight: '20px', 
                         borderRadius: '30px', 
                         backgroundColor: '#E8843C', 
                         borderColor: '#E8843C', 
