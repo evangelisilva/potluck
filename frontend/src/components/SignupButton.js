@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { Button } from 'react-bootstrap';
 
-// Author: Evangeli Silva
-// Description: This component represents a button used for signing up.
+// This component represents a button used for signing up.
 // It changes its appearance when hovered over, providing visual feedback to the user.
 function SignupButton() {
     // State to track hover state
@@ -29,7 +28,7 @@ function SignupButton() {
                 color: hovered ? '#FFFFFF' : '#4D515A', 
                 backgroundColor: hovered ? '#4D515A' : 'transparent',
                 border: '1px solid #4D515A',
-                fontSize: '15px',
+                fontSize: '17px',
                 padding: '7px 15px'
             }}
             onMouseEnter={handleMouseEnter} 

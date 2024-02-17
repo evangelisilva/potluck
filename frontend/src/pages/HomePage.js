@@ -2,9 +2,8 @@ import React from 'react';
 import { Container, Row, Col, Image, Button } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import SignupNavbar from '../components/SignupNavbar';
-
-// Author: Evangeli Silva 
-// Description: This component represents the homepage of the application.
+ 
+// This component represents the homepage of the application.
 // It includes a header, description, and a button to navigate to the create event page.
 function HomePage() {
     // Initialize the navigate function from useNavigate hook
@@ -49,7 +48,7 @@ function HomePage() {
                     {/* Right column */}
                     <Col md={8}>
                         {/* Main image */}
-                        <Image src={process.env.PUBLIC_URL + 'img_main.jpg'} style={{ paddingTop: '70px', paddingRight: '80px' }} fluid />
+                        <Image src={process.env.PUBLIC_URL + '/img_main.jpg'} style={{ paddingTop: '60px', paddingRight: '80px' }} fluid />
                     </Col>
                 </Row>
             </Container>

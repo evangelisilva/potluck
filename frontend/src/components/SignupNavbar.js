@@ -3,8 +3,7 @@ import { Navbar, Nav, Image } from 'react-bootstrap';
 import { useLocation } from 'react-router-dom';
 import SignupButton from './SignupButton';
 
-// Author: Evangeli Silva 
-// Description: This component represents the navigation bar of the application.
+// This component represents the navigation bar of the application.
 // It includes the logo, brand name, navigation links, and a signup button.
 const SignupNavbar = () => {
   // Get the current location using useLocation hook from react-router-dom
@@ -21,7 +20,7 @@ const SignupNavbar = () => {
       <Navbar.Brand>
         {/* Logo */}
         <Image
-          src={process.env.PUBLIC_URL + 'logo.png'}
+          src={process.env.PUBLIC_URL + '/logo.png'}
           alt="Logo"
           style={{ maxHeight: '45px', paddingRight: '15px'}}
         />
