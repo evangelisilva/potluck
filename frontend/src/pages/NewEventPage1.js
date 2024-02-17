@@ -1,8 +1,16 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Container, Row, Col, Form, Image } from 'react-bootstrap';
 
 // This component renders a form for creating a new event.
 function NewEventPage1() {
+    // State variable to track the selected visibility option
+    const [visibility, setVisibility] = useState('public');
+
+    // Function to handle changes in the visibility option
+    const handleVisibilityChange = (event) => {
+        setVisibility(event.target.value);
+    };
+
     return (
         <Container>
             <Row>
@@ -11,6 +19,15 @@ function NewEventPage1() {
                     {/* Event Title */}
                     <h2 style={{ fontFamily: 'Aleo', fontSize: '45px', marginBottom: '20px' }}>Start a Potluck</h2>
                     <Form.Group>
+                        {/* Event Name */}
+                        <Form.Label>Host Name</Form.Label>
+                        <Form.Control 
+                            type="text" 
+                            style={{ width: '576px' }}
+                            required
+                        />
+                        <br />
+
                         {/* Event Name */}
                         <Form.Label>Event Name</Form.Label>
                         <Form.Control 
@@ -37,14 +54,27 @@ function NewEventPage1() {
                         </Form.Text>
                         <br /><br />
 
-                        {/* Cover Image Upload */}
-                        <Form.Label>Cover Image (Optional)</Form.Label>
-                        <Form.Control type="file" custom accept="image/*" style={{ width: '576px' }} />
-                        {/* Cover Image Upload Note */}
-                        <Form.Text style={{ color: 'gray', fontSize: '13px' }}>
-                            For best results please use a landscape photo (wider than it is tall)
-                        </Form.Text>
-                        <br /><br />
+                        <Row style={{ width: '590px' }}>
+                            <Col style={{ paddingRight: '14px', maxWidth: '400px' }}>
+                                {/* Cover Image Upload */}
+                                <Form.Label>Cover Image (Optional)</Form.Label>
+                                <Form.Control type="file" custom accept="image/*" style={{ width: '100%' }} />
+                                {/* Cover Image Upload Note */}
+                                <Form.Text style={{ color: 'gray', fontSize: '13px'}}>
+                                    For best results please use a landscape photo.
+                                </Form.Text>
+                            </Col>
+                            <Col style={{ paddingLeft: '0', paddingRight: '0', maxWidth: '200px' }}>
+                                {/* Visibility selection */}
+                                <Form.Label>Event Visibility</Form.Label> <br/>
+                                <Form.Select value={visibility} onChange={handleVisibilityChange} style={{ width: '100%' }}>
+                                    <option value="public">Public</option>
+                                    <option value="private">Private</option>
+                                </Form.Select>       
+                            </Col>
+                        </Row>
+
+                        <br />
 
                         {/* Event Date, Start Time, End Time */}
                         <Row style={{ maxWidth: '600px' }}>

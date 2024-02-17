@@ -4,8 +4,9 @@ import { useNavigate } from 'react-router-dom';
 import NewEventPage1 from './NewEventPage1';
 import NewEventPage2 from './NewEventPage2';
 import NewEventPage3 from './NewEventPage3'; 
-import NewEventPage4 from './NewEventPage4'; 
-import SignupNavbar from '../components/SignupNavbar';
+// import InviteePopup from '../components/InviteePopup';
+// import NewEventPage4 from './NewEventPage4'; 
+// import SignupNavbar from '../components/SignupNavbar';
 
 // Component for managing a multi-page event creation form
 function NewEvent() {
@@ -13,13 +14,13 @@ function NewEvent() {
 
     // State to track the current page number
     const [currentPage, setCurrentPage] = useState(1);
-    const totalPages = 4; // Total number of pages
+    const totalPages = 3 // Total number of pages
 
     // Function to handle moving to the next page
     const nextPage = () => {
         // If it's the last page, navigate to a different page
         if (currentPage === totalPages) {
-            navigate('/different-page');
+            navigate('/events/{event-id}');
         } else {
             setCurrentPage(currentPage + 1);
         }
@@ -39,8 +40,8 @@ function NewEvent() {
                 return <NewEventPage2 />;
             case 3:
                 return <NewEventPage3 />;
-            case 4:
-                return <NewEventPage4 />;
+            // case 4:
+            //     return <NewEventPage4 />;
             default:
                 return <div>No content available for this page</div>;
         }
@@ -49,7 +50,7 @@ function NewEvent() {
     return (
         <div>
             {/* Include SignupNavbar */}
-            <SignupNavbar />
+            {/* <SignupNavbar /> */}
 
             {/* Render current page content */}
             {renderPageContent()}
@@ -86,7 +87,7 @@ function NewEvent() {
                         fontSize: '19px',
                         fontFamily: 'Inter',
                         marginRight: '250px',
-                    }}>{currentPage === totalPages ? 'Next' : 'Next'}</Button>
+                    }}>{currentPage === totalPages ? 'Create Event' : 'Next'}</Button>
             </div>
         </div>
     );
