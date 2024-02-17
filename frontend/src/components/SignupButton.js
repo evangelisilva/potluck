@@ -29,7 +29,8 @@ function SignupButton() {
                 backgroundColor: hovered ? '#4D515A' : 'transparent',
                 border: '1px solid #4D515A',
                 fontSize: '17px',
-                padding: '7px 15px'
+                paddingLeft: '19px',
+                paddingRight: '19px'
             }}
             onMouseEnter={handleMouseEnter} 
             onMouseLeave={handleMouseLeave}>

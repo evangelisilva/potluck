@@ -9,7 +9,7 @@ function NewEventPage1() {
                 {/* Left column */}
                 <Col md={7} style={{ paddingTop: '50px', paddingLeft: '70px', color: '#4D515A', fontFamily: 'Inter' }}>
                     {/* Event Title */}
-                    <h2 style={{ fontFamily: 'Aleo', fontSize: '45px' }}>Start a Potluck</h2>
+                    <h2 style={{ fontFamily: 'Aleo', fontSize: '45px', marginBottom: '20px' }}>Start a Potluck</h2>
                     <Form.Group>
                         {/* Event Name */}
                         <Form.Label>Event Name</Form.Label>
@@ -33,7 +33,7 @@ function NewEventPage1() {
                         />
                         {/* Event Description Note */}
                         <Form.Text style={{ color: 'gray', fontSize: '13px' }}>
-                            This will appear at the top of the event page, visible to everyone in attendance.
+                            This information will be displayed at the top of the event page, visible to all attendees.
                         </Form.Text>
                         <br /><br />
 
