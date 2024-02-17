@@ -5,7 +5,7 @@ import SignupButton from './SignupButton';
 
 // This component represents the navigation bar of the application.
 // It includes the logo, brand name, navigation links, and a signup button.
-const SignupNavbar = () => {
+const ProfileNavbar = () => {
   // Get the current location using useLocation hook from react-router-dom
   const location = useLocation();
 
@@ -57,4 +57,4 @@ const NavLink = ({ href, isActive, children }) => (
 );
 
 // Export SignupNavbar component
-export default SignupNavbar;
+export default ProfileNavbar;

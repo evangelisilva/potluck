@@ -11,19 +11,29 @@ const ses = new SESClient({
 
 const sendEmail = async (to, templateName, templateData) => {
     const params = {
-        Destination: {
-            ToAddresses: [to]
-        },
         Source: process.env.SENDER_EMAIL,
         Template: templateName,
         TemplateData: templateData
     };
 
     try {
-        const response = await ses.send(new SendTemplatedEmailCommand(params));
-        console.log('Email sent:', response);
+        // Split the to string by commas to get an array of email addresses
+        const toAddresses = to.split(',').map(email => email.trim());
+        
+        // Iterate over each email address and send the email individually
+        for (const email of toAddresses) {
+            const emailParams = {
+                ...params,
+                Destination: {
+                    ToAddresses: [email]
+                }
+            };
+
+            const response = await ses.send(new SendTemplatedEmailCommand(emailParams));
+            console.log('Email sent to', email, ':', response);
+        }
     } catch (error) {
-        console.error('Error sending email:', error);
+        console.error('Error sending email to', to, ':', error.message);
         throw error; 
     }
 }

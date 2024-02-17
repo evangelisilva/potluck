@@ -11,6 +11,7 @@ function NewEventPage2() {
                     {/* Event Title */}
                     <h2 style={{ fontFamily: 'Aleo', fontSize: '45px', marginBottom: '20px' }}>Where is the event happening?</h2>
                     <Form.Group>
+                        
                         {/* Street Address */}
                         <Form.Label>Street Address</Form.Label>
                         <Form.Control 

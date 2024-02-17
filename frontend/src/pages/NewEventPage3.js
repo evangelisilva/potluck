@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Container, Row, Col, Form, Image, Button } from 'react-bootstrap';
 
+
 function NewEventPage3() {
     // State to manage the rows dynamically
     const [rows, setRows] = useState([{ product: '', quantity: '', notes: '' }]);
@@ -27,7 +28,7 @@ function NewEventPage3() {
                     
                     <Form.Group>
                         <Form.Text style={{ color: 'gray', fontSize: '13px' }}>
-                            If you're not ready to specify dishes for guests to bring just yet, feel free to skip this step. Click 'Next'<br /> to move forward with your event setup.
+                            If you're not ready to specify dishes for guests to bring just yet, feel free to skip this step.
                         </Form.Text> 
                         <Row style={{ maxWidth: '650px', paddingTop: '25px' }}>
                             <Col style={{ paddingRight: '12px' }}>

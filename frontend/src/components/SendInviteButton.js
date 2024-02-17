@@ -2,11 +2,9 @@ import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Button } from 'react-bootstrap';
 
-// This component represents a button used for sending email invites.
-// It makes a request to a server-side endpoint to send the email with provided details.
-class SendEmailButton extends React.Component {
+class SendInviteButton extends React.Component {
   handleClick = () => {
-    const { invitee, host, date, time, address, theme, rsvpDeadline, eventId } = this.props;
+    const { invitee, host, date, time, address, theme, rsvpDeadline, eventId, to } = this.props;
 
     const rsvpLink = 'http://localhost:3000/rsvp/' + eventId;
 
@@ -17,7 +15,7 @@ class SendEmailButton extends React.Component {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        to: 'jkoplik@albany.edu',
+        to: to.join(','), // Convert array to comma-separated string
         templateName: 'ICSI518-Potluck-InvitationTemplate', 
         templateData: JSON.stringify({ invitee, host, date, time, address, theme, rsvpLink, rsvpDeadline }) 
       })
@@ -36,9 +34,21 @@ class SendEmailButton extends React.Component {
 
   render() {
     return (
-      <Button style={{ borderRadius: '20px', }} onClick={this.handleClick}>Send Invites</Button>
+      <Button 
+        style={{ 
+          backgroundColor: '#E8843C', 
+          borderColor: '#E8843C', 
+          borderRadius: '30px', 
+          fontFamily: 'Inter', 
+          paddingLeft: '15px', 
+          paddingRight: '15px', 
+          marginRight: '60px' 
+        }} 
+        onClick={this.handleClick}>
+          Send Invites
+      </Button>
     );
   }
 }
 
-export default SendEmailButton;
+export default SendInviteButton;
