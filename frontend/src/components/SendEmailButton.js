@@ -2,6 +2,9 @@ import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Button } from 'react-bootstrap';
 
+// Author: Evangeli Silva
+// Description: This component represents a button used for sending email invites.
+// It makes a request to a server-side endpoint to send the email with provided details.
 class SendEmailButton extends React.Component {
   handleClick = () => {
     const { invitee, host, date, time, address, theme, rsvpDeadline, eventId } = this.props;

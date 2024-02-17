@@ -1,10 +1,12 @@
 import React from 'react';
 import SendEmailButton from '../components/SendEmailButton';
+import SignupNavbar from '../components/SignupNavbar';
 
 class EmailPage extends React.Component {
   render() {
     return (
       <div>
+        <SignupNavbar />
         <br /><SendEmailButton
                 invitee="Jacob"
                 host="Evangeli Silva"
