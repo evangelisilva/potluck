@@ -163,7 +163,7 @@ function EventPage() {
                                                                         <Card.Text>May be</Card.Text>
                                                                     </Col>
                                                                     <Col>
-                                                                        <Card.Text>Not Respnded</Card.Text>
+                                                                        <Card.Text>No Response</Card.Text>
                                                                     </Col>
                                                                     {/* No column for 'Invited' status */}
                                                                 </Row>
