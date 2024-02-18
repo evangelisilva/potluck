@@ -3,10 +3,12 @@ import { Container, Row, Col, Card, Button, Image, Dropdown } from 'react-bootst
 import SignupNavbar from '../components/SignupNavbar';
 import InviteePopup from '../components/InviteePopup';
 import EditEventPopup from '../components/EditEventPopup';
+import CancelEventPopup from '../components/CancelEventPopup';
 
 function EventPage() {
     const [showInviteesPopup, setShowInviteesPopup] = useState(false);
     const [showEditEventPopup, setShowEditEventPopup] = useState(false);
+    const [showCancelEventPopup, setShowCancelEventPopup] = useState(false);
 
     // Event details
     const eventDetails = {
@@ -56,6 +58,16 @@ function EventPage() {
         setShowEditEventPopup(false);
     };
 
+    // Function to open invitee popup
+    const openCancelEventPopup = () => {
+        setShowCancelEventPopup(true);
+    };
+
+    // Function to close invitee popup
+    const closeCancelEventPopup = () => {
+        setShowCancelEventPopup(false);
+    };
+
     return (
         <div>
             {/* Navbar component */}
@@ -93,7 +105,7 @@ function EventPage() {
                                                     </Dropdown.Toggle>
                                                     <Dropdown.Menu>
                                                         <Dropdown.Item>Duplicate Event</Dropdown.Item>
-                                                        <Dropdown.Item>Cancel Event</Dropdown.Item>
+                                                        <Dropdown.Item onClick={openCancelEventPopup}>Cancel Event</Dropdown.Item>
                                                     </Dropdown.Menu>
                                                 </Dropdown>
                                             </Col>
@@ -113,7 +125,7 @@ function EventPage() {
                                                 {eventDetails.dishes.map((dish, index) => (
                                                     <Row key={index}>
                                                         <Col>
-                                                            <Card style={{marginBottom: '5px', color: '#4D515A', borderRadius: '10px', ...(dish.quantityTaken == dish.quantityNeeded && { backgroundColor: '#CDCBCB' })}}>
+                                                            <Card style={{marginBottom: '5px', color: '#4D515A', borderRadius: '10px', ...(dish.quantityTaken === dish.quantityNeeded && { backgroundColor: '#CDCBCB' })}}>
                                                                 <Card.Body>
                                                                     <Row>
                                                                         <Col>
@@ -211,6 +223,7 @@ function EventPage() {
             {/* Invitee popup component */}
             {showInviteesPopup && <InviteePopup onClose={closeInviteePopup} />}
             {showEditEventPopup && <EditEventPopup onClose={closeEditEventPopup} />}
+            {showCancelEventPopup && <CancelEventPopup onClose={closeCancelEventPopup} />}
         </div>
     );
 }

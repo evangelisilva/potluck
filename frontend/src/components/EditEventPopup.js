@@ -22,11 +22,12 @@ const EditEventPopup = ({ onClose }) => {
 
     return (
         <div className="modal-overlay">
-            <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable" style={{height: '94%'}}>
                 <div className="modal-content">
                     <div className="modal-body">
                         <Container style={{ width: '525px', margin: '50px', color: '#4D515A' }}>
                             <h2 style={{ fontFamily: 'Aleo', fontSize: '45px', marginBottom: '15px' }}>Edit Event</h2>
+                            <hr style={{ borderTop: '1px solid #ccc'}} />
                             <Form onSubmit={handleSubmit}>
                                 <Form.Group controlId="formTitle">
                                     <Form.Label>Event Name</Form.Label>

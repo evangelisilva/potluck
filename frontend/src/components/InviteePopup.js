@@ -40,11 +40,12 @@ const InviteePopup = ({ onClose }) => {
 
     return (
         <div className="modal-overlay">
-            <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable" style={{height: '80%'}}>
                 <div className="modal-content">
                     <div className="modal-body">
-                        <Container style={{ width: '100%', margin: '50px', color: '#4D515A' }}>
+                        <Container style={{ width: '525px', margin: '50px', color: '#4D515A' }}>
                             <h2 style={{ fontFamily: 'Aleo', fontSize: '45px' }}>Add Invitees</h2>
+                            <hr style={{ borderTop: '1px solid #ccc'}} />
                             <Form.Group>
                                 <Form.Text style={{ color: 'gray', fontSize: '13px' }}>
                                     To add invitees, enter the email address of each invitee in the text area and press Enter.
@@ -58,7 +59,7 @@ const InviteePopup = ({ onClose }) => {
                                     onKeyDown={handleKeyDown}
                                     placeholder='Email address'
                                     style={{
-                                        width: '525px',
+                                        width: '500px',
                                         minHeight: '30px',
                                         border: '1px solid #ced4da',
                                         borderRadius: '.25rem',
@@ -67,7 +68,7 @@ const InviteePopup = ({ onClose }) => {
                                     }}
                                 />
                                 <Row>
-                                    <Col style={{ width: '500px', height: '550px', overflowY: 'auto' }}>
+                                    <Col style={{ width: '500px', height: '430px', overflowY: 'auto' }}>
                                         <div style={{ fontSize: '13px', color: '#4D515A', width: '420px' }}>
                                             {emailsList.map((email, index) => (
                                                 <span key={index} style={{ paddingTop: '3px', paddingBottom: '3px', paddingLeft: '10px', border: '1px solid #ccc', borderRadius: '30px' }}>
