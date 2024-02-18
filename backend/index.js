@@ -24,6 +24,18 @@ app.post('/api/send-email', async (req, res) => {
   }
 });
 
+// Endpoint for processing an RSVP request from a user (temporary: needs to be moved to other folder)
+app.post('/api/rsvp-request', (req, res) => {
+  // Handle the POST request here
+  console.log("here is the body of the request recevied: " + req.body.user + ", " + req.body.event); // This will contain the data sent from the frontend
+  
+  //// const {user, event, response,  message, guests} = req.body;
+  //// console.log("Here is the user received in the post request: " + user);
+  
+  // Process the data and send a response if needed
+  res.send('POST request received');
+});
+
 // Start the server
 const port = 8000;
 app.listen(port, () => {
