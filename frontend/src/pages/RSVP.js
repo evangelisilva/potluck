@@ -1,14 +1,10 @@
 import React, { useState } from 'react';
 import { Container, Row, Col, Card, Button, Image, Dropdown } from 'react-bootstrap';
 import SignupNavbar from '../components/SignupNavbar';
-import InviteePopup from '../components/InviteePopup';
-import EditEventPopup from '../components/EditEventPopup';
-import CancelEventPopup from '../components/CancelEventPopup';
+import RSVPPopup from '../components/RSVPPopup';
 
-function EventPage() {
-    const [showInviteesPopup, setShowInviteesPopup] = useState(false);
-    const [showEditEventPopup, setShowEditEventPopup] = useState(false);
-    const [showCancelEventPopup, setShowCancelEventPopup] = useState(false);
+function RSVP() {
+    const [showRSVPPopup, setShowRSVPPopup] = useState(false);
 
     // Event details
     const eventDetails = {
@@ -39,33 +35,13 @@ function EventPage() {
     };
 
     // Function to open invitee popup
-    const openInviteePopup = () => {
-        setShowInviteesPopup(true);
+    const openRSVPPopup= () => {
+        setShowRSVPPopup(true);
     };
 
     // Function to close invitee popup
-    const closeInviteePopup = () => {
-        setShowInviteesPopup(false);
-    };
-
-    // Function to open invitee popup
-    const openEditEventPopup = () => {
-        setShowEditEventPopup(true);
-    };
-
-    // Function to close invitee popup
-    const closeEditEventPopup = () => {
-        setShowEditEventPopup(false);
-    };
-
-    // Function to open invitee popup
-    const openCancelEventPopup = () => {
-        setShowCancelEventPopup(true);
-    };
-
-    // Function to close invitee popup
-    const closeCancelEventPopup = () => {
-        setShowCancelEventPopup(false);
+    const closeRSVPPopup = () => {
+        setShowRSVPPopup(false);
     };
 
     return (
@@ -91,23 +67,10 @@ function EventPage() {
                                             </Col>
                                             <Col xs={4} className="d-flex align-items-end justify-content-end">
                                                 {/* Buttons for inviting, editing, and more options */}
-                                                <Button variant="primary" style={{ border: 'none', backgroundColor: "#E8843C", fontSize: '15px', marginRight: '5px' }} onClick={openInviteePopup}>
-                                                    <Image src={process.env.PUBLIC_URL + '/invite.png'} style={{ maxWidth: '25px', paddingRight: '5px' }} fluid />
-                                                    Invite
+                                                <Button variant="primary" style={{ border: 'none', backgroundColor: "#E8843C", fontSize: '15px', marginRight: '5px' }} onClick={openRSVPPopup}>
+                                                    <Image src={process.env.PUBLIC_URL + '/rsvp.png'} style={{ maxWidth: '25px', paddingRight: '5px' }} fluid />
+                                                    RSVP
                                                 </Button>
-                                                <Button variant="primary" style={{ borderColor: 'gray', backgroundColor: "transparent", color: '#4D515A', fontSize: '15px', marginRight: '5px' }} onClick={openEditEventPopup}>
-                                                    <Image src={process.env.PUBLIC_URL + '/edit.png'} style={{ maxWidth: '25px', paddingRight: '5px' }} fluid />
-                                                    Edit
-                                                </Button>
-                                                <Dropdown>
-                                                    <Dropdown.Toggle variant="primary" style={{ borderColor: 'gray', backgroundColor: "transparent", fontSize: '1px', color: 'white', paddingRight: '6px', paddingLeft: '6px' }} >
-                                                        <Image src={process.env.PUBLIC_URL + '/more.png'} style={{ maxWidth: '22px' }} fluid />
-                                                    </Dropdown.Toggle>
-                                                    <Dropdown.Menu>
-                                                        <Dropdown.Item>Duplicate Event</Dropdown.Item>
-                                                        <Dropdown.Item onClick={openCancelEventPopup}>Cancel Event</Dropdown.Item>
-                                                    </Dropdown.Menu>
-                                                </Dropdown>
                                             </Col>
                                         </Row>
                                         <Card.Subtitle className="mb-2 text-muted">{eventDetails.date} | {eventDetails.startTime} - {eventDetails.endTime}</Card.Subtitle>
@@ -221,11 +184,9 @@ function EventPage() {
                 </Container>
             </div>
             {/* Invitee popup component */}
-            {showInviteesPopup && <InviteePopup onClose={closeInviteePopup} />}
-            {showEditEventPopup && <EditEventPopup onClose={closeEditEventPopup} />}
-            {showCancelEventPopup && <CancelEventPopup onClose={closeCancelEventPopup} />}
+            {showRSVPPopup && <RSVPPopup onClose={closeRSVPPopup} />}
         </div>
     );
 }
 
-export default EventPage;
+export default RSVP;
