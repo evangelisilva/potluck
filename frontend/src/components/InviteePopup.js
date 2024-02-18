@@ -69,7 +69,7 @@ const InviteePopup = ({ onClose }) => {
                                 />
                                 <Row>
                                     <Col style={{ width: '500px', height: '430px', overflowY: 'auto' }}>
-                                        <div style={{ fontSize: '13px', color: '#4D515A', width: '420px' }}>
+                                        <div style={{ fontSize: '14px', color: '#4D515A', width: '420px' }}>
                                             {emailsList.map((email, index) => (
                                                 <span key={index} style={{ paddingTop: '3px', paddingBottom: '3px', paddingLeft: '10px', border: '1px solid #ccc', borderRadius: '30px' }}>
                                                     {email}
