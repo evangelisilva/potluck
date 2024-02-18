@@ -31,7 +31,7 @@ const CancelEventPopup = ({ onClose }) => {
                                         <Col>
                                             <Form.Label style={{ width: '450px' }}>Delete Event</Form.Label>
                                             <Form.Text style={{ color: 'gray', fontSize: '13px' }}>
-                                               If you cancel your event, guests will be notified. You'll be able to access the event page but won't be able to edit the event.
+                                               If you delete your event, you won't be able to access it again. If you'll want to come back to it, you can cancel your event instead.
                                             </Form.Text>
                                         </Col>
                                         <Col>
