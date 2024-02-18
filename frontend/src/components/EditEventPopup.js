@@ -35,7 +35,7 @@ const EditEventPopup = ({ onClose }) => {
                                 
                                 <Form.Group controlId="formDescription">
                                     <Form.Label>Description</Form.Label>
-                                    <Form.Control as="textarea" rows={3} placeholder="Enter description" value={description} onChange={(e) => setDescription(e.target.value)} />
+                                    <Form.Control as="textarea" rows={3} value={description} onChange={(e) => setDescription(e.target.value)} />
                                 </Form.Group> <br/>
                                 
                                 <Form.Group>
