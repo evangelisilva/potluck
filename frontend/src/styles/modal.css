@@ -17,7 +17,7 @@
 .modal-dialog {
     background-color: white; /* Modal background color */
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); /* Add shadow to the modal */
-    height: 80%; /* Set the maximum height of the modal */
+    height: 90%; /* Set the maximum height of the modal */
     display: flex; /* Add display flex */
     flex-direction: column; /* Set flex-direction to column */
     justify-content: flex-start; /* Align items to the top */

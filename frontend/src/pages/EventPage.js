@@ -2,9 +2,11 @@ import React, { useState } from 'react';
 import { Container, Row, Col, Card, Button, Image, Dropdown } from 'react-bootstrap';
 import SignupNavbar from '../components/SignupNavbar';
 import InviteePopup from '../components/InviteePopup';
+import EditEventPopup from '../components/EditEventPopup';
 
 function EventPage() {
     const [showInviteesPopup, setShowInviteesPopup] = useState(false);
+    const [showEditEventPopup, setShowEditEventPopup] = useState(false);
 
     // Event details
     const eventDetails = {
@@ -44,6 +46,16 @@ function EventPage() {
         setShowInviteesPopup(false);
     };
 
+    // Function to open invitee popup
+    const openEditEventPopup = () => {
+        setShowEditEventPopup(true);
+    };
+
+    // Function to close invitee popup
+    const closeEditEventPopup = () => {
+        setShowEditEventPopup(false);
+    };
+
     return (
         <div>
             {/* Navbar component */}
@@ -71,7 +83,7 @@ function EventPage() {
                                                     <Image src={process.env.PUBLIC_URL + '/invite.png'} style={{ maxWidth: '25px', paddingRight: '5px' }} fluid />
                                                     Invite
                                                 </Button>
-                                                <Button variant="primary" style={{ borderColor: 'gray', backgroundColor: "transparent", color: '#4D515A', fontSize: '15px', marginRight: '5px' }}>
+                                                <Button variant="primary" style={{ borderColor: 'gray', backgroundColor: "transparent", color: '#4D515A', fontSize: '15px', marginRight: '5px' }} onClick={openEditEventPopup}>
                                                     <Image src={process.env.PUBLIC_URL + '/edit.png'} style={{ maxWidth: '25px', paddingRight: '5px' }} fluid />
                                                     Edit
                                                 </Button>
@@ -198,6 +210,7 @@ function EventPage() {
             </div>
             {/* Invitee popup component */}
             {showInviteesPopup && <InviteePopup onClose={closeInviteePopup} />}
+            {showEditEventPopup && <EditEventPopup onClose={closeEditEventPopup} />}
         </div>
     );
 }
