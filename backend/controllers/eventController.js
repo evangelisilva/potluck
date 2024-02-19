@@ -20,7 +20,7 @@ exports.getAllEvents = async (req, res) => {
       const events = await eventService.getAllEvents();
       res.status(200).json(events);
     } catch (error) {
-      console.error('Error creating event:', error);
+      console.error('Error retrieving events:', error);
       res.status(500).json({ error: 'Internal server error' });
     }
   };
