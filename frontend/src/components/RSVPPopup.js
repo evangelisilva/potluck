@@ -2,9 +2,22 @@ import React, { useState } from 'react';
 import { Container, Form, Button } from 'react-bootstrap';
 import '../styles/modal.css';
 
-const RSVPPopup = ({ onClose }) => {
+const RSVPPopup = ({ onClose, eventId, userId}) => {
+    // Note: RSVP ID should be set at the backend and not here?
+    
+    // For RSVP to work from here, the event_id, user_id are needed
+    // they are also needed to view the rsvp status
+
+    // response (set up handler for later)
+    /// note: doesn't need to be a state variable, since the state is already changed by the buttons 
+    let response = '';
+
+
+
     const [attendance, setAttendance] = useState('');
     const [userMessage, setUserMessage] = useState('');
+    // Also needs to be filled out in this form
+    const [numberOfGuests, setNumberOfGuests] = useState('');
 
     const handleRSVP = () => {
         console.log("RSVP:", attendance);

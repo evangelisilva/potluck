@@ -1,10 +1,15 @@
 import React, { useState } from 'react';
 import { Container, Row, Col, Card, Button, Image, Dropdown } from 'react-bootstrap';
+import { useParams } from 'react-router-dom'; // Assuming you're using React Router for routing
 import SignupNavbar from '../components/SignupNavbar';
 import RSVPPopup from '../components/RSVPPopup';
 
 function RSVP() {
     const [showRSVPPopup, setShowRSVPPopup] = useState(false);
+
+    const { eventId } = useParams(); 
+
+    const userId = '123'
 
     // Event details
     const eventDetails = {
@@ -184,7 +189,7 @@ function RSVP() {
                 </Container>
             </div>
             {/* Invitee popup component */}
-            {showRSVPPopup && <RSVPPopup onClose={closeRSVPPopup} />}
+            {showRSVPPopup && <RSVPPopup onClose={closeRSVPPopup} eventId={eventId} userId={userId} />}
         </div>
     );
 }
