@@ -1,6 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const { sendEmail } = require('./SESSendEmail');
+const { sendEmail } = require('./services/emailService');
 const cors = require('cors');
 
 const app = express();
