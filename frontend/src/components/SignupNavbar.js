@@ -16,7 +16,7 @@ const SignupNavbar = () => {
 
   // Return JSX for the SignupNavbar component
   return (
-    <Navbar expand="lg" className="px-lg-5 fixed-top" style={{ paddingTop: '15px', zIndex: '1000', backgroundColor: '#fff' }}>
+    <Navbar expand="lg" className="px-lg-5 fixed-top" style={{ paddingTop: '15px', zIndex: '1000', backgroundColor: '#fff', fontFamily: 'Arial' }}>
       <Navbar.Brand>
         {/* Logo */}
         <Image
@@ -25,7 +25,7 @@ const SignupNavbar = () => {
           style={{ maxHeight: '45px', paddingRight: '15px'}}
         />
         {/* Brand name */}
-        <span style={{ fontFamily: 'Inter', color: '#4D515A', fontSize: '21px' }}>Potluck</span>
+        <span style={{ color: '#4D515A', fontSize: '21px' }}>Potluck</span>
       </Navbar.Brand>
       {/* Navbar toggle button */}
       <Navbar.Toggle aria-controls="basic-navbar-nav" />
@@ -52,7 +52,7 @@ const NavLink = ({ href, isActive, children }) => (
   // Nav link with style and children
   <Nav.Link href={href} style={{ fontWeight: isActive ? 'bold' : '', paddingRight: '45px' }}>
     {/* Link text */}
-    <span style={{ fontFamily: 'Inter', color: '#4D515A', fontSize: '17px' }}>{children}</span>
+    <span style={{ fontFamily: 'Arial', color: '#4D515A', fontSize: '17px' }}>{children}</span>
   </Nav.Link>
 );
 

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Container, Form, Button } from 'react-bootstrap';
 import '../styles/modal.css';
 
-const RSVPPopup = ({ onClose }) => {
+const RSVPPopup = ({ onClose, eventID }) => {
     const [attendance, setAttendance] = useState('');
     const [userMessage, setUserMessage] = useState('');
 
@@ -18,11 +18,11 @@ const RSVPPopup = ({ onClose }) => {
 
     return (
         <div className="modal-overlay">
-            <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable" style={{ height: '45%' }}>
+            <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable" style={{ height: '48%' }}>
                 <div className="modal-content">
                     <div className="modal-body">
-                        <Container style={{ width: '500px', margin: '50px', color: '#4D515A' }}>
-                            <h2 style={{ fontFamily: 'Aleo', fontSize: '45px', marginBottom: '15px' }}>RSVP</h2>
+                        <Container style={{ width: '500px', margin: '50px', color: '#4D515A', fontFamily: 'Arial' }}>
+                            <h2 style={{ fontFamily: 'Times New Roman', fontSize: '45px', marginBottom: '15px' }}>RSVP</h2>
                             <hr style={{ borderTop: '1px solid #ccc' }} />
                             <Form>
                                 <Form.Label>Excited to see you! Will you attend?</Form.Label>
@@ -79,7 +79,7 @@ const RSVPPopup = ({ onClose }) => {
                                             borderRadius: '30px',
                                             backgroundColor: 'transparent',
                                             border: 'None',
-                                            fontFamily: 'Inter',
+                                            fontFamily: 'Arial',
                                             marginRight: '10px',
                                             color: ' #4D515A'
                                         }}>
@@ -92,7 +92,7 @@ const RSVPPopup = ({ onClose }) => {
                                             backgroundColor: '#E8843C',
                                             borderColor: '#E8843C',
                                             borderRadius: '30px',
-                                            fontFamily: 'Inter',
+                                            fontFamily: 'Arial',
                                             paddingLeft: '15px',
                                             paddingRight: '15px',
                                         }}>

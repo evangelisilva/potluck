@@ -48,7 +48,7 @@ function NewEvent() {
     };
 
     return (
-        <div>
+        <div style={{fontFamily: 'Arial'}}>
             {/* Include SignupNavbar */}
             {/* <SignupNavbar /> */}
 
@@ -58,7 +58,7 @@ function NewEvent() {
             {/* Pagination buttons */}
             <div style={{ position: 'fixed', bottom: 0, left: 0, width: '100%', height: '80px', padding: '10px', textAlign: 'right', boxShadow: '0px -2px 4px rgba(0, 0, 0, 0.1)', display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
                 {/* Display current step and total steps */}
-                <span style={{ fontFamily: 'Inter', color: ' #4D515A', marginRight: 'auto', marginLeft: '250px',}}>Step {currentPage} of {totalPages}</span>
+                <span style={{ color: ' #4D515A', marginRight: 'auto', marginLeft: '250px',}}>Step {currentPage} of {totalPages}</span>
                 {/* Render "Previous" button */}
                 {currentPage > 1 && <Button 
                                         variant="primary" 
@@ -70,7 +70,6 @@ function NewEvent() {
                                             backgroundColor: 'transparent', 
                                             borderColor: '#4D515A', 
                                             fontSize: '19px',
-                                            fontFamily: 'Inter',
                                             color: ' #4D515A'
                                         }}>Back</Button>}
                 {/* Render "Next" button */}
@@ -85,7 +84,6 @@ function NewEvent() {
                         backgroundColor: '#E8843C', 
                         borderColor: '#E8843C', 
                         fontSize: '19px',
-                        fontFamily: 'Inter',
                         marginRight: '250px',
                     }}>{currentPage === totalPages ? 'Create Event' : 'Next'}</Button>
             </div>

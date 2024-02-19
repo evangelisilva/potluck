@@ -24,7 +24,7 @@ function SignupButton() {
             href="/signup" 
             style={{ 
                 borderRadius: '30px', 
-                fontFamily: 'Inter', 
+                fontFamily: 'Arial', 
                 color: hovered ? '#FFFFFF' : '#4D515A', 
                 backgroundColor: hovered ? '#4D515A' : 'transparent',
                 border: '1px solid #4D515A',

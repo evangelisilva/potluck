@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { Container, Row, Col, Form, Image, Button } from 'react-bootstrap';
 import '../styles/modal.css';
-import SendInviteButton from './SendInviteButton';
+import SendInviteButton from './SendInviteButton'; // Assuming this component exists
 
+// InviteePopup component takes onClose function as props
 const InviteePopup = ({ onClose }) => {
     // State to manage the input for email addresses
     const [emailInput, setEmailInput] = useState('');
@@ -39,19 +40,25 @@ const InviteePopup = ({ onClose }) => {
     };
 
     return (
+        // Modal overlay
         <div className="modal-overlay">
             <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable" style={{height: '80%'}}>
                 <div className="modal-content">
                     <div className="modal-body">
-                        <Container style={{ width: '525px', margin: '50px', color: '#4D515A' }}>
-                            <h2 style={{ fontFamily: 'Aleo', fontSize: '45px' }}>Add Invitees</h2>
+                        {/* Container for the content */}
+                        <Container style={{ width: '525px', margin: '50px', color: '#4D515A', fontFamily: 'Arial' }}>
+                            {/* Title */}
+                            <h2 style={{ fontFamily: 'Times New Roman', fontSize: '45px' }}>Add Invitees</h2>
+                            {/* Divider */}
                             <hr style={{ borderTop: '1px solid #ccc'}} />
+                            {/* Form */}
                             <Form.Group>
+                                {/* Instructions */}
                                 <Form.Text style={{ color: 'gray', fontSize: '13px' }}>
                                     To add invitees, enter the email address of each invitee in the text area and press Enter.
                                 </Form.Text>
                                 <br />
-                                {/* <Form.Label>Email address</Form.Label> <br /> */}
+                                {/* Email input field */}
                                 <input
                                     type="text"
                                     value={emailInput}
@@ -67,12 +74,14 @@ const InviteePopup = ({ onClose }) => {
                                         marginTop: '10px',
                                     }}
                                 />
+                                {/* Display entered emails */}
                                 <Row>
                                     <Col style={{ width: '500px', height: '430px', overflowY: 'auto' }}>
                                         <div style={{ fontSize: '14px', color: '#4D515A', width: '420px' }}>
                                             {emailsList.map((email, index) => (
                                                 <span key={index} style={{ paddingTop: '3px', paddingBottom: '3px', paddingLeft: '10px', border: '1px solid #ccc', borderRadius: '30px' }}>
                                                     {email}
+                                                    {/* Button to remove email */}
                                                     <Button onClick={() => handleRemoveEmail(email)} style={{ paddingTop: '1px', paddingLeft: '3px', backgroundColor: 'transparent', borderColor: 'transparent', color: '#4D515A' }}>
                                                         <Image src={process.env.PUBLIC_URL + '/remove.png'} style={{ maxHeight: '15px' }} />
                                                     </Button><br />
@@ -84,7 +93,9 @@ const InviteePopup = ({ onClose }) => {
                             </Form.Group>
                         </Container>
                     </div>
+                    {/* Modal footer */}
                     <div className="modal-footer">
+                        {/* Cancel button */}
                         <Button
                             variant="primary"
                             onClick={onClose}
@@ -94,12 +105,13 @@ const InviteePopup = ({ onClose }) => {
                                 borderRadius: '30px',
                                 backgroundColor: 'transparent',
                                 border: 'None',
-                                fontFamily: 'Inter',
+                                fontFamily: 'Arial',
                                 marginRight: '10px',
                                 color: ' #4D515A'
                             }}>
                             Cancel
                         </Button>
+                        {/* Send Invite button */}
                         <SendInviteButton
                             invitee="Evangeli"
                             host="Evangeli Silva"
@@ -109,7 +121,7 @@ const InviteePopup = ({ onClose }) => {
                             theme="International Cuisine"
                             rsvpDeadline="June 15, 2021"
                             eventId="1234567890"
-                            to={getEmailArray()}
+                            to={getEmailArray()} // Passes the list of emails to the SendInviteButton component
                             variant="primary"
                             style={{ marginRight: '60px' }}>
                             Send Invites

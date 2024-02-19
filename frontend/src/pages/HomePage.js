@@ -18,11 +18,11 @@ function HomePage() {
             <Container>
                 <Row>
                     {/* Left column */}
-                    <Col md={4} style={{ fontFamily: 'Inter', paddingLeft: '80px' }}>
+                    <Col md={4} style={{ fontFamily: 'Arial', paddingLeft: '80px' }}>
                         {/* Heading */}
                         <h1 style={{ paddingTop: '190px', color: '#4D515A', fontSize: '55px', lineHeight: '1.3' }}>Flavor-filled<br />fun awaits!</h1>
                         {/* Description */}
-                        <p style={{ paddingTop: '10px', paddingBottom: '10px', color: '#4D515A', fontSize: '22px', lineHeight: '1.4' }}>
+                        <p style={{ paddingTop: '10px', paddingBottom: '10px', color: '#4D515A', fontSize: '21px', lineHeight: '1.4' }}>
                             Say goodbye to stress, hello to <br />
                             shared memories. Join us for <br />
                             community, friendship, and good <br />
@@ -48,7 +48,7 @@ function HomePage() {
                     {/* Right column */}
                     <Col md={8}>
                         {/* Main image */}
-                        <Image src={process.env.PUBLIC_URL + '/img_main.jpg'} style={{ paddingTop: '60px', paddingRight: '80px' }} fluid />
+                        <Image src={process.env.PUBLIC_URL + '/img_main.jpg'} style={{ paddingTop: '45px', paddingRight: '80px' }} fluid />
                     </Col>
                 </Row>
             </Container>

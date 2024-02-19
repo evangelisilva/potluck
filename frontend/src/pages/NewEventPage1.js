@@ -15,9 +15,9 @@ function NewEventPage1() {
         <Container>
             <Row>
                 {/* Left column */}
-                <Col md={7} style={{ paddingTop: '50px', paddingLeft: '70px', color: '#4D515A', fontFamily: 'Inter' }}>
+                <Col md={7} style={{ paddingTop: '50px', paddingLeft: '70px', color: '#4D515A', fontFamily: 'Arial' }}>
                     {/* Event Title */}
-                    <h2 style={{ fontFamily: 'Aleo', fontSize: '45px', marginBottom: '20px' }}>Start a Potluck</h2>
+                    <h2 style={{ fontFamily: 'Times New Roman', fontSize: '45px', marginBottom: '20px' }}>Start a Potluck</h2>
                     <Form.Group>
                         {/* Event Name */}
                         <Form.Label>Host Name</Form.Label>

@@ -7,9 +7,9 @@ function NewEventPage2() {
         <Container>
             <Row>
                 {/* Left column */}
-                <Col md={7} style={{ paddingTop: '50px', paddingLeft: '70px', color: '#4D515A', fontFamily: 'Inter' }}>
+                <Col md={7} style={{ paddingTop: '50px', paddingLeft: '70px', color: '#4D515A', fontFamily: 'Arial' }}>
                     {/* Event Title */}
-                    <h2 style={{ fontFamily: 'Aleo', fontSize: '45px', marginBottom: '20px' }}>Where is the event happening?</h2>
+                    <h2 style={{ fontFamily: 'Times New Roman', fontSize: '45px', marginBottom: '20px' }}>Where is the event happening?</h2>
                     <Form.Group>
                         
                         {/* Street Address */}
