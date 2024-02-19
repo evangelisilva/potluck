@@ -39,7 +39,7 @@ class SendInviteButton extends React.Component {
           backgroundColor: '#E8843C', 
           borderColor: '#E8843C', 
           borderRadius: '30px', 
-          fontFamily: 'Inter', 
+          fontFamily: 'Arial', 
           paddingLeft: '15px', 
           paddingRight: '15px', 
           marginRight: '60px' 

@@ -25,7 +25,7 @@ const ProfileNavbar = () => {
           style={{ maxHeight: '45px', paddingRight: '15px'}}
         />
         {/* Brand name */}
-        <span style={{ fontFamily: 'Inter', color: '#4D515A', fontSize: '21px' }}>Potluck</span>
+        <span style={{ fontFamily: 'Arial', color: '#4D515A', fontSize: '21px' }}>Potluck</span>
       </Navbar.Brand>
       {/* Navbar toggle button */}
       <Navbar.Toggle aria-controls="basic-navbar-nav" />

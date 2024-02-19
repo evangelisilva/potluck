@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Container, Row, Col, Card, Button, Image, Dropdown } from 'react-bootstrap';
+import { Container, Row, Col, Card, Button, Image } from 'react-bootstrap';
 import SignupNavbar from '../components/SignupNavbar';
 import RSVPPopup from '../components/RSVPPopup';
 
@@ -49,7 +49,7 @@ function RSVP() {
             {/* Navbar component */}
             <SignupNavbar />
             {/* Main content */}
-            <div style={{ backgroundColor: '#f8f9fa', fontFamily: 'Inter' }}>
+            <div style={{ backgroundColor: '#f8f9fa', fontFamily: 'Arial' }}>
                 <Container>
                     <Row>
                         <Col xs={12} md={{ span: 10, offset: 1 }}>

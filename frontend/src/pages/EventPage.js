@@ -73,7 +73,7 @@ function EventPage() {
             {/* Navbar component */}
             <SignupNavbar />
             {/* Main content */}
-            <div style={{ backgroundColor: '#f8f9fa', fontFamily: 'Inter' }}>
+            <div style={{ backgroundColor: '#f8f9fa', fontFamily: 'Arial' }}>
                 <Container>
                     <Row>
                         <Col xs={12} md={{ span: 10, offset: 1 }}>
