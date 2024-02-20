@@ -4,7 +4,7 @@ import '../styles/modal.css';
 import SendInviteButton from './SendInviteButton'; // Assuming this component exists
 
 // InviteePopup component takes onClose function as props
-const InviteePopup = ({ onClose, eventId }) => {
+const InviteePopup = ({ onClose, eventId, onSuccess }) => {
     // State to manage the input for email addresses
     const [emailInput, setEmailInput] = useState('');
     // State to store the list of entered email addresses
@@ -37,6 +37,18 @@ const InviteePopup = ({ onClose, eventId }) => {
     // Function to get the current list of entered emails
     const getEmailArray = () => {
         return emailsList;
+    };
+
+    // Function to close the popup
+    const handlePopupClose = () => {
+        onClose(); // Invoke the onClose callback passed from the parent component
+    };
+
+    // Function to handle success of sending invites
+    const handleSuccess = () => {
+        console.log(getEmailArray());
+        onSuccess(getEmailArray()); // Invoke the onSuccess callback passed from the parent component
+        onClose(); // Close the popup
     };
 
     return (
@@ -113,16 +125,17 @@ const InviteePopup = ({ onClose, eventId }) => {
                         </Button>
                         {/* Send Invite button */}
                         <SendInviteButton
-                            invitee="Evangeli"
-                            host="Evangeli Silva"
-                            date="2021-06-10"
-                            time="10:00 AM"
-                            address="1234 Main Street, Anytown, USA"
-                            theme="International Cuisine"
-                            rsvpDeadline="June 15, 2021"
+                            invitee=''
+                            host=''
+                            date=''
+                            time=''
+                            address=''
+                            theme=''
+                            rsvpDeadline=''
                             eventId={eventId}
                             to={getEmailArray()} // Passes the list of emails to the SendInviteButton component
                             variant="primary"
+                            onSuccess={handleSuccess}
                             style={{ marginRight: '60px' }}>
                             Send Invites
                         </SendInviteButton>

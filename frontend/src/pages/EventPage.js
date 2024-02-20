@@ -87,6 +87,20 @@ function MyComponent() {
         setShowCancelEventPopup(false);
     };
 
+    const handleInviteSuccess = async (emailArray) => {
+        try {
+            // Make PUT request to update invitedGuests array
+            await axios.put(`http://localhost:8000/api/events/${eventId}`, {
+                invitedGuests: [...eventDetails.invitedGuests, ...emailArray]
+            });
+            console.log("Invitation sent successfully with email array:", emailArray);
+            // Refresh event details after successful update
+            fetchEventDetails();
+        } catch (error) {
+            console.error('Error updating invitedGuests:', error);
+        }
+    };
+
     return (
         <div>
             <div style={{ backgroundColor: '#f8f9fa', fontFamily: 'Arial' }}>
@@ -181,13 +195,15 @@ function MyComponent() {
                                                             <Card.Body>
                                                                 <Row>
                                                                     <Col>
-                                                                        <Card.Subtitle style={{fontSize: '25px'}}>{eventDetails.invitedGuests.filter(guest => guest.status === 'Attending').length}</Card.Subtitle>
+                                                                        {/* <Card.Subtitle style={{fontSize: '25px'}}>{eventDetails.invitedGuests.filter(guest => guest.status === 'Attending').length}</Card.Subtitle> */}
+                                                                        <Card.Subtitle style={{fontSize: '25px'}}>0</Card.Subtitle>
                                                                     </Col>
                                                                     <Col>
-                                                                        <Card.Subtitle style={{fontSize: '25px'}}>{eventDetails.invitedGuests.filter(guest => guest.status === 'May be').length}</Card.Subtitle>
+                                                                        {/* <Card.Subtitle style={{fontSize: '25px'}}>{eventDetails.invitedGuests.filter(guest => guest.status === 'May be').length}</Card.Subtitle> */}
+                                                                        <Card.Subtitle style={{fontSize: '25px'}}>0</Card.Subtitle>
                                                                     </Col>
                                                                     <Col>
-                                                                        <Card.Subtitle style={{fontSize: '25px'}}>{eventDetails.invitedGuests.filter(guest => guest.status === 'Invited').length}</Card.Subtitle>
+                                                                        <Card.Subtitle style={{fontSize: '25px'}}>{eventDetails.invitedGuests.length}</Card.Subtitle>
                                                                     </Col>
                                                                     {/* Exclude guests with 'Invited' status */}
                                                                 </Row>
@@ -244,7 +260,7 @@ function MyComponent() {
                 </Container>
             </div>
             {/* Invitee popup component */}
-            {showInviteesPopup && <InviteePopup onClose={closeInviteePopup} eventId={eventId} />}
+            {showInviteesPopup && <InviteePopup onClose={closeInviteePopup} onSuccess={handleInviteSuccess} eventId={eventId} />}
             {showEditEventPopup && <EditEventPopup onClose={closeEditEventPopup} />}
             {showCancelEventPopup && <CancelEventPopup onClose={closeCancelEventPopup} />}
         </div>
