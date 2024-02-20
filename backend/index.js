@@ -1,31 +1,39 @@
-const express = require('express');
 const bodyParser = require('body-parser');
-const { sendEmail } = require('./services/emailService');
+const express = require('express');
+const mongoose = require('mongoose');
+const dotenv = require('dotenv');
 const cors = require('cors');
+const eventRoute = require('./routes/eventRoute');
+const userRoute = require('./routes/userRoute');
+const dishRoute = require('./routes/dishRoute');
+const rsvpRoutes = require('./routes/rsvpRoute');
+const dishSignup = require('./models/DishSignup');
+const { sendEmail } = require('./services/emailService');
 
+// Load environment variables from .env file
+dotenv.config();
+
+// Create Express app
 const app = express();
 app.use(bodyParser.json());
+
+// Allow requests from all origins
 app.use(cors());
 
-const rsvpRoutes = require('./routes/rsvpRoute');
+// Middleware
+app.use(express.json()); // Parse JSON bodies
+app.use(express.urlencoded({ extended: true })); // Parse URL-encoded bodies
+
+// Routes
+app.use('/api/events', eventRoute);
+app.use('/api/users', userRoute);
+app.use('/api/dishes', dishRoute);
+app.use('/api/dishSignups', dishSignup);
 app.use('/api/rsvp', rsvpRoutes);
 
 app.get('/', (req, res) => {
     res.send('Server is running'); 
 });  
-
-// Endpoint to send templated email
-app.post('/api/send-email', async (req, res) => {
-  const { to, templateName, templateData } = req.body;
-
-  try {
-    await sendEmail(to, templateName, templateData);
-    res.json({ message: 'Templated email sent successfully' });
-  } catch (error) {
-    console.error('Error sending templated email:', error);
-    res.status(500).json({ error: 'Failed to send templated email' });
-  }
-});
 
 // Endpoint for processing an RSVP request from a user (temporary: needs to be moved to other folder)
 app.post('/api/rsvp-request', (req, res) => {
@@ -39,8 +47,15 @@ app.post('/api/rsvp-request', (req, res) => {
   res.send('POST request received');
 });
 
-// Start the server
-const port = 8000;
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
+/// Connect to MongoDB
+mongoose.connect(process.env.DB_CONNECTION)
+.then(() => {
+  console.log('Connected to MongoDB');
+  // Start the server once connected to MongoDB
+  app.listen(process.env.PORT || 8000, () => {
+    console.log(`Server is running on port ${process.env.PORT || 8000}`);
+  });
+})
+.catch((error) => {
+  console.error('Error connecting to MongoDB:', error);
 });
