@@ -63,6 +63,7 @@ exports.cancelEvent = async (eventId) => {
 // Service function to send invitations to guests
 exports.sendInvitations = async (eventId, event, invitedGuests) => {
   try {
+    const responses = [];
     // Send invitations to each guest
     for (const guest of invitedGuests) {
       // Construct template data using event details
@@ -79,9 +80,11 @@ exports.sendInvitations = async (eventId, event, invitedGuests) => {
         // rsvpLink: 'http://localhost:3000/events/' + eventId + '/rsvp'
         rsvpLink: 'http://localhost:3000/rsvp/65d3d557b90bec95e14f1476'
       };
-      await sendEmail(guest, 'ICSI518-Potluck-InvitationTemplate', templateData);
+      const response = await sendEmail(guest, 'ICSI518-Potluck-InvitationTemplate', templateData);
+      const responseWithEventId = { eventId, ...response }; 
+      responses.push(responseWithEventId); 
     }
-    return `Invitations sent for event with ID ${eventId}`;
+    return responses; 
   } catch (error) {
     console.error('Error sending invitations:', error);
     throw new Error('Failed to send invitations');

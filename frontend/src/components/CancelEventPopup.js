@@ -23,33 +23,33 @@ const CancelEventPopup = ({ onClose }) => {
                                 <Form.Group>
                                     {/* Cancel Event */}
                                     <Row>
-                                        <Col>
-                                            <Form.Label style={{ width: '450px' }}>Cancel Event</Form.Label>
+                                        {/* <Col> */}
+                                            {/* <Form.Label style={{ width: '450px' }}>Cancel Event</Form.Label> */}
                                             {/* Explanation */}
                                             <Form.Text style={{ color: 'gray', fontSize: '13px' }}>
-                                               If you cancel your event, guests will be notified. You'll be able to access the event page but won't be able to edit the event.
+                                               If you cancel your event, guests will be notified. You'll be able to access the event page but won't be able to edit the event. If you wish to proceed with canceling the event, please confirm.
                                             </Form.Text>
-                                        </Col>
-                                        {/* Radio button */}
+                                        {/* </Col>
+                                        Radio button
                                         <Col>
                                             <Form.Check  type="radio" name="Radios" id="Radio2" />
-                                        </Col>
+                                        </Col> */}
                                     </Row><br/>
 
                                     {/* Delete Event */}
-                                    <Row>
+                                    {/* <Row>
                                         <Col>
-                                            <Form.Label style={{ width: '450px' }}>Delete Event</Form.Label>
+                                            <Form.Label style={{ width: '450px' }}>Delete Event</Form.Label> */}
                                             {/* Explanation */}
-                                            <Form.Text style={{ color: 'gray', fontSize: '13px' }}>
+                                            {/* <Form.Text style={{ color: 'gray', fontSize: '13px' }}>
                                                If you delete your event, you won't be able to access it again. If you'll want to come back to it, you can cancel your event instead.
                                             </Form.Text>
-                                        </Col>
+                                        </Col> */}
                                         {/* Radio button */}
-                                        <Col>
+                                        {/* <Col>
                                         <Form.Check  type="radio" name="Radios" id="Radio2" />
                                         </Col>
-                                    </Row>
+                                    </Row> */}
                                     
                                 </Form.Group>
                         </Form>

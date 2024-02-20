@@ -5,7 +5,7 @@ import axios from 'axios';
 
 class SendInviteButton extends React.Component {
   handleClick = async () => {
-    const { eventId, to } = this.props;
+    const { eventId, to, onSuccess, onResponse } = this.props;
 
     try {
       // Fetch event details
@@ -28,8 +28,19 @@ class SendInviteButton extends React.Component {
       };
 
       // Send invitations
-      await axios.post(`http://localhost:8000/api/events/${eventId}/invite`, invitationBody);
+      const inviteResponse = await axios.post(`http://localhost:8000/api/events/${eventId}/invite`, invitationBody);
       console.log('Invitations sent successfully');
+      console.log(inviteResponse);
+
+      // Call onSuccess callback to close the popup
+      if (typeof onSuccess === 'function') {
+        onSuccess();
+
+      // Call onResponse callback to pass the response data back to the parent component
+      if (typeof onResponse === 'function') {
+        onResponse(inviteResponse.data);
+      }
+      }
     } catch (error) {
       console.error('Error:', error);
     }
