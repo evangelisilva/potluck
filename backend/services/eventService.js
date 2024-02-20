@@ -76,7 +76,8 @@ exports.sendInvitations = async (eventId, event, invitedGuests) => {
         state: event.state,
         zipCode: event.zipCode,
         host: 'Evangeli',
-        rsvpLink: 'http://localhost:3000/events/' + eventId + '/rsvp'
+        // rsvpLink: 'http://localhost:3000/events/' + eventId + '/rsvp'
+        rsvpLink: 'http://localhost:3000/rsvp/65d3d557b90bec95e14f1476'
       };
       await sendEmail(guest, 'ICSI518-Potluck-InvitationTemplate', templateData);
     }
