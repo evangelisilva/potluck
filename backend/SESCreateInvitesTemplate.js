@@ -28,7 +28,7 @@ const createTemplate = async (name, subject, htmlMessage) => {
 
 const emailHTML = `
     <p>Hello,</p>
-    <p>You are cordially invited to join us for a delightful <b>{{name}}</b>! We're gathering friends and family for a wonderful time filled with good food, great company, and memorable moments.</p>
+    <p>You are cordially invited to join us for a delightful <b>{{name}}</b> hosted by {{host}}! We're gathering friends and family for a wonderful time filled with good food, great company, and memorable moments.</p>
     <p><strong>Event Details</strong>
         <ul>
         <li><strong>Date:</strong> {{date}}</li>
@@ -36,12 +36,12 @@ const emailHTML = `
         <li><strong>Location:</strong> {{streetAddress1}}, {{city}}, {{state}}, {{zipCode}}</li>
         </ul>
     </p>
-    <p><strong>RSVP</strong><br/>
-    We're eagerly anticipating a diverse spread of dishes, ranging from savory appetizers to mouthwatering desserts. Your culinary contribution, whether it be a signature dish or an experimental creation, will surely add to the charm of our potluck. Kindly confirm your attendance and indicate any guests you'll be bringing along by {{rsvpDeadline}}. Click <a href="{{rsvpLink}}">here</a>  to RSVP and let us know what delectable dish you plan to bring.</p>
-    <p><strong>Special Requests</strong><br/>
     Your comfort and satisfaction are of utmost importance to us. If you have any dietary restrictions or special requests, please inform us when you RSVP or sign up to bring a dish, and we'll gladly accommodate your needs.</p>
     <p>We're excited to share this wonderful occasion with you, filled with laughter, joy, and culinary delights. Should you have any queries or require further information, please don't hesitate to reach out.</p>
-    <p>Warm regards,<br>{{host}}</p>
+    <p>Thank you!</p>
+    <p style="text-align: center;"><a href="{{rsvpLink}}" style="background-color: #E8843C; color: #ffffff; padding: 10px 20px; text-decoration: none; border-radius: 5px;">RSVP Now</a></p>
 `;
+
+
 
 createTemplate('ICSI518-Potluck-InvitationTemplate', 'You\'re Invited to a Potluck Party!', emailHTML);
