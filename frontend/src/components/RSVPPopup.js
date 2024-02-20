@@ -1,14 +1,77 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Container, Form, Button } from 'react-bootstrap';
 import '../styles/modal.css';
+import axios from 'axios';
 
-const RSVPPopup = ({ onClose, eventID }) => {
+
+const RSVPPopup = ({ onClose, eventId, userId }) => {
     const [attendance, setAttendance] = useState('');
     const [userMessage, setUserMessage] = useState('');
+    const [rsvpStatus, setRsvpStatus] = useState();
 
-    const handleRSVP = () => {
+    useEffect(() => {
+        axios.get(`http://localhost:8000/api/rsvp/view-status/${userId}/${eventId}`)
+          .then(data => {
+            console.log("In rsvp popup - axios.get - what is the RSVP status?");
+            setRsvpStatus(data);
+            console.log(rsvpStatus);
+            console.log("What is the data");
+            console.log(data);
+          })
+          .catch(error => {
+            console.error('Error fetching data:', error);
+          });
+    }, [])
+
+    const handleRSVP = async () => {
         console.log("RSVP:", attendance);
         console.log("Message:", userMessage);
+
+        // First, do a get request to view rsvp status
+        // Make GET request to Node.js server
+        
+
+        // Issues
+        /// Q: should this get be based on "useEffect" or should it be right in here
+        /// A: try not doing so to make the data "recieved easier"
+        /// Q: how do we access the data before the reutnr statment
+        /// A: We'll have to find out in here
+        // Second, do a conditional (RSVP, or update RSVP) depeding on the response payload
+        
+        ////console.log("In rsvp popup - what is the data outside of axios get?");
+        ////console.log(rsvpStatus.data);
+
+        console.log("RSVP response", rsvpStatus.data);
+        // Create rsvp case
+        if (rsvpStatus.data === null){
+            
+            // Server url: api/rsvp/create/:eventId
+
+            const createData = {id: 2,                  
+                userId: 124,  
+                
+                response: "yes",
+                
+                userMessage: "Here is the newly created rsvp entry",
+                
+                guestsCount: 2 };
+            
+            axios.post(`http://localhost:8000/api/rsvp/create/${eventId}`, createData)
+            .then(response => {
+              // Handle success, if needed
+              console.log("Response from the server after creating an RSVP entry: ")
+              console.log(response);
+            })
+            .catch(error => {
+              // Handle error, if needed
+              console.error(error);
+            });
+        }
+        // Update RSVP case
+        else{
+
+        }
+
         onClose();
     };
 
