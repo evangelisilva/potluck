@@ -3,8 +3,9 @@ const router = express.Router();
 const userController = require('../controllers/userController');
 
 router.post('/', userController.createUser);
-router.get('/', userController.getAllUsers);
+router.get('/email/:userEmail', userController.getUserByEmail); // Add this route before the /:userId route
 router.get('/:userId', userController.getUserById); 
-router.get('/email/:userEmail', userController.getUserByEmail);
+router.get('/', userController.getAllUsers); // Move this route to the end
 
 module.exports = router;
+

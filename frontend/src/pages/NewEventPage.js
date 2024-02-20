@@ -1,12 +1,10 @@
 import React, { useState } from 'react';
 import { Button } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom'; 
+import axios from 'axios';
 import NewEventPage1 from './NewEventPage1';
 import NewEventPage2 from './NewEventPage2';
 import NewEventPage3 from './NewEventPage3'; 
-// import InviteePopup from '../components/InviteePopup';
-// import NewEventPage4 from './NewEventPage4'; 
-// import SignupNavbar from '../components/SignupNavbar';
 
 // Component for managing a multi-page event creation form
 function NewEvent() {
@@ -20,11 +18,36 @@ function NewEvent() {
     const nextPage = () => {
         // If it's the last page, navigate to a different page
         if (currentPage === totalPages) {
-            navigate('/events/{event-id}');
+            // navigate('/events/{event-id}');
+            createEvent();
         } else {
             setCurrentPage(currentPage + 1);
         }
     };
+
+    // State to store event data
+    const [eventData, setEventData] = useState({
+        // Initialize with default values
+        title: '',
+        description: '',
+        date: '',
+        startTime: '',
+        endTime: '',
+        location: {
+            streetAddress1: '',
+            streetAddress2: '',
+            city: '',
+            state: '',
+            zipCode: ''
+        },
+        contactNumber: '',
+        organizer: '65d377b4f9c8da33b7f3db73',
+        invitedGuests: [],
+        status: 'active',
+        visibility: 'public',
+        dishes: [],
+        coverImage: ''
+    });
 
     // Function to handle moving to the previous page
     const prevPage = () => {
@@ -35,11 +58,11 @@ function NewEvent() {
     const renderPageContent = () => {
         switch (currentPage) {
             case 1:
-                return <NewEventPage1 />;
+                return <NewEventPage1 handleEventDataChange={handleEventDataChange} />;
             case 2:
-                return <NewEventPage2 />;
+                return <NewEventPage2 handleEventDataChange={handleEventDataChange} />;
             case 3:
-                return <NewEventPage3 />;
+                return <NewEventPage3 handleEventDataChange={handleEventDataChange} />;
             // case 4:
             //     return <NewEventPage4 />;
             default:
@@ -47,10 +70,41 @@ function NewEvent() {
         }
     };
 
+    // Function to handle changes in event data
+    const handleEventDataChange = (name, value) => {
+        // If the field is nested inside location
+        if (name.startsWith('location.')) {
+            const locationField = name.split('.')[1]; // Extract the nested field name
+            setEventData({
+                ...eventData,
+                location: {
+                    ...eventData.location, // Preserve other fields in location
+                    [locationField]: value // Update the specific nested field
+                }
+            });
+        } else {
+            // For other fields, update directly
+            setEventData({
+                ...eventData,
+                [name]: value,
+            });
+        }
+    };
+
+    // Function to create event
+    const createEvent = async () => {
+        try {
+            // Send POST request to create event
+            const response = await axios.post('http://localhost:8000/api/events', eventData);
+            console.log('Event created successfully:', response.data);
+            navigate(`/events/${response.data._id}`); // Navigate to event page
+        } catch (error) {
+            console.error('Error creating event:', error);
+        }
+    };
+
     return (
         <div style={{fontFamily: 'Arial'}}>
-            {/* Include SignupNavbar */}
-            {/* <SignupNavbar /> */}
 
             {/* Render current page content */}
             {renderPageContent()}

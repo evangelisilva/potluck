@@ -10,13 +10,15 @@ const ses = new SESClient({
 });
 
 const sendEmail = async (to, templateName, templateData) => {
+    console.log(templateData);
+
     const params = {
         Source: process.env.SENDER_EMAIL,
         Destination: {
             ToAddresses: [to]
         },
         Template: templateName,
-        TemplateData: templateData
+        TemplateData: JSON.stringify(templateData),
     };
 
     try {

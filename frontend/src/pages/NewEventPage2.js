@@ -2,7 +2,7 @@ import React from 'react';
 import { Container, Row, Col, Form, Image } from 'react-bootstrap';
 
 // This component renders a form for specifying the location of the event.
-function NewEventPage2() {
+function NewEventPage2( { handleEventDataChange } ) {
     return (
         <Container>
             <Row>
@@ -17,11 +17,13 @@ function NewEventPage2() {
                         <Form.Control 
                             type="text" 
                             style={{ width: '576px', marginBottom: '8px' }}
+                            onChange={(e) => handleEventDataChange('location.streetAddress1', e.target.value)}
                             required
                         /> 
                         <Form.Control 
                             type="text" 
                             style={{ width: '576px' }}
+                            onChange={(e) => handleEventDataChange('location.streetAddress2', e.target.value)}
                         />
                         <br />
 
@@ -32,6 +34,7 @@ function NewEventPage2() {
                                 <Form.Control 
                                     type="text"
                                     style={{ width: '190px' }}
+                                    onChange={(e) => handleEventDataChange('location.city', e.target.value)}
                                     required
                                 />
                             </Col>
@@ -40,6 +43,7 @@ function NewEventPage2() {
                                 <Form.Control 
                                     type="text"
                                     style={{ width: '180px' }}
+                                    onChange={(e) => handleEventDataChange('location.state', e.target.value)}
                                     required
                                 />
                             </Col>
@@ -48,6 +52,7 @@ function NewEventPage2() {
                                 <Form.Control 
                                     type="text"
                                     style={{ width: '180px' }}
+                                    onChange={(e) => handleEventDataChange('location.zipCode', e.target.value)}
                                     required
                                 />
                             </Col>
@@ -59,6 +64,7 @@ function NewEventPage2() {
                         <Form.Control 
                             type="text" 
                             style={{ width: '576px', marginBottom: '8px' }}
+                            onChange={(e) => handleEventDataChange('contactNumber', e.target.value)}
                         />
                     </Form.Group>
                 </Col>
