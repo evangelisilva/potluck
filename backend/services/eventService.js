@@ -61,26 +61,25 @@ exports.cancelEvent = async (eventId) => {
 };
 
 // Service function to send invitations to guests
-exports.sendInvitations = async (eventId, guests) => {
+exports.sendInvitations = async (eventId, event, invitedGuests) => {
   try {
-    // Retrieve event details
-    const event = await getEventById(eventId);
-
     // Send invitations to each guest
-    for (const guest of guests) {
+    for (const guest of invitedGuests) {
       // Construct template data using event details
       const templateData = {
         name: event.title,
         date: event.date,
         startTime: event.startTime,
         endTime: event.endTime,
-        location: event.location,
-        host: event.organizer,
-        rsvp: 'http://localhost:3000/events/' + eventId + '/rsvp'
+        streetAddress1: event.streetAddress1,
+        city: event.city,
+        state: event.state,
+        zipCode: event.zipCode,
+        host: 'Evangeli',
+        rsvpLink: 'http://localhost:3000/events/' + eventId + '/rsvp'
       };
       await sendEmail(guest, 'ICSI518-Potluck-InvitationTemplate', templateData);
     }
-
     return `Invitations sent for event with ID ${eventId}`;
   } catch (error) {
     console.error('Error sending invitations:', error);

@@ -27,15 +27,15 @@ const createTemplate = async (name, subject, htmlMessage) => {
 }
 
 const emailHTML = `
-    <p>Dear {{invitee}},</p>
-    <p>You are cordially invited to join us for a delightful potluck party! We're gathering friends and family for a wonderful time filled with good food, great company, and memorable moments.</p>
+    <p>Hello,</p>
+    <p>You are cordially invited to join us for a delightful <b>{{name}}</b>! We're gathering friends and family for a wonderful time filled with good food, great company, and memorable moments.</p>
     <p><strong>Event Details</strong>
-    <ul>
-    <li><strong>Date:</strong> {{date}}</li>
-    <li><strong>Time:</strong> {{time}}</li>
-    <li><strong>Location:</strong> {{address}}</li>
-    <li><strong>Theme:</strong> {{theme}}</li>
-    </ul></p>
+        <ul>
+        <li><strong>Date:</strong> {{date}}</li>
+        <li><strong>Time:</strong> {{startTime}} - {{endTime}}</li>
+        <li><strong>Location:</strong> {{streetAddress1}}, {{city}}, {{state}}, {{zipCode}}</li>
+        </ul>
+    </p>
     <p><strong>RSVP</strong><br/>
     We're eagerly anticipating a diverse spread of dishes, ranging from savory appetizers to mouthwatering desserts. Your culinary contribution, whether it be a signature dish or an experimental creation, will surely add to the charm of our potluck. Kindly confirm your attendance and indicate any guests you'll be bringing along by {{rsvpDeadline}}. Click <a href="{{rsvpLink}}">here</a>  to RSVP and let us know what delectable dish you plan to bring.</p>
     <p><strong>Special Requests</strong><br/>

@@ -4,7 +4,7 @@ import '../styles/modal.css';
 import SendInviteButton from './SendInviteButton'; // Assuming this component exists
 
 // InviteePopup component takes onClose function as props
-const InviteePopup = ({ onClose }) => {
+const InviteePopup = ({ onClose, eventId }) => {
     // State to manage the input for email addresses
     const [emailInput, setEmailInput] = useState('');
     // State to store the list of entered email addresses
@@ -120,7 +120,7 @@ const InviteePopup = ({ onClose }) => {
                             address="1234 Main Street, Anytown, USA"
                             theme="International Cuisine"
                             rsvpDeadline="June 15, 2021"
-                            eventId="1234567890"
+                            eventId={eventId}
                             to={getEmailArray()} // Passes the list of emails to the SendInviteButton component
                             variant="primary"
                             style={{ marginRight: '60px' }}>

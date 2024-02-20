@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Container, Row, Col, Form, Image } from 'react-bootstrap';
 
 // This component renders a form for creating a new event.
-function NewEventPage1() {
+function NewEventPage1({ handleEventDataChange }) {
     // State variable to track the selected visibility option
     const [visibility, setVisibility] = useState('public');
 
@@ -20,19 +20,11 @@ function NewEventPage1() {
                     <h2 style={{ fontFamily: 'Times New Roman', fontSize: '45px', marginBottom: '20px' }}>Start a Potluck</h2>
                     <Form.Group>
                         {/* Event Name */}
-                        <Form.Label>Host Name</Form.Label>
-                        <Form.Control 
-                            type="text" 
-                            style={{ width: '576px' }}
-                            required
-                        />
-                        <br />
-
-                        {/* Event Name */}
                         <Form.Label>Event Name</Form.Label>
                         <Form.Control 
                             type="text" 
                             style={{ width: '576px' }}
+                            onChange={(e) => handleEventDataChange('title', e.target.value)}
                             required
                         />
                         {/* Event Name Description */}
@@ -47,6 +39,7 @@ function NewEventPage1() {
                             as="textarea"
                             rows={3} 
                             style={{ width: '576px', height: '120px' }}
+                            onChange={(e) => handleEventDataChange('description', e.target.value)}
                         />
                         {/* Event Description Note */}
                         <Form.Text style={{ color: 'gray', fontSize: '13px' }}>
@@ -58,7 +51,12 @@ function NewEventPage1() {
                             <Col style={{ paddingRight: '14px', maxWidth: '400px' }}>
                                 {/* Cover Image Upload */}
                                 <Form.Label>Cover Image (Optional)</Form.Label>
-                                <Form.Control type="file" custom accept="image/*" style={{ width: '100%' }} />
+                                <Form.Control 
+                                    type="file" 
+                                    custom accept="image/*" 
+                                    style={{ width: '100%' }} 
+                                    onChange={(e) => handleEventDataChange('coverImage', e.target.value)}
+                                />
                                 {/* Cover Image Upload Note */}
                                 <Form.Text style={{ color: 'gray', fontSize: '13px'}}>
                                     For best results please use a landscape photo.
@@ -67,7 +65,17 @@ function NewEventPage1() {
                             <Col style={{ paddingLeft: '0', paddingRight: '0', maxWidth: '200px' }}>
                                 {/* Visibility selection */}
                                 <Form.Label>Event Visibility</Form.Label> <br/>
-                                <Form.Select value={visibility} onChange={handleVisibilityChange} style={{ width: '100%' }}>
+                                <Form.Select 
+                                    value={visibility} 
+                                    onChange={(e) => {
+                                        const { value } = e.target;
+                                        // Call both functions
+                                        handleVisibilityChange(value);
+                                        handleEventDataChange('visibility', value);
+                                    }} 
+                                    style={{ width: '100%' }}
+                                    name="visibility"
+                                >
                                     <option value="public">Public</option>
                                     <option value="private">Private</option>
                                 </Form.Select>       
@@ -84,6 +92,7 @@ function NewEventPage1() {
                                 <Form.Control 
                                     type="date"
                                     style={{ width: '190px' }}
+                                    onChange={(e) => handleEventDataChange('date', e.target.value)}
                                     required
                                 />
                             </Col>
@@ -93,6 +102,7 @@ function NewEventPage1() {
                                 <Form.Control 
                                     type="time"
                                     style={{ width: '180px' }}
+                                    onChange={(e) => handleEventDataChange('startTime', e.target.value)}
                                     required
                                 />
                             </Col>
@@ -102,6 +112,7 @@ function NewEventPage1() {
                                 <Form.Control 
                                     type="time"
                                     style={{ width: '180px' }}
+                                    onChange={(e) => handleEventDataChange('endTime', e.target.value)}
                                     required
                                 />
                             </Col>

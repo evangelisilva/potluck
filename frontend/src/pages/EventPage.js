@@ -1,43 +1,62 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Card, Button, Image, Dropdown } from 'react-bootstrap';
-import SignupNavbar from '../components/SignupNavbar';
+import { useParams } from 'react-router-dom';
+import axios from 'axios';
 import InviteePopup from '../components/InviteePopup';
 import EditEventPopup from '../components/EditEventPopup';
 import CancelEventPopup from '../components/CancelEventPopup';
 
-function EventPage() {
+function MyComponent() {
     const [showInviteesPopup, setShowInviteesPopup] = useState(false);
     const [showEditEventPopup, setShowEditEventPopup] = useState(false);
     const [showCancelEventPopup, setShowCancelEventPopup] = useState(false);
 
-    // Event details
-    const eventDetails = {
-        title: 'Open Mic Potluck',
-        date: 'February 20, 2024',
-        startTime: '6:00 PM',
-        endTime: '9:00 PM',
-        description: 'Get ready for an evening of talent and taste at \'Open Mic Potluck\'! Doors open at 5:30 PM for sign-up. Bring your favorite dish to share and indulge in a delightful culinary experience while enjoying live performances from local artists.',
-        location: '123 Main Street, Anytown, USA',
-        dishes: [
-            { name: 'Lasagna', quantityNeeded: 2, quantityTaken: 1, signups: ['Alice'] },
-            { name: 'Potato Salad', quantityNeeded: 3, quantityTaken: 2, signups: ['Charlie', 'David'] },
-            { name: 'Brownies', quantityNeeded: 2, quantityTaken: 0, signups: [] },
-            { name: 'Guacamole', quantityNeeded: 1, quantityTaken: 1, signups: ['Frank'] },
-            { name: 'Fruit Salad', quantityNeeded: 2, quantityTaken: 1, signups: ['Grace', 'Henry'] }
-        ],
-        guests: [
-            { name: 'Alice', email: 'alice@example.com', phone: '555-555-5555', status: 'Attending' },
-            { name: 'Bob', email: 'bob@example.com', phone: '555-555-5555', status: 'Invited' },
-            { name: 'Charlie', email: 'charlie@example.com', phone: '555-555-5555', status: 'Attending' },
-            { name: 'David', email: 'david@example.com', phone: '555-555-5555', status: 'Attending' },
-            { name: 'Eve', email: 'eve@example.com', phone: '555-555-5555',  status: 'Not Attending' },
-            { name: 'Frank', email: 'frank@example.com', phone: '555-555-5555', status: 'Attending' },
-            { name: 'Grace', email: 'grace@example.com', phone: '555-555-5555',status: 'Attending' },
-            { name: 'Henry', email: 'henry@example.com', phone: '555-555-5555', status: 'Attending' },
-            { name: 'Ivy', email: 'ivy@example.com', phone: '555-555-5555', status: 'May be' },
-        ]
+    const [eventDetails, setEventDetails] = useState(null);
+
+    const { eventId } = useParams(); 
+
+    useEffect(() => {
+        fetchEventDetails();
+    }, []);
+
+    const fetchEventDetails = async () => {
+        try {
+            const response = await axios.get(`http://localhost:8000/api/events/${eventId}`);
+            const formattedEventDetails = {
+                ...response.data,
+                date: formatDate(response.data.date),
+                startTime: formatTime(response.data.startTime),
+                endTime: formatTime(response.data.endTime),
+                dishes: [
+                    { name: 'Lasagna', quantityNeeded: 2, quantityTaken: 0, signups: [] },
+                    { name: 'Potato Salad', quantityNeeded: 3, quantityTaken: 0, signups: [] },
+                    { name: 'Brownies', quantityNeeded: 2, quantityTaken: 0, signups: [] },
+                    // { name: 'Guacamole', quantityNeeded: 1, quantityTaken: 0, signups: [] },
+                    { name: 'Fruit Salad', quantityNeeded: 2, quantityTaken: 0, signups: [] }
+                ]
+            };
+            setEventDetails(formattedEventDetails);
+            console.log(formattedEventDetails);
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
     };
 
+    // Function to format date
+    const formatDate = (dateString) => {
+        const options = { year: 'numeric', month: 'long', day: 'numeric' };
+        return new Date(dateString).toLocaleDateString('en-US', options);
+    };
+
+    // Function to format time
+    const formatTime = (timeString) => {
+        const [hours, minutes] = timeString.split(":");
+        let formattedHours = parseInt(hours) % 12;
+        formattedHours = formattedHours === 0 ? 12 : formattedHours; // Handle 12:00 PM
+        const period = parseInt(hours) >= 12 ? 'PM' : 'AM';
+        return `${formattedHours}:${minutes} ${period}`;
+    };
+    
     // Function to open invitee popup
     const openInviteePopup = () => {
         setShowInviteesPopup(true);
@@ -70,57 +89,61 @@ function EventPage() {
 
     return (
         <div>
-            {/* Navbar component */}
-            <SignupNavbar />
-            {/* Main content */}
             <div style={{ backgroundColor: '#f8f9fa', fontFamily: 'Arial' }}>
                 <Container>
-                    <Row>
-                        <Col xs={12} md={{ span: 10, offset: 1 }}>
-                            <div style={{ backgroundColor: 'white', position: 'relative' }}>
-                                <Card style={{ border: 'none', height: 'auto'}}>
-                                    {/* Event cover image */}
-                                    <div style={{ maxHeight: '370px', overflow: 'hidden', position: 'relative' }}>
-                                        <Image src={process.env.PUBLIC_URL + '/cover.png'} style={{ width: '100%' }} fluid />
-                                    </div>
-                                    {/* Event details */}
-                                    <Card.Body>
-                                        <Row>
-                                            <Col xs={8}>
-                                                <Card.Title style={{ fontSize: '25px', marginBottom: '12px' }}>{eventDetails.title}</Card.Title>
-                                            </Col>
-                                            <Col xs={4} className="d-flex align-items-end justify-content-end">
-                                                {/* Buttons for inviting, editing, and more options */}
-                                                <Button variant="primary" style={{ border: 'none', backgroundColor: "#E8843C", fontSize: '15px', marginRight: '5px' }} onClick={openInviteePopup}>
-                                                    <Image src={process.env.PUBLIC_URL + '/invite.png'} style={{ maxWidth: '25px', paddingRight: '5px' }} fluid />
-                                                    Invite
-                                                </Button>
-                                                <Button variant="primary" style={{ borderColor: 'gray', backgroundColor: "transparent", color: '#4D515A', fontSize: '15px', marginRight: '5px' }} onClick={openEditEventPopup}>
-                                                    <Image src={process.env.PUBLIC_URL + '/edit.png'} style={{ maxWidth: '25px', paddingRight: '5px' }} fluid />
-                                                    Edit
-                                                </Button>
-                                                <Dropdown>
-                                                    <Dropdown.Toggle variant="primary" style={{ borderColor: 'gray', backgroundColor: "transparent", fontSize: '1px', color: 'white', paddingRight: '6px', paddingLeft: '6px' }} >
-                                                        <Image src={process.env.PUBLIC_URL + '/more.png'} style={{ maxWidth: '22px' }} fluid />
-                                                    </Dropdown.Toggle>
-                                                    <Dropdown.Menu>
-                                                        <Dropdown.Item>Duplicate Event</Dropdown.Item>
-                                                        <Dropdown.Item onClick={openCancelEventPopup}>Cancel Event</Dropdown.Item>
-                                                    </Dropdown.Menu>
-                                                </Dropdown>
-                                            </Col>
-                                        </Row>
-                                        <Card.Subtitle className="mb-2 text-muted">{eventDetails.date} | {eventDetails.startTime} - {eventDetails.endTime}</Card.Subtitle>
-                                        <Card.Text style={{ color: '#4D515A' }}><strong>Location:</strong> {eventDetails.location}</Card.Text>
-                                        <Card.Text style={{ fontSize: '15px', color: '#4D515A' }}>{eventDetails.description}</Card.Text> 
+                        <Row>
+                            <Col xs={12} md={{ span: 10, offset: 1 }}>
+                                <div style={{ backgroundColor: 'white', position: 'relative' }}>
+                                    <Card style={{ border: 'none', height: 'auto'}}>
+                                        {/* Event cover image */}
+                                        <div style={{ maxHeight: '370px', overflow: 'hidden', position: 'relative' }}>
+                                            <Image src={process.env.PUBLIC_URL + '/cover.png'} style={{ width: '100%' }} fluid />
+                                        </div>
 
+                                        {/* Event details */}
+                                        <Card.Body>
+                                            <Row>
+                                                <Col xs={8}>
+                                                    {eventDetails && <Card.Title style={{ fontSize: '25px', marginBottom: '12px' }}>{eventDetails.title}</Card.Title>}
+                                                </Col>
+                                                <Col xs={4} className="d-flex align-items-end justify-content-end">
+                                                    {/* Buttons for inviting, editing, and more options */}
+                                                    <Button variant="primary" style={{ border: 'none', backgroundColor: "#E8843C", fontSize: '15px', marginRight: '5px' }} onClick={openInviteePopup}>
+                                                        <Image src={process.env.PUBLIC_URL + '/invite.png'} style={{ maxWidth: '25px', paddingRight: '5px' }} fluid />
+                                                        Invite
+                                                    </Button>
+                                                    <Button variant="primary" style={{ borderColor: 'gray', backgroundColor: "transparent", color: '#4D515A', fontSize: '15px', marginRight: '5px' }} onClick={openEditEventPopup}>
+                                                        <Image src={process.env.PUBLIC_URL + '/edit.png'} style={{ maxWidth: '25px', paddingRight: '5px' }} fluid />
+                                                        Edit
+                                                    </Button>
+                                                    <Dropdown>
+                                                        <Dropdown.Toggle variant="primary" style={{ borderColor: 'gray', backgroundColor: "transparent", fontSize: '1px', color: 'white', paddingRight: '6px', paddingLeft: '6px' }} >
+                                                            <Image src={process.env.PUBLIC_URL + '/more.png'} style={{ maxWidth: '22px' }} fluid />
+                                                        </Dropdown.Toggle>
+                                                        <Dropdown.Menu>
+                                                            <Dropdown.Item>Duplicate Event</Dropdown.Item>
+                                                            <Dropdown.Item onClick={openCancelEventPopup}>Cancel Event</Dropdown.Item>
+                                                        </Dropdown.Menu>
+                                                    </Dropdown>
+                                                </Col>
+                                            </Row>
+                                            {eventDetails && <Card.Subtitle className="mb-2 text-muted">{eventDetails.date} | {eventDetails.startTime} - {eventDetails.endTime}</Card.Subtitle>}
+                                            {eventDetails && <Card.Text style={{ color: '#4D515A' }}><strong>Location: </strong> 
+                                                {eventDetails.location.streetAddress1},&nbsp;
+                                                {eventDetails.location.streetAddress2 && `, ${eventDetails.location.streetAddress2}`}
+                                                {eventDetails.location.city},&nbsp;
+                                                {eventDetails.location.state},&nbsp;
+                                                {eventDetails.location.zipCode}
+                                            </Card.Text>}
+                                            {eventDetails && <Card.Text style={{ fontSize: '15px', color: '#4D515A' }}>{eventDetails.description}</Card.Text>}
+                                        </Card.Body>   
                                         {/* Horizontal line */}
                                         <hr style={{ borderTop: '1px solid #ccc', margin: '20px 0' }} />
 
                                         {/* Row for dish signups and guest list */}
-                                        <Row>
+                                        <Row style={{marginRight: '10px', marginLeft: '10px'}}>
                                             {/* Column for dish signups */}
-                                            <Col style={{ width: '60%' }}>
+                                            {eventDetails && <Col style={{ width: '60%' }}>
                                                 <Card.Title style={{ fontSize: '18px', color: 'black', marginBottom: '12px' }}>Dish Sign-ups</Card.Title>
                                                 {eventDetails.dishes.map((dish, index) => (
                                                     <Row key={index}>
@@ -143,27 +166,28 @@ function EventPage() {
                                                         </Col>
                                                     </Row>
                                                 ))}
-                                            </Col>
-                                            {/* Column for guest list */}
-                                            <Col style={{ width: '40%' }}>
+                                            </Col>}
+                                            
+                                            {eventDetails &&  <Col style={{ width: '40%' }}>
                                                 <Row>
                                                     <Col style={{ width: '90%' }}>
                                                         <Card.Title style={{ fontSize: '18px', color: 'black', marginBottom: '12px' }}>Guest List</Card.Title>
                                                     </Col>
                                                 </Row>
+
                                                 <Row>
                                                     <Col>
                                                         <Card style={{marginBottom: '5px', color: '#E8843C', borderRadius: '10px', borderColor: '#E8843C', textAlign: 'center', padding: '10px'}}>
                                                             <Card.Body>
                                                                 <Row>
                                                                     <Col>
-                                                                        <Card.Subtitle style={{fontSize: '25px'}}>{eventDetails.guests.filter(guest => guest.status === 'Attending').length}</Card.Subtitle>
+                                                                        <Card.Subtitle style={{fontSize: '25px'}}>{eventDetails.invitedGuests.filter(guest => guest.status === 'Attending').length}</Card.Subtitle>
                                                                     </Col>
                                                                     <Col>
-                                                                        <Card.Subtitle style={{fontSize: '25px'}}>{eventDetails.guests.filter(guest => guest.status === 'May be').length}</Card.Subtitle>
+                                                                        <Card.Subtitle style={{fontSize: '25px'}}>{eventDetails.invitedGuests.filter(guest => guest.status === 'May be').length}</Card.Subtitle>
                                                                     </Col>
                                                                     <Col>
-                                                                        <Card.Subtitle style={{fontSize: '25px'}}>{eventDetails.guests.filter(guest => guest.status === 'Invited').length}</Card.Subtitle>
+                                                                        <Card.Subtitle style={{fontSize: '25px'}}>{eventDetails.invitedGuests.filter(guest => guest.status === 'Invited').length}</Card.Subtitle>
                                                                     </Col>
                                                                     {/* Exclude guests with 'Invited' status */}
                                                                 </Row>
@@ -175,7 +199,7 @@ function EventPage() {
                                                                         <Card.Text>May be</Card.Text>
                                                                     </Col>
                                                                     <Col>
-                                                                        <Card.Text>No Response</Card.Text>
+                                                                        <Card.Text>Invited</Card.Text>
                                                                     </Col>
                                                                     {/* No column for 'Invited' status */}
                                                                 </Row>
@@ -184,7 +208,7 @@ function EventPage() {
                                                     </Col>
                                                 </Row>
                                                 {/* Guest list */}
-                                                {eventDetails.guests
+                                                {eventDetails.invitedGuests
                                                     .filter(guest => guest.status !== 'Invited') // Exclude guests with 'Invited' status
                                                     .map((guest, index) => (
                                                         <Row key={index}>
@@ -211,21 +235,20 @@ function EventPage() {
                                                             </Col>
                                                         </Row>
                                                     ))}
-                                            </Col>
-                                        </Row>
-                                    </Card.Body>
-                                </Card>
-                            </div>
-                        </Col>
-                    </Row>
+                                                </Col>}
+                                            </Row>
+                                    </Card>
+                                </div>
+                            </Col>
+                        </Row>
                 </Container>
             </div>
             {/* Invitee popup component */}
-            {showInviteesPopup && <InviteePopup onClose={closeInviteePopup} />}
+            {showInviteesPopup && <InviteePopup onClose={closeInviteePopup} eventId={eventId} />}
             {showEditEventPopup && <EditEventPopup onClose={closeEditEventPopup} />}
             {showCancelEventPopup && <CancelEventPopup onClose={closeCancelEventPopup} />}
         </div>
     );
 }
 
-export default EventPage;
+export default MyComponent;

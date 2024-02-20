@@ -21,12 +21,11 @@ exports.getDishById = async (dishId) => {
 };
 
 // Controller function to get all dishes
-exports.getAllDishes = async (req, res) => {
+exports.getAllDishes = async () => {
     try {
-        const dishes = await dishService.getAllDishes();
-        res.status(200).json(dishes);
+        const dishes = await Dish.find();
+        return dishes;
     } catch (error) {
-        res.status(500).json({ error: 'Internal server error' });
+        throw new Error('Could not retrieve dishes');
     }
 };
-

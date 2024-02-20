@@ -1,7 +1,5 @@
-// controllers/eventController.js
-
 const Event = require('../models/Event');
-const eventService = require('../services/eventService');
+const eventService = require('../services/eventService')
 
 // Controller function to create a new event
 exports.createEvent = async (req, res) => {
@@ -44,7 +42,7 @@ exports.getEventById = async (req, res) => {
 // Controller function to edit details of an event
 exports.editEvent = async (req, res) => {
   try {
-    const { eventId } = req.params;
+    const { eventId } = req.params.eventId;
     const updatedEvent = await Event.findByIdAndUpdate(eventId, req.body, { new: true });
     res.status(200).json(updatedEvent);
   } catch (error) {
@@ -67,12 +65,14 @@ exports.cancelEvent = async (req, res) => {
 
 // Controller function to send invitations to guests
 exports.sendInvitations = async (req, res) => {
-  try {
-    const { eventId } = req.params;
-    // Implement sending invitations logic here
-    res.status(200).json({ message: 'Invitations sent successfully' });
-  } catch (error) {
-    console.error('Error sending invitations:', error);
-    res.status(500).json({ error: 'Internal server error' });
-  }
-};
+    try {
+        const { eventId } = req.params;
+        const { event, invitedGuests } = req.body; // Updated to extract event details
+        const sentInvitation = await eventService.sendInvitations(eventId, event, invitedGuests);
+        res.status(200).json(sentInvitation);
+    } catch (error) {
+        console.error('Error sending invitations:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+  };
+  
