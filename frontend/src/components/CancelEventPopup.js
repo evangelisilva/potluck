@@ -3,7 +3,12 @@ import { Container, Row, Col, Form, Image, Button } from 'react-bootstrap';
 import '../styles/modal.css';
 
 // CancelEventPopup component takes onClose function as props
-const CancelEventPopup = ({ onClose }) => {
+const CancelEventPopup = ({ onClose, onConfirm }) => {
+
+    const handleConfirm = () => {
+        onClose(); // Close the popup
+        onConfirm(); // Trigger the confirmation in MyComponent
+    };
 
     return (
         // Modal overlay
@@ -76,7 +81,7 @@ const CancelEventPopup = ({ onClose }) => {
                             {/* Confirm button */}
                             <Button
                                 variant="primary"
-                                onClick={onClose}
+                                onClick={handleConfirm}
                                 type="submit"
                                 style={{
                                     backgroundColor: '#E8843C', 

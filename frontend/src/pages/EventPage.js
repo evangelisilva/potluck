@@ -10,7 +10,8 @@ function MyComponent() {
     const [showInviteesPopup, setShowInviteesPopup] = useState(false);
     const [showEditEventPopup, setShowEditEventPopup] = useState(false);
     const [showCancelEventPopup, setShowCancelEventPopup] = useState(false);
-
+    
+    const [isConfirmedCancel, setIsConfirmedCancel] = useState(false);
     const [eventDetails, setEventDetails] = useState(null);
 
     const { eventId } = useParams(); 
@@ -36,7 +37,6 @@ function MyComponent() {
                 ]
             };
             setEventDetails(formattedEventDetails);
-            console.log(formattedEventDetails);
         } catch (error) {
             console.error('Error fetching data:', error);
         }
@@ -87,6 +87,12 @@ function MyComponent() {
         setShowCancelEventPopup(false);
     };
 
+    // Inside MyComponent function
+    const handleConfirmCancel = () => {
+        setIsConfirmedCancel(true); // Set confirmation status to true
+        // Disable buttons or perform any other necessary actions
+    };
+
     const handleInviteSuccess = async (emailArray) => {
         try {
             // Make PUT request to update invitedGuests array
@@ -111,27 +117,32 @@ function MyComponent() {
                                     <Card style={{ border: 'none', height: 'auto'}}>
                                         {/* Event cover image */}
                                         <div style={{ maxHeight: '370px', overflow: 'hidden', position: 'relative' }}>
-                                            <Image src={process.env.PUBLIC_URL + '/cover.png'} style={{ width: '100%' }} fluid />
+                                            <Image src={process.env.PUBLIC_URL + '/cover.png'} style={{ width: '100%', filter: isConfirmedCancel ? 'grayscale(100%)' : 'none' }} fluid />
                                         </div>
 
                                         {/* Event details */}
                                         <Card.Body>
                                             <Row>
                                                 <Col xs={8}>
-                                                    {eventDetails && <Card.Title style={{ fontSize: '25px', marginBottom: '12px' }}>{eventDetails.title}</Card.Title>}
+                                                    {eventDetails && <Card.Title style={{ fontSize: '25px', marginBottom: '12px', color: isConfirmedCancel? 'gray': 'none' }}>{eventDetails.title}</Card.Title>}
                                                 </Col>
+                                                {/* <Col xs={8}> */}
+                                                    {/* Display cancellation status */}
+                                                    {/* {isConfirmedCancel ? <h3 style={{ color: 'red' }}>Cancelled</h3> : null} */}
+                                                    {/* Rest of your code */}
+                                                {/* </Col> */}
                                                 <Col xs={4} className="d-flex align-items-end justify-content-end">
                                                     {/* Buttons for inviting, editing, and more options */}
-                                                    <Button variant="primary" style={{ border: 'none', backgroundColor: "#E8843C", fontSize: '15px', marginRight: '5px' }} onClick={openInviteePopup}>
+                                                    <Button variant="primary" style={{ border: 'none', backgroundColor: isConfirmedCancel ? 'gray' : '#E8843C', fontSize: '15px', marginRight: '5px' }} onClick={openInviteePopup} disabled={isConfirmedCancel}>
                                                         <Image src={process.env.PUBLIC_URL + '/invite.png'} style={{ maxWidth: '25px', paddingRight: '5px' }} fluid />
                                                         Invite
                                                     </Button>
-                                                    <Button variant="primary" style={{ borderColor: 'gray', backgroundColor: "transparent", color: '#4D515A', fontSize: '15px', marginRight: '5px' }} onClick={openEditEventPopup}>
+                                                    <Button variant="primary" style={{ borderColor: 'gray', backgroundColor: "transparent", color: '#4D515A', fontSize: '15px', marginRight: '5px' }} onClick={openEditEventPopup} disabled={isConfirmedCancel}>
                                                         <Image src={process.env.PUBLIC_URL + '/edit.png'} style={{ maxWidth: '25px', paddingRight: '5px' }} fluid />
                                                         Edit
                                                     </Button>
                                                     <Dropdown>
-                                                        <Dropdown.Toggle variant="primary" style={{ borderColor: 'gray', backgroundColor: "transparent", fontSize: '1px', color: 'white', paddingRight: '6px', paddingLeft: '6px' }} >
+                                                        <Dropdown.Toggle variant="primary" style={{ borderColor: 'gray', backgroundColor: "transparent", fontSize: '1px', color: 'white', paddingRight: '6px', paddingLeft: '6px' }} disabled={isConfirmedCancel}>
                                                             <Image src={process.env.PUBLIC_URL + '/more.png'} style={{ maxWidth: '22px' }} fluid />
                                                         </Dropdown.Toggle>
                                                         <Dropdown.Menu>
@@ -142,14 +153,14 @@ function MyComponent() {
                                                 </Col>
                                             </Row>
                                             {eventDetails && <Card.Subtitle className="mb-2 text-muted">{eventDetails.date} | {eventDetails.startTime} - {eventDetails.endTime}</Card.Subtitle>}
-                                            {eventDetails && <Card.Text style={{ color: '#4D515A' }}><strong>Location: </strong> 
+                                            {eventDetails && <Card.Text style={{ color: isConfirmedCancel? 'gray': '#4D515A' }}><strong>Location: </strong> 
                                                 {eventDetails.location.streetAddress1},&nbsp;
                                                 {eventDetails.location.streetAddress2 && `, ${eventDetails.location.streetAddress2}`}
                                                 {eventDetails.location.city},&nbsp;
                                                 {eventDetails.location.state},&nbsp;
                                                 {eventDetails.location.zipCode}
                                             </Card.Text>}
-                                            {eventDetails && <Card.Text style={{ fontSize: '15px', color: '#4D515A' }}>{eventDetails.description}</Card.Text>}
+                                            {eventDetails && <Card.Text style={{ fontSize: '15px', color: isConfirmedCancel ? 'gray': '#4D515A' }}>{eventDetails.description}</Card.Text>}
                                         </Card.Body>   
                                         {/* Horizontal line */}
                                         <hr style={{ borderTop: '1px solid #ccc', margin: '20px 0' }} />
@@ -158,11 +169,11 @@ function MyComponent() {
                                         <Row style={{marginRight: '10px', marginLeft: '10px'}}>
                                             {/* Column for dish signups */}
                                             {eventDetails && <Col style={{ width: '60%' }}>
-                                                <Card.Title style={{ fontSize: '18px', color: 'black', marginBottom: '12px' }}>Dish Sign-ups</Card.Title>
+                                                <Card.Title style={{ fontSize: '18px', color: isConfirmedCancel ? 'gray': 'black', marginBottom: '12px' }}>Dish Sign-ups</Card.Title>
                                                 {eventDetails.dishes.map((dish, index) => (
                                                     <Row key={index}>
                                                         <Col>
-                                                            <Card style={{marginBottom: '5px', color: '#4D515A', borderRadius: '10px', ...(dish.quantityTaken === dish.quantityNeeded && { backgroundColor: '#CDCBCB' })}}>
+                                                            <Card style={{marginBottom: '5px', color: isConfirmedCancel ? 'gray': '#4D515A', borderRadius: '10px', ...(dish.quantityTaken === dish.quantityNeeded && { backgroundColor: isConfirmedCancel? 'gray': '#CDCBCB' })}}>
                                                                 <Card.Body>
                                                                     <Row>
                                                                         <Col>
@@ -185,13 +196,13 @@ function MyComponent() {
                                             {eventDetails &&  <Col style={{ width: '40%' }}>
                                                 <Row>
                                                     <Col style={{ width: '90%' }}>
-                                                        <Card.Title style={{ fontSize: '18px', color: 'black', marginBottom: '12px' }}>Guest List</Card.Title>
+                                                        <Card.Title style={{ fontSize: '18px', color: isConfirmedCancel? 'gray': 'black', marginBottom: '12px' }}>Guest List</Card.Title>
                                                     </Col>
                                                 </Row>
 
                                                 <Row>
                                                     <Col>
-                                                        <Card style={{marginBottom: '5px', color: '#E8843C', borderRadius: '10px', borderColor: '#E8843C', textAlign: 'center', padding: '10px'}}>
+                                                        <Card style={{marginBottom: '5px', color: isConfirmedCancel ? 'gray' : '#E8843C', borderRadius: '10px', borderColor: isConfirmedCancel ? 'gray' : '#E8843C', textAlign: 'center', padding: '10px'}}>
                                                             <Card.Body>
                                                                 <Row>
                                                                     <Col>
@@ -207,7 +218,7 @@ function MyComponent() {
                                                                     </Col>
                                                                     {/* Exclude guests with 'Invited' status */}
                                                                 </Row>
-                                                                <Row style={{color: '#E8843C'}}>
+                                                                <Row style={{color: isConfirmedCancel ? 'gray' : '#E8843C'}}>
                                                                     <Col>
                                                                         <Card.Text>Attending</Card.Text>
                                                                     </Col>
@@ -224,7 +235,7 @@ function MyComponent() {
                                                     </Col>
                                                 </Row>
                                                 {/* Guest list */}
-                                                {eventDetails.invitedGuests
+                                                {/* {eventDetails.invitedGuests
                                                     .filter(guest => guest.status !== 'Invited') // Exclude guests with 'Invited' status
                                                     .map((guest, index) => (
                                                         <Row key={index}>
@@ -235,9 +246,9 @@ function MyComponent() {
                                                                             <Col>
                                                                                 <Card.Subtitle>{guest.name}</Card.Subtitle>
                                                                                 <Card.Text style={{fontSize: '13px', color: 'gray'}}>{guest.status}</Card.Text>
-                                                                            </Col>
+                                                                            </Col> */}
                                                                             {/* Button to send message */}
-                                                                            {guest.status === 'Attending' && (
+                                                                            {/* {guest.status === 'Attending' && (
                                                                                 <Col className="d-flex justify-content-end">
                                                                                     <Button variant="primary" style={{borderColor: '#A39A9A', backgroundColor: "transparent", color: '#4D515A', fontSize: '15px', marginRight: '5px' }}>
                                                                                         <Image src={process.env.PUBLIC_URL + '/chat.png'} style={{ maxWidth: '25px', paddingRight: '5px' }} fluid />
@@ -250,7 +261,7 @@ function MyComponent() {
                                                                 </Card>
                                                             </Col>
                                                         </Row>
-                                                    ))}
+                                                    ))} */}
                                                 </Col>}
                                             </Row>
                                     </Card>
@@ -262,7 +273,7 @@ function MyComponent() {
             {/* Invitee popup component */}
             {showInviteesPopup && <InviteePopup onClose={closeInviteePopup} onSuccess={handleInviteSuccess} eventId={eventId} />}
             {showEditEventPopup && <EditEventPopup onClose={closeEditEventPopup} />}
-            {showCancelEventPopup && <CancelEventPopup onClose={closeCancelEventPopup} />}
+            {showCancelEventPopup && <CancelEventPopup onClose={closeCancelEventPopup} onConfirm={handleConfirmCancel} />}
         </div>
     );
 }
