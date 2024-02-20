@@ -7,6 +7,9 @@ const app = express();
 app.use(bodyParser.json());
 app.use(cors());
 
+const rsvpRoutes = require('./routes/rsvpRoute');
+app.use('/api/rsvp', rsvpRoutes);
+
 app.get('/', (req, res) => {
     res.send('Server is running'); 
 });  
