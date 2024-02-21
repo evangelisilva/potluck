@@ -12,7 +12,6 @@ function MyComponent() {
     const [showCancelEventPopup, setShowCancelEventPopup] = useState(false);
     
     const [isConfirmedCancel, setIsConfirmedCancel] = useState(false);
-    const [isEditedEvent, setIsEditedEvent] = useState(false);
     const [eventDetails, setEventDetails] = useState(null);
 
     const { eventId } = useParams(); 
@@ -24,6 +23,9 @@ function MyComponent() {
     const fetchEventDetails = async () => {
         try {
             const response = await axios.get(`http://localhost:8000/api/events/${eventId}`);
+            if (response.data.status == 'canceled') {
+                setIsConfirmedCancel(true);
+            }
             const formattedEventDetails = {
                 ...response.data,
                 date: formatDate(response.data.date),
@@ -126,8 +128,6 @@ function MyComponent() {
     };
 
     const handleEditEvent = async (formData) => {
-        setIsEditedEvent(true);
-
         const editedEventData = {};
         if (formData) { 
     
@@ -181,8 +181,6 @@ function MyComponent() {
                 editedEventData.location.zipCode = formData.zipCode;
             }
         }
-
-        console.log("Edited data:", editedEventData);
 
         try {
             await axios.put(`http://localhost:8000/api/events/${eventId}`, editedEventData);
