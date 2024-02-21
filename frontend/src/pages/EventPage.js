@@ -124,6 +124,13 @@ function MyComponent() {
         }
     };
 
+    const handleSave = (formData) => {
+        // Handle saving the form data
+        console.log("Form data:", formData);
+        // You can perform additional actions here, such as making an API call to update the event details
+        // For now, let's just log the form data
+    };
+
     return (
         <div>
             <div style={{ backgroundColor: '#f8f9fa', fontFamily: 'Arial' }}>
@@ -289,7 +296,7 @@ function MyComponent() {
             </div>
             {/* Invitee popup component */}
             {showInviteesPopup && <InviteePopup onClose={closeInviteePopup} onSuccess={handleInviteSuccess} eventId={eventId} />}
-            {showEditEventPopup && <EditEventPopup onClose={closeEditEventPopup} />}
+            {showEditEventPopup && <EditEventPopup onClose={closeEditEventPopup} onSave={handleSave} />}
             {showCancelEventPopup && <CancelEventPopup onClose={closeCancelEventPopup} onConfirm={handleConfirmCancel} />}
         </div>
     );
