@@ -16,7 +16,7 @@ const CancelEventPopup = ({ onClose, onConfirm }) => {
     return (
         // Modal overlay
         <div className="modal-overlay">
-            <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable" style={{height: '45%'}}>
+            <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable" style={{height: '40%'}}>
                 <div className="modal-content">
                     <div className="modal-body">
                         {/* Container for the content */}

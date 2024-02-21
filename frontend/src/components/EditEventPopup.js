@@ -1,24 +1,42 @@
 import React, { useState } from 'react';
-import { Container, Row, Col, Form, Image, Button } from 'react-bootstrap';
+import { Container, Row, Col, Form, Button } from 'react-bootstrap';
 import '../styles/modal.css';
 
 // EditEventPopup component takes onClose function as props
-const EditEventPopup = ({ onClose }) => {
+const EditEventPopup = ({ onClose, onSave }) => {
     // State variables for form fields
-    const [name, setName] = useState('');
+    const [title, setTitle] = useState('');
     const [date, setDate] = useState('');
     const [startTime, setStartTime] = useState('');
     const [endTime, setEndTime] = useState('');
     const [description, setDescription] = useState('');
-    const [location, setLocation] = useState('');
+    const [streetAdress1, setStreetAdress1] = useState('');
+    const [streetAdress2, setStreetAdress2] = useState('');
+    const [city, setCity] = useState('');
+    const [state, setState] = useState('');
+    const [zipCode, setZipCode] = useState('');
 
     // Function to handle form submission
     const handleSubmit = (event) => {
         event.preventDefault();
-        // You can implement your logic here to handle form submission
-        // For example, you can send a request to update the event details
-        // and then close the popup.
-        onClose();
+        const formData = {
+            title,
+            description,
+            date,
+            startTime,
+            endTime,
+            streetAdress1,
+            streetAdress2,
+            city,
+            state,
+            zipCode
+        };
+        // Prompt the user to confirm before saving
+        const isConfirmed = window.confirm("Are you sure you want to save changes?");
+        if (isConfirmed) {
+            onSave(formData, true); // Pass confirmed status as true
+            onClose();
+        }
     };
 
     return (
@@ -38,7 +56,7 @@ const EditEventPopup = ({ onClose }) => {
                                 {/* Event Name */}
                                 <Form.Group controlId="formTitle">
                                     <Form.Label>Event Name</Form.Label>
-                                    <Form.Control type="text" value={name} onChange={(e) => setName(e.target.value)} />
+                                    <Form.Control type="text" value={title} onChange={(e) => setTitle(e.target.value)} />
                                 </Form.Group> <br/>
                                 {/* Description */}
                                 <Form.Group controlId="formDescription">
@@ -60,24 +78,24 @@ const EditEventPopup = ({ onClose }) => {
                                         {/* Event Date */}
                                         <Col style={{ paddingRight: '12px' }}>
                                             <Form.Label>Date</Form.Label> 
-                                            <Form.Control type="date"style={{ width: 'auto' }}/>
+                                            <Form.Control type="date" onChange={(e) => setDate(e.target.value)} style={{ width: 'auto' }}/>
                                         </Col>
                                         {/* Event Start Time */}
                                         <Col style={{ paddingLeft: '0', paddingRight: '0' }}>
-                                            <Form.Label>Start Time</Form.Label> <Form.Control type="time" style={{ width: '154px' }}/>
+                                            <Form.Label>Start Time</Form.Label> <Form.Control type="time" onChange={(e) => setStartTime(e.target.value)} style={{ width: '154px' }}/>
                                         </Col>
                                         {/* Event End Time */}
                                         <Col>
                                             <Form.Label>End Time</Form.Label> 
-                                            <Form.Control type="time" style={{ width: '154px' }}/>
+                                            <Form.Control type="time" onChange={(e) => setEndTime(e.target.value)} style={{ width: '154px' }}/>
                                         </Col>
                                     </Row>
                                 </Form.Group> <br/> 
                                 {/* Street Address */}
                                 <Form.Group>
                                     <Form.Label>Street Address</Form.Label>
-                                    <Form.Control type="text" style={{ marginBottom: '8px' }}/> 
-                                    <Form.Control type="text"/>
+                                    <Form.Control type="text" onChange={(e) => setStreetAdress1(e.target.value)} style={{ marginBottom: '8px' }}/> 
+                                    <Form.Control type="text" onChange={(e) => setStreetAdress2(e.target.value)}/>
                                 </Form.Group> <br/> 
                                 {/* City, State, Zip code */}
                                 <Form.Group>
@@ -85,17 +103,17 @@ const EditEventPopup = ({ onClose }) => {
                                         {/* City */}
                                         <Col style={{ paddingRight: '12px' }}>
                                             <Form.Label>City</Form.Label> 
-                                            <Form.Control type="text" style={{ width: '150px' }} />
+                                            <Form.Control type="text" onChange={(e) => setCity(e.target.value)} style={{ width: '150px' }} />
                                         </Col>
                                         {/* State */}
                                         <Col style={{ paddingLeft: '0', paddingRight: '0' }}>
                                             <Form.Label>State</Form.Label> 
-                                            <Form.Control type="text" style={{ width: '125px' }} />
+                                            <Form.Control type="text" onChange={(e) => setState(e.target.value)} style={{ width: '125px' }} />
                                         </Col>
                                         {/* Zip code */}
                                         <Col>
                                             <Form.Label>Zip code</Form.Label> 
-                                            <Form.Control  type="text" style={{ width: 'auto' }} />
+                                            <Form.Control  type="text" onChange={(e) => setZipCode(e.target.value)} style={{ width: 'auto' }} />
                                         </Col>
                                     </Row>
                                 </Form.Group>   
@@ -123,7 +141,7 @@ const EditEventPopup = ({ onClose }) => {
                         {/* Save Changes button */}
                         <Button
                             variant="primary"
-                            onClick={onClose}
+                            onClick={handleSubmit}
                             type="submit"
                             style={{
                                 backgroundColor: '#E8843C', 
