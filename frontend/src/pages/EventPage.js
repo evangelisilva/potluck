@@ -12,6 +12,7 @@ function MyComponent() {
     const [showCancelEventPopup, setShowCancelEventPopup] = useState(false);
     
     const [isConfirmedCancel, setIsConfirmedCancel] = useState(false);
+    const [isEditedEvent, setIsEditedEvent] = useState(false);
     const [eventDetails, setEventDetails] = useState(null);
 
     const { eventId } = useParams(); 
@@ -98,6 +99,18 @@ function MyComponent() {
         }
     };
 
+    // Function to cancel an event
+    const handleCancelInvite = async (eventId) => {
+        try {
+            await axios.put(`http://localhost:8000/api/events/${eventId}`, { status: 'canceled' });
+            // Event cancellation successful
+            console.log('Event canceled successfully');
+        } catch (error) {
+            console.error('Error canceling event:', error);
+            // Handle error
+        }
+    };
+
     const handleInviteSuccess = async (emailArray) => {
         try {
             // Make PUT request to update invitedGuests array
@@ -112,23 +125,72 @@ function MyComponent() {
         }
     };
 
-    // Function to cancel an event
-    const handleCancelInvite = async (eventId) => {
-        try {
-            await axios.put(`http://localhost:8000/api/events/${eventId}`, { status: 'canceled' });
-            // Event cancellation successful
-            console.log('Event canceled successfully');
-        } catch (error) {
-            console.error('Error canceling event:', error);
-            // Handle error
-        }
-    };
+    const handleEditEvent = async (formData) => {
+        setIsEditedEvent(true);
 
-    const handleSave = (formData) => {
-        // Handle saving the form data
-        console.log("Form data:", formData);
-        // You can perform additional actions here, such as making an API call to update the event details
-        // For now, let's just log the form data
+        const editedEventData = {};
+        if (formData) { 
+    
+            // Check and set title if not empty
+            if (formData.title) {
+                editedEventData.title = formData.title;
+            }
+    
+            // Check and set description if not empty
+            if (formData.description) {
+                editedEventData.description = formData.description;
+            }
+    
+            // Check and set date if not empty
+            if (formData.date) {
+                editedEventData.date = formData.date;
+            }
+    
+            // Check and set startTime if not empty
+            if (formData.startTime) {
+                editedEventData.startTime = formData.startTime;
+            }
+    
+            // Check and set endTime if not empty
+            if (formData.endTime) {
+                editedEventData.endTime = formData.endTime;
+            }
+
+            // Check and set streetAdress1 if not empty
+            if (formData.streetAdress1) {
+                editedEventData.location.streetAdress1 = formData.streetAdress1;
+            }
+
+            // Check and set streetAdress2 if not empty
+            if (formData.streetAdress2) {
+                editedEventData.location.streetAdress2 = formData.streetAdress2;
+            }
+
+            // Check and set city if not empty
+            if (formData.city) {
+                editedEventData.location.city = formData.city;
+            }
+
+            // Check and set state if not empty
+            if (formData.state) {
+                editedEventData.location.state = formData.state;
+            }
+
+            // Check and set zipCode if not empty
+            if (formData.zipCode) {
+                editedEventData.location.zipCode = formData.zipCode;
+            }
+        }
+
+        console.log("Edited data:", editedEventData);
+
+        try {
+            await axios.put(`http://localhost:8000/api/events/${eventId}`, editedEventData);
+            console.log('Event modified successfully');
+            fetchEventDetails();
+        } catch (error) {
+            console.error('Error modifying event:', error);
+        }
     };
 
     return (
@@ -296,7 +358,7 @@ function MyComponent() {
             </div>
             {/* Invitee popup component */}
             {showInviteesPopup && <InviteePopup onClose={closeInviteePopup} onSuccess={handleInviteSuccess} eventId={eventId} />}
-            {showEditEventPopup && <EditEventPopup onClose={closeEditEventPopup} onSave={handleSave} />}
+            {showEditEventPopup && <EditEventPopup onClose={closeEditEventPopup} onSave={handleEditEvent} />}
             {showCancelEventPopup && <CancelEventPopup onClose={closeCancelEventPopup} onConfirm={handleConfirmCancel} />}
         </div>
     );

@@ -16,13 +16,14 @@ const CancelEventPopup = ({ onClose, onConfirm }) => {
     return (
         // Modal overlay
         <div className="modal-overlay">
-            <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable" style={{height: '40%'}}>
+            <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable" style={{height: '38%'}}>
                 <div className="modal-content">
                     <div className="modal-body">
                         {/* Container for the content */}
                         <Container style={{ width: '525px', margin: '50px', color: '#4D515A', fontFamily: 'Arial' }}>
                             {/* Title */}
-                            <h2 style={{ fontFamily: 'Times New Roman', fontSize: '45px', marginBottom: '15px' }}>Cancel or Delete Event</h2>
+                            {/* <h2 style={{ fontFamily: 'Times New Roman', fontSize: '45px', marginBottom: '15px' }}>Cancel or Delete Event</h2> */}
+                            <h2 style={{ fontFamily: 'Times New Roman', fontSize: '45px', marginBottom: '15px' }}>Cancel Event</h2>
                             {/* Divider */}
                             <hr style={{ borderTop: '1px solid #ccc'}} />
 
