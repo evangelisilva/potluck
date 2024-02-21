@@ -5,9 +5,12 @@ import '../styles/modal.css';
 // CancelEventPopup component takes onClose function as props
 const CancelEventPopup = ({ onClose, onConfirm }) => {
 
+    // const [cancellationReason, setCancellationReason] = useState('');
+
     const handleConfirm = () => {
         onClose(); // Close the popup
-        onConfirm(); // Trigger the confirmation in MyComponent
+        // onConfirm(cancellationReason); // Trigger the confirmation in MyComponent
+        onConfirm();
     };
 
     return (
@@ -40,6 +43,15 @@ const CancelEventPopup = ({ onClose, onConfirm }) => {
                                             <Form.Check  type="radio" name="Radios" id="Radio2" />
                                         </Col> */}
                                     </Row><br/>
+                                    {/* <Row>
+                                        <Form.Label style={{ color: '#4D515A', fontSize: '14px', marginTop: '10px' }}>Share the reason</Form.Label>
+                                        <Form.Control 
+                                            as="textarea"
+                                            rows={3}
+                                            value={cancellationReason}
+                                            onChange={(e) => setCancellationReason(e.target.value)}
+                                        />
+                                    </Row> */}
 
                                     {/* Delete Event */}
                                     {/* <Row>

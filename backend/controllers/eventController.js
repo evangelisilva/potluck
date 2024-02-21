@@ -1,5 +1,6 @@
 const Event = require('../models/Event');
 const eventService = require('../services/eventService')
+const emailService = require('../services/emailService')
 
 // Controller function to create a new event
 exports.createEvent = async (req, res) => {
@@ -42,8 +43,15 @@ exports.getEventById = async (req, res) => {
 // Controller function to edit details of an event
 exports.editEvent = async (req, res) => {
   try {
-    const { eventId } = req.params.eventId;
+    const { eventId } = req.params;
     const updatedEvent = await Event.findByIdAndUpdate(eventId, req.body, { new: true });
+
+    // Check if the event is canceled
+    if (req.body.status === 'canceled') {
+      // Send cancellation email notification
+      await eventService.sendCancellationEmail(updatedEvent);
+    }
+
     res.status(200).json(updatedEvent);
   } catch (error) {
     console.error('Error editing event:', error);
