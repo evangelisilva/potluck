@@ -88,9 +88,14 @@ function MyComponent() {
     };
 
     // Inside MyComponent function
-    const handleConfirmCancel = () => {
+    const handleConfirmCancel = async () => {
         setIsConfirmedCancel(true); // Set confirmation status to true
-        // Disable buttons or perform any other necessary actions
+        try {
+            await handleCancelInvite(eventId); // Cancel the event
+        } catch (error) {
+            console.error('Error canceling event:', error);
+            // Handle error
+        }
     };
 
     const handleInviteSuccess = async (emailArray) => {
@@ -104,6 +109,18 @@ function MyComponent() {
             fetchEventDetails();
         } catch (error) {
             console.error('Error updating invitedGuests:', error);
+        }
+    };
+
+    // Function to cancel an event
+    const handleCancelInvite = async (eventId) => {
+        try {
+            await axios.put(`http://localhost:8000/api/events/${eventId}`, { status: 'canceled' });
+            // Event cancellation successful
+            console.log('Event canceled successfully');
+        } catch (error) {
+            console.error('Error canceling event:', error);
+            // Handle error
         }
     };
 

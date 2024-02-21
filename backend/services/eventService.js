@@ -90,3 +90,25 @@ exports.sendInvitations = async (eventId, event, invitedGuests) => {
     throw new Error('Failed to send invitations');
   }
 };
+
+exports.sendCancellationEmail = async (updatedEvent) => {
+  try {
+    const templateData = {
+      name: updatedEvent.title,
+      host: 'Evangeli'
+    };
+
+    // Iterate through invitedGuests array and send email to each guest
+    for (const guestEmail of updatedEvent.invitedGuests) {
+      const response = await sendEmail(guestEmail, 'ICSI518-Potluck-CancelEventTemplate', templateData);
+      console.log(`Cancellation email sent to ${guestEmail}`);
+    }
+
+    // Optionally, you can return a success message or handle response accordingly
+    return { message: 'Cancellation emails sent successfully' };
+  } catch (error) {
+    console.error('Error sending cancellation emails:', error);
+    throw new Error('Failed to send cancellation emails');
+  }
+};
+
