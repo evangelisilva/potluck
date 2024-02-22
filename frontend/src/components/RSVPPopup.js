@@ -12,11 +12,11 @@ const RSVPPopup = ({ onClose, eventId, userId }) => {
     useEffect(() => {
         axios.get(`http://localhost:8000/api/rsvp/view-status/${userId}/${eventId}`)
           .then(data => {
-            console.log("In rsvp popup - axios.get - what is the RSVP status?");
+            ////console.log("In rsvp popup - axios.get - what is the RSVP status?");
             setRsvpStatus(data);
-            console.log(rsvpStatus);
-            console.log("What is the data");
-            console.log(data);
+            ////console.log(rsvpStatus);
+            ////console.log("What is the data");
+            ////console.log(data);
           })
           .catch(error => {
             console.error('Error fetching data:', error);
@@ -24,8 +24,8 @@ const RSVPPopup = ({ onClose, eventId, userId }) => {
     }, [])
 
     const handleRSVP = async () => {
-        console.log("RSVP:", attendance);
-        console.log("Message:", userMessage);
+        ////console.log("RSVP:", attendance);
+        ////console.log("Message:", userMessage);
 
         // First, do a get request to view rsvp status
         // Make GET request to Node.js server
@@ -41,7 +41,7 @@ const RSVPPopup = ({ onClose, eventId, userId }) => {
         ////console.log("In rsvp popup - what is the data outside of axios get?");
         ////console.log(rsvpStatus.data);
 
-        console.log("RSVP response", rsvpStatus.data);
+        console.log("RSVP status response", rsvpStatus.data);
         // Create rsvp case
         if (rsvpStatus.data === null){
             
@@ -59,8 +59,8 @@ const RSVPPopup = ({ onClose, eventId, userId }) => {
             axios.post(`http://localhost:8000/api/rsvp/create/${eventId}`, createData)
             .then(response => {
               // Handle success, if needed
-              console.log("Response from the server after creating an RSVP entry: ")
-              console.log(response);
+              console.log("Create RSVP response: ");
+              console.log(response.data);
             })
             .catch(error => {
               // Handle error, if needed
@@ -69,7 +69,7 @@ const RSVPPopup = ({ onClose, eventId, userId }) => {
         }
         // Update RSVP case
         else{
-
+            console.log("RSVP update response: <not yet implemented>");
         }
 
         onClose();
