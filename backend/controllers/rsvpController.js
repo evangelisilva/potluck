@@ -99,7 +99,76 @@ exports.createRSVP = async (req, res) =>{
 
       } catch (error) {
         
-        console.error('Error creating an rsvp:', error);
+        console.error('Error creating an rsvp entry:', error);
         res.status(500).json({ error: 'Internal server error' });
       }
 }
+
+// TODO - add actual code in here
+exports.updateRSVP = async (req, res) => {
+    try {
+        res.header("Access-Control-Allow-Origin", "*");
+        res.json({test : "test"})
+    }
+
+    catch {
+        console.error('Error updating an rsvp record:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+}
+
+
+// TODO (alternative) - implement chat gpt's idea for this code
+/* 
+
+const Rsvp = require('../models/rsvp');
+
+// View status of RSVP for given user and event
+async function viewRSVPStatus(req, res) {
+    const { userId, eventId } = req.params;
+    try {
+        const rsvp = await Rsvp.findOne({ user: userId, event: eventId });
+        if (!rsvp) {
+            return res.status(404).json({ message: 'RSVP not found' });
+        }
+        res.json(rsvp);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+}
+
+// Create an RSVP record
+async function createRSVP(req, res) {
+    const { eventId } = req.params;
+    const { user, response, guests_count } = req.body;
+    try {
+        const rsvp = new Rsvp({ event: eventId, user, response, guests_count });
+        await rsvp.save();
+        res.status(201).json(rsvp);
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+}
+
+// Update an already-existing RSVP record
+async function updateRSVP(req, res) {
+    const { rsvpId } = req.params;
+    const { response, guests_count } = req.body;
+    try {
+        const rsvp = await Rsvp.findByIdAndUpdate(rsvpId, { response, guests_count }, { new: true });
+        if (!rsvp) {
+            return res.status(404).json({ message: 'RSVP not found' });
+        }
+        res.json(rsvp);
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+}
+
+module.exports = {
+    viewRSVPStatus,
+    createRSVP,
+    updateRSVP
+};
+
+*/
