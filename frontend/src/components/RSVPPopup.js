@@ -43,18 +43,12 @@ const RSVPPopup = ({ onClose, eventId, userId }) => {
 
         console.log("RSVP status response", rsvpStatus.data);
         // Create rsvp case
-        if (rsvpStatus.data === null){
+        if (rsvpStatus.data.event === undefined){
             
             // Server url: api/rsvp/create/:eventId
 
-            const createData = {id: 2,                  
-                userId: 124,  
-                
-                response: "yes",
-                
-                userMessage: "Here is the newly created rsvp entry",
-                
-                guestsCount: 2 };
+            /* New params needed: user, response, message, guests_count */
+            const createData = {user : userId, response : attendance, message : userMessage, guests_count : 2};
             
             axios.post(`http://localhost:8000/api/rsvp/create/${eventId}`, createData)
             .then(response => {

@@ -9,7 +9,7 @@ function RSVP() {
 
     const { eventId } = useParams(); 
 
-    const userId = 123;
+    const userId = '123';
 
     // Event details
     const eventDetails = {

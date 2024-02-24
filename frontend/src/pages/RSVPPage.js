@@ -46,7 +46,11 @@ const RSVPPage = () => {
     /// user ID, response, message, number of guests
     /// note: it doesn't need to be a state variable (?) - and instead should be CONSTANT within a call to the handler
     /// note: event ID may also be needed (as a common identifier for everything)
-    const data = {user : userId, event: eventId, response : userResponse, message : userMessage, guests : numberOfGuests};
+
+    
+    
+    
+    
     // Test print to see whether this data is properly stored
     console.log("Test print, in the handle rsvp function");
 
