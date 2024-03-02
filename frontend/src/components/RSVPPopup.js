@@ -63,7 +63,21 @@ const RSVPPopup = ({ onClose, eventId, userId }) => {
         }
         // Update RSVP case
         else{
-            console.log("RSVP update response: <not yet implemented>");
+            
+            /* New params needed for the update: status, note and guestsBringing */
+
+            const updateData = {status : attendance, note : userMessage, guestsBringing : 2};
+            
+            axios.put(`http://localhost:8000/api/rsvp/update/${rsvpStatus.data._id}`, updateData)
+            .then(response => {
+              // Handle success, if needed
+              console.log("Update RSVP response: ");
+              console.log(response.data);
+            })
+            .catch(error => {
+              // Handle error, if needed
+              console.error(error);
+            });
         }
 
         onClose();
