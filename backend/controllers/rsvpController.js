@@ -11,7 +11,10 @@
  */
 
 
+const mongoose = require('mongoose');
 const Rsvp = require('../models/Rsvp');
+const Event = require('../models/Event');
+const User = require('../models/User');
 
 // Creating a global record with example data
 
@@ -19,18 +22,29 @@ let exampleEventRSVPData = {
     
     event: "65d3d557b90bec95e14f1476", 
     
-    user: '123',  
+    user: "123",
     
-    response: "yes",
+    status: "yes",
     
-    message: "Something sent to the host...",
+    note: "Something sent to the host...",
     
-    guests_count: 2 
+    guestsBringing: 2 
     
 };
 
-const rsvpFixed = new Rsvp(exampleEventRSVPData);
-rsvpFixed.save();
+
+
+let rsvpFixed = new Rsvp(exampleEventRSVPData);
+
+// Before saving a record - try to delete the original
+Rsvp.deleteMany({event: "65d3d557b90bec95e14f1476", user: '123'}).then(
+    () => console.log("RSVP controller - Deleted some records from mongo db")
+  ).then(
+    () => rsvpFixed.save()
+  ).then(
+    () => console.log("rsvp controller - Added a record into mongo db")
+);
+
 
 
 
@@ -58,9 +72,9 @@ exports.viewRSVPStatus = async(req, res) => {
 // Create an RSVP record
 exports.createRSVP = async(req, res) => {
     const { eventId } = req.params;
-    const { user, response, message, guests_count } = req.body;
+    const { user, status, note, guestsBringing} = req.body;
     try {
-        const rsvp = new Rsvp({ event: eventId, user, response, message, guests_count });
+        const rsvp = new Rsvp({ event: eventId, user, status, note, guestsBringing});
         await rsvp.save();
         res.status(201).json(rsvp);
     } catch (error) {
