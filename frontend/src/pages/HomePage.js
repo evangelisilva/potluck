@@ -16,13 +16,13 @@ function HomePage() {
 
             {/* Main content */}
             <Container>
-                <Row>
+                <Row className="align-items-center">
                     {/* Left column */}
-                    <Col md={4} style={{ fontFamily: 'Arial', paddingLeft: '80px' }}>
+                    <Col md={4} style={{ fontFamily: 'Arial', paddingLeft: '5rem' }}>
                         {/* Heading */}
-                        <h1 style={{ paddingTop: '190px', color: '#4D515A', fontSize: '55px', lineHeight: '1.3' }}>Flavor-filled<br />fun awaits!</h1>
+                        <h1 className="mb-4 mb-md-5" style={{ color: '#4D515A', fontSize: '3.4375rem', lineHeight: '1.3' }}>Flavor-filled<br />fun awaits!</h1>
                         {/* Description */}
-                        <p style={{ paddingTop: '10px', paddingBottom: '10px', color: '#4D515A', fontSize: '21px', lineHeight: '1.4' }}>
+                        <p className="mb-4 mb-md-5" style={{ color: '#4D515A', fontSize: '1.3125rem', lineHeight: '1.4' }}>
                             Say goodbye to stress, hello to <br />
                             shared memories. Join us for <br />
                             community, friendship, and good <br />
@@ -31,24 +31,25 @@ function HomePage() {
                         {/* Get Started button */}
                         <Button 
                             onClick={() => navigate('/events/new')} // Navigate to '/events/new' on button click
+                            className="mb-4 mb-md-0" 
                             style={{ 
-                                paddingLeft: '17px', 
-                                paddingRight: '18px', 
-                                paddingTop: '8px', 
-                                paddingBottom: '8px', 
-                                borderRadius: '30px', 
+                                paddingLeft: '1.0625rem', 
+                                paddingRight: '1.125rem', 
+                                paddingTop: '0.5rem', 
+                                paddingBottom: '0.5rem', 
+                                borderRadius: '1.875rem', 
                                 backgroundColor: '#E8843C', 
                                 borderColor: '#E8843C', 
-                                fontSize: '19px' 
+                                fontSize: '1.1875rem' 
                             }}
                         >
                             Get Started
                         </Button>
                     </Col>
                     {/* Right column */}
-                    <Col md={8}>
+                    <Col md={8} className="text-center">
                         {/* Main image */}
-                        <Image src={process.env.PUBLIC_URL + '/img_main.jpg'} style={{ paddingTop: '45px', paddingRight: '80px' }} fluid />
+                        <Image src={process.env.PUBLIC_URL + '/img_main.jpg'} className="img-fluid" />
                     </Col>
                 </Row>
             </Container>
