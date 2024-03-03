@@ -12,27 +12,65 @@
 
 
 const Rsvp = require('../models/Rsvp');
+const DishSignup = require('../models/DishSignup');
+
 
 // Creating a global record with example data
 
 let exampleEventRSVPData = {  
     
-    event: "65d3d557b90bec95e14f1476", 
+    event: '65d39315f2a7f4725441f1a9', 
     
-    user: '123',  
+    user: '65d37b14f608ce904718e311',
     
-    response: "yes",
+    status: "yes",
     
-    message: "Something sent to the host...",
+    note: "Something sent to the host...",
     
-    guests_count: 2 
+    guestsBringing: 2 
     
 };
 
-const rsvpFixed = new Rsvp(exampleEventRSVPData);
-rsvpFixed.save();
 
 
+
+let rsvpFixed = new Rsvp(exampleEventRSVPData);
+
+// Before saving a record - try to delete the original
+// {event: '65d39315f2a7f4725441f1a9', user: '65d37b14f608ce904718e311'}
+Rsvp.deleteMany({}).then(
+    () => console.log("RSVP controller - Deleted some records from mongo db")
+  ).then(
+    () => rsvpFixed.save()
+  ).then(
+    () => console.log("rsvp controller - Added an RSVP record into mongo db")
+);
+
+/* Test of adding into the dish signup schema (ids should be similar to those of the RSVP schema)
+const dishSignupSchema = new mongoose.Schema({
+    user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+    dish: { type: mongoose.Schema.Types.ObjectId, ref: 'Dish', required: true },
+    quantity: { type: Number, required: true }, 
+});
+
+*/
+
+const exampleDishSignupData = {
+    user: '65d37b14f608ce904718e311',
+    dish: '65d37dd5bf4bccaffc1f0a75',
+    quantity: 3
+}
+
+const dishSignupFixed = new DishSignup(exampleDishSignupData);
+
+// Before saving a record - try to delete the original
+DishSignup.deleteMany({user: '65d37b14f608ce904718e311', dish: '65d37dd5bf4bccaffc1f0a75'}).then(
+    () => console.log("RSVP controller - Deleted some records from mongo db")
+  ).then(
+    () => dishSignupFixed.save()
+  ).then(
+    () => console.log("rsvp controller - Added a DISH SIGNUP record into mongo db")
+);
 
 
 
@@ -58,9 +96,9 @@ exports.viewRSVPStatus = async(req, res) => {
 // Create an RSVP record
 exports.createRSVP = async(req, res) => {
     const { eventId } = req.params;
-    const { user, response, message, guests_count } = req.body;
+    const { user, status, note, guestsBringing} = req.body;
     try {
-        const rsvp = new Rsvp({ event: eventId, user, response, message, guests_count });
+        const rsvp = new Rsvp({ event: eventId, user, status, note, guestsBringing});
         await rsvp.save();
         res.status(201).json(rsvp);
     } catch (error) {
@@ -68,28 +106,12 @@ exports.createRSVP = async(req, res) => {
     }
 }
 
-// TODO - add actual code in here
-exports.updateRSVP = async (req, res) => {
-    try {
-        res.header("Access-Control-Allow-Origin", "*");
-        res.json({test : "test"})
-    }
-
-    catch {
-        console.error('Error updating an rsvp record:', error);
-        res.status(500).json({ error: 'Internal server error' });
-    }
-}
-
-
-/*
-
 // Update an already-existing RSVP record
-async function updateRSVP(req, res) {
+exports.updateRSVP = async(req, res) => {
     const { rsvpId } = req.params;
-    const { response, guests_count } = req.body;
+    const { status, note, guestsBringing } = req.body;
     try {
-        const rsvp = await Rsvp.findByIdAndUpdate(rsvpId, { response, guests_count }, { new: true });
+        const rsvp = await Rsvp.findByIdAndUpdate(rsvpId, { status, note, guestsBringing}, { new: true });
         if (!rsvp) {
             return res.status(404).json({ message: 'RSVP not found' });
         }
@@ -98,6 +120,3 @@ async function updateRSVP(req, res) {
         res.status(400).json({ message: error.message });
     }
 }
-
-
-*/

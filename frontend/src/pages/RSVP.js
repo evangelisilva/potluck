@@ -9,7 +9,7 @@ function RSVP() {
 
     const { eventId } = useParams(); 
 
-    const userId = '123';
+    const userId = '65d37b14f608ce904718e311';
 
     // Event details
     const eventDetails = {
