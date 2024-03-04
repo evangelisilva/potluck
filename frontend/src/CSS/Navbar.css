@@ -1,0 +1,84 @@
+.navbar-container {
+    height: 12vh;
+    background-color: #ffffff;
+    margin: 20px 10% 0px 10%;
+    display: flex;
+    align-items: center;
+}
+
+.navbar-logo-wrapper {
+    padding: 10px;
+    width: 100px;
+}
+
+.navbar-title {
+    font-size: 16px;
+    font-family: 'Ubuntu', sans-serif;
+    font-weight: bolder;
+    text-decoration: none;
+    color: #4D515A;
+    position: relative;
+}
+
+.navbar-tabs {
+    width: 50%;
+    display: flex;
+    margin-left: auto;
+    justify-content: space-between;
+}
+
+.navbar-tab {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    position: relative;
+}
+
+.navbar-link {
+    font-size: 16px;
+    font-family: 'Ubuntu', sans-serif;
+    font-weight: bold;
+    text-decoration: none;
+    color: #4D515A;
+    position: relative;
+}
+
+.navbar-link:hover {
+    color: #5e6066;}
+
+.navbar-link::before {
+    content: "";
+    position: absolute;
+    width: 0;
+    height: 3.6px;
+    background-color: #5e6066;
+    bottom: -8px;
+    left: 50%;
+    transition: all 0.3s ease;
+}
+
+.navbar-link:hover::before {
+    width: 92%;
+    left: 2%;
+}
+
+.navbar-menu-icon {
+    display: none !important;
+}
+
+@media (max-width: 768px) {
+    .navbar-container {
+        justify-content: space-between;
+        padding: 14px 0;
+    }
+
+    .navbar-tabs {
+        display: none;
+    }
+
+    .navbar-menu-icon {
+        display: flex !important;
+        align-items: center;
+        justify-content: flex-end;
+    }
+}

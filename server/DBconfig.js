@@ -1,7 +1,7 @@
 const Config = {
     host: "localhost",
     user: "root",
-    password: "1614",
+    password: "root",
     database: "potluck",
     dateStrings : true
 };

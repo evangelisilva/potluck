@@ -9,6 +9,7 @@ app.use(express.urlencoded({extended:true}))
 app.use(cors())
 
 app.use("/_api/events",require("./components/events"))
+app.use("/_api/users",require("./components/users"))
 
 app.listen(1200,()=>{
     console.log("Potluck Server started at the port: 1200");
