@@ -10,6 +10,8 @@ const rsvpRoutes = require('./routes/rsvpRoute');
 const dishSignup = require('./models/DishSignup');
 const { sendEmail } = require('./services/emailService');
 
+const dishRecommendationTest = require('./models/dishRecommendationTest');
+
 // Load environment variables from .env file
 dotenv.config();
 
@@ -59,5 +61,38 @@ mongoose.connect(process.env.DB_CONNECTION)
 .catch((error) => {
   console.error('Error connecting to MongoDB:', error);
 });
+
+// Api for filling the dish recommendation table
+app.get('/dish-recommendation-test-fill', async (req, res) => {
+
+  const csvtojson = require('csvtojson');
+
+
+  const csvFilePath = 'dishData.csv';
+
+
+  jsonDishData = await csvtojson().fromFile(csvFilePath)
+
+  console.log("What does the json dish data look like?")
+  console.log(jsonDishData)
+
+  try {
+    for (let i = 0; i < jsonDishData.length; i++){
+      // Split the fields of: ingredients: [String], dietaryRestrictions: [String], allergens: [String], cuisines: [String],
+      jsonDishData[i].ingredients = jsonDishData[i].ingredients.split("-");
+      jsonDishData[i].dietaryRestrictions = jsonDishData[i].dietaryRestrictions.split("-");
+      jsonDishData[i].allergens = jsonDishData[i].allergens.split("-");
+      jsonDishData[i].cuisines = jsonDishData[i].cuisines.split("-");
+      const dishRecord = new dishRecommendationTest(jsonDishData[i]);
+      await dishRecord.save();
+    }
+  }
+  catch(e){
+    console.log("Error: ")
+    console.log(e)
+  }
+
+  res.json({message : "Finished filling out the dish recommendations"})
+})
 
 
