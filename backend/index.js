@@ -65,6 +65,9 @@ mongoose.connect(process.env.DB_CONNECTION)
 // Api for filling the dish recommendation table
 app.get('/dish-recommendation-test-fill', async (req, res) => {
 
+  // reset everything in the table first
+  const result = await dishRecommendationTest.deleteMany({});
+
   const csvtojson = require('csvtojson');
 
 
