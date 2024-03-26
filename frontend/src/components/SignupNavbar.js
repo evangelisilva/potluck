@@ -18,14 +18,16 @@ const SignupNavbar = () => {
   return (
     <Navbar expand="lg" className="px-lg-5 fixed-top" style={{ paddingTop: '15px', zIndex: '1000', backgroundColor: '#fff', fontFamily: 'Arial' }}>
       <Navbar.Brand>
+        <NavLink href="/" >
+          <Image
+            src={process.env.PUBLIC_URL + '/logo.png'}
+            alt="Logo"
+            style={{ maxHeight: '45px', paddingRight: '15px'}}
+          />
+          {/* Brand name */}
+          <span style={{ color: '#4D515A', fontSize: '21px' }}>Potluck</span>
+        </NavLink>
         {/* Logo */}
-        <Image
-          src={process.env.PUBLIC_URL + '/logo.png'}
-          alt="Logo"
-          style={{ maxHeight: '45px', paddingRight: '15px'}}
-        />
-        {/* Brand name */}
-        <span style={{ color: '#4D515A', fontSize: '21px' }}>Potluck</span>
       </Navbar.Brand>
       {/* Navbar toggle button */}
       <Navbar.Toggle aria-controls="basic-navbar-nav" />
