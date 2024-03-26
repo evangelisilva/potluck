@@ -5,6 +5,7 @@ import axios from 'axios';
 import InviteePopup from '../components/InviteePopup';
 import EditEventPopup from '../components/EditEventPopup';
 import CancelEventPopup from '../components/CancelEventPopup';
+import SignupNavbar from '../components/SignupNavbar';
 
 function MyComponent() {
     const [showInviteesPopup, setShowInviteesPopup] = useState(false);
@@ -193,6 +194,7 @@ function MyComponent() {
 
     return (
         <div>
+            <SignupNavbar />
             <div style={{ backgroundColor: '#f8f9fa', fontFamily: 'Arial' }}>
                 <Container>
                         <Row>
