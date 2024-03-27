@@ -83,7 +83,9 @@ app.get('/dish-recommendation-test-fill', async (req, res) => {
     for (let i = 0; i < jsonDishData.length; i++){
       // Split the fields of: ingredients: [String], dietaryRestrictions: [String], allergens: [String], cuisines: [String],
       jsonDishData[i].ingredients = jsonDishData[i].ingredients.split("-");
-      jsonDishData[i].dietaryRestrictions = jsonDishData[i].dietaryRestrictions.split("-");
+      jsonDishData[i].dietaryRestrictions = jsonDishData[i].dietaryRestrictions.split("|");
+      // note: you may need to add back dashes in the dietary restrictions
+
       jsonDishData[i].allergens = jsonDishData[i].allergens.split("-");
       jsonDishData[i].cuisines = jsonDishData[i].cuisines.split("-");
       const dishRecord = new dishRecommendationTest(jsonDishData[i]);
