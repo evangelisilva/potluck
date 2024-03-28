@@ -7,7 +7,7 @@ const eventRoute = require('./routes/eventRoute');
 const userRoute = require('./routes/userRoute');
 const dishRoute = require('./routes/dishRoute');
 const rsvpRoutes = require('./routes/rsvpRoute');
-const dishSignup = require('./models/DishSignup');
+const dishSignupRoute = require('./routes/dishSignupRoute');
 const { sendEmail } = require('./services/emailService');
 
 const dishRecommendationTest = require('./models/Dish');
@@ -30,7 +30,7 @@ app.use(express.urlencoded({ extended: true })); // Parse URL-encoded bodies
 app.use('/api/events', eventRoute);
 app.use('/api/users', userRoute);
 app.use('/api/dishes', dishRoute);
-app.use('/api/dishSignups', dishSignup);
+app.use('/api/dishSignups', dishSignupRoute);
 app.use('/api/rsvp', rsvpRoutes);
 
 app.get('/', (req, res) => {

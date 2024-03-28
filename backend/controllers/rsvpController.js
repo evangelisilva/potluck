@@ -55,6 +55,7 @@ const dishSignupSchema = new mongoose.Schema({
 
 */
 
+/*
 const exampleDishSignupData = {
     user: '65d37b14f608ce904718e311',
     dish: '65d37dd5bf4bccaffc1f0a75',
@@ -71,7 +72,7 @@ DishSignup.deleteMany({user: '65d37b14f608ce904718e311', dish: '65d37dd5bf4bccaf
   ).then(
     () => console.log("rsvp controller - Added a DISH SIGNUP record into mongo db")
 );
-
+*/
 
 
 // TODO (alternative) - implement chat gpt's idea for this code

@@ -159,7 +159,7 @@ def recommend_dishes(dish_set):
 
 # Select collection (replace 'your_collection' with your actual collection name)
 ## Note: since you already are into the cluster ( icsi518-mongodb-cluster), you only need to specify the DATABASE, and the TABLE
-dishCollection = client.potluck.dishes
+dishCollection = client.potluck.dishrecommendationtests
 
 # Query the collection (this example retrieves all documents)
 dish_cursor = dishCollection.find({})
