@@ -10,6 +10,26 @@ exports.createUser = async (req, res) => {
   }
 };
 
+exports.signup = async (req, res) => {
+  const { firstName, lastName, email, password } = req.body;
+  try {
+    const token = await userService.signup(firstName, lastName, email, password);
+    res.json({ token });
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};
+
+exports.signin = async (req, res) => {
+  try {
+    const { email, password }= req.body;
+    const token = await userService.signin(email, password);
+    res.json({ token });
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+}
+
 exports.getAllUsers = async (req, res) => {
   try {
     const users = await userService.getAllUsers();
