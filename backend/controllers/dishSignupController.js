@@ -73,7 +73,9 @@ exports.recommendDishes = async (req, res) => {
         const { spawn } = require('child_process');
 
         // Replace 'python_script.py' with the path to your Python script
-        const pythonProcess = spawn('python3', ['python/test_api_fetch.py', 'arg1', 'arg2']);
+        const pythonProcess = spawn('python3', ['python/test_api_fetch.py', 
+        '65d37b9cf608ce904718e317', 
+        "American, Japanese, Thai, Italian"]);
 
         console.log("After spawning the python script but before receiving the data back")
         pythonProcess.stdout.on('data', (data) => {
@@ -131,11 +133,11 @@ exports.recommendDishes = async (req, res) => {
                       console.error('Error reading file:', err);
                       return;
                     }
-                    console.log('File content:', data);
+                    ////console.log('File content:', data);
                     dishIds = data.split("\n");
                     dishIds.pop()
-                    console.log("the dish ids: ")
-                    console.log(dishIds);
+                    ////console.log("the dish ids: ")
+                    ////console.log(dishIds);
                     resolve(data)
                 })
                 
@@ -149,10 +151,10 @@ exports.recommendDishes = async (req, res) => {
 
         for (let i = 0; i < dishIds.length; i++){
             const dish = await Dish.findById(dishIds[i])
-            console.log("What is the individual dish found?: ", dish)
+            ////console.log("What is the individual dish found?: ", dish)
             dishArr.push(dish)
         }
-        console.log("What is the array of dishes found?: ", dishArr)
+        ////console.log("What is the array of dishes found?: ", dishArr)
         res.json({message : "Finished processing the file data", data : dishArr})
         
 

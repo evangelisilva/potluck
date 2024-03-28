@@ -1,3 +1,5 @@
+import sys
+
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
 from bson.objectid import ObjectId
@@ -252,5 +254,11 @@ with open(fileName, "w") as file:
         file.write(str(dish['_id']) + '\n')
 
 print("Data has been written to the file.")
+
+## Final print - what are the arguments?
+print('Final print - what are the arguments?: ')
+print(sys.argv[0])
+print(sys.argv[1])
+print(sys.argv[2])
     
 
