@@ -10,7 +10,7 @@ const rsvpRoutes = require('./routes/rsvpRoute');
 const dishSignup = require('./models/DishSignup');
 const { sendEmail } = require('./services/emailService');
 
-const dishRecommendationTest = require('./models/dishRecommendationTest');
+const dishRecommendationTest = require('./models/Dish');
 
 // Load environment variables from .env file
 dotenv.config();
@@ -82,6 +82,7 @@ app.get('/dish-recommendation-test-fill', async (req, res) => {
   try {
     for (let i = 0; i < jsonDishData.length; i++){
       // Split the fields of: ingredients: [String], dietaryRestrictions: [String], allergens: [String], cuisines: [String],
+      console.log("Filling out the data - what are the ingredients: ", jsonDishData[i].ingredients)
       jsonDishData[i].ingredients = jsonDishData[i].ingredients.split("-");
       jsonDishData[i].dietaryRestrictions = jsonDishData[i].dietaryRestrictions.split("|");
       // note: you may need to add back dashes in the dietary restrictions

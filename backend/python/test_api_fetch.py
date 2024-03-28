@@ -241,7 +241,8 @@ for dish, score in dishes_for_user:
 client.close()
 
 #"Closing step" of the algorithm: return the dishes for user when the spawned instance closes
-
+## (store the IDS in a text file by unique user ID)
+## *to keep things simple, we can just return the ID of the dish
 
 
 
