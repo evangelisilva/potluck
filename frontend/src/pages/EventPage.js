@@ -14,6 +14,7 @@ function MyComponent() {
     
     const [isConfirmedCancel, setIsConfirmedCancel] = useState(false);
     const [eventDetails, setEventDetails] = useState(null);
+    const [userData, setUserData] = useState(null);
 
     const { eventId } = useParams(); 
 
@@ -23,6 +24,21 @@ function MyComponent() {
 
     const fetchEventDetails = async () => {
         try {
+
+            const token = localStorage.getItem('token');
+            if (!token) {
+              throw new Error('User not authenticated');
+            }
+    
+            const authResponse = await axios.get('http://localhost:8000/api/auth', {
+              headers: {
+                Authorization: token,
+              },
+            });
+    
+            const userResponse = await axios.get(`http://localhost:8000/api/users/${authResponse.data.userId}`);
+            setUserData(userResponse.data);
+
             const response = await axios.get(`http://localhost:8000/api/events/${eventId}`);
             if (response.data.status == 'canceled') {
                 setIsConfirmedCancel(true);
@@ -194,7 +210,7 @@ function MyComponent() {
 
     return (
         <div>
-            <SignupNavbar />
+            <SignupNavbar userData={userData}/>
             <div style={{ backgroundColor: '#f8f9fa', fontFamily: 'Arial' }}>
                 <Container>
                         <Row>
