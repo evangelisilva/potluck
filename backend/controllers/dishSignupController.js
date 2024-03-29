@@ -73,9 +73,17 @@ exports.recommendDishes = async (req, res) => {
         const { spawn } = require('child_process');
 
         // Replace 'python_script.py' with the path to your Python script
-        const pythonProcess = spawn('python3', ['python/test_api_fetch.py', 
+        const pythonProcess = spawn('python3', ['python/test_api_fetch.py',
+        // userId: will be req.params later
         '65d37b9cf608ce904718e317', 
-        "American, Japanese, Thai, Italian"]);
+        "American, Japanese, Thai, Italian", 
+        "Main course",
+        "60",
+        "Medium",
+        "Medium",
+        // Adding the event ID argument for dish filtering (will be req.params later)
+        '65d39315f2a7f4725441f1a9'
+    ]);
 
         console.log("After spawning the python script but before receiving the data back")
         pythonProcess.stdout.on('data', (data) => {
