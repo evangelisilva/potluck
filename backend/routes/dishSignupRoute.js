@@ -18,6 +18,6 @@ router.get('/', dishSignupController.getAllDishSignups);
 router.get('/:dishSignupId', dishSignupController.getDishSignupById);
 
 // Recommend dishes
-router.get('/recommend/dishes', dishSignupController.recommendDishes);
+router.post('/recommendDishes/:userId', dishSignupController.recommendDishes);
 
 module.exports = router;

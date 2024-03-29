@@ -12,6 +12,9 @@ const { sendEmail } = require('./services/emailService');
 
 const dishRecommendationTest = require('./models/Dish');
 
+const Event = require('./models/Event');
+
+
 // Load environment variables from .env file
 dotenv.config();
 
@@ -101,4 +104,8 @@ app.get('/dish-recommendation-test-fill', async (req, res) => {
   res.json({message : "Finished filling out the dish recommendations"})
 })
 
-
+app.get('/testApi', async (req, res) => {
+  // Test find of the model to do something with it
+  await Event.find({})
+  res.json({Message : "done finding"})
+})
