@@ -1,5 +1,6 @@
 const dishSignupService = require('../services/dishSignupService');
 const Dish = require('../models/Dish');
+const User = require('../models/User');
 
 
 // Controller function to create a new dish signup
@@ -63,27 +64,36 @@ exports.getDishSignupById = async (req, res) => {
 // url to access this: localhost:8000/api/dishSignups/recommendDishes
 exports.recommendDishes = async (req, res) => {
     try {
-
-        const userId = '65d37b9cf608ce904718e317'
-
-        const fileName = userId + '_dishes.txt'
-
         console.log("Right before doing the spawning")
         
         const { spawn } = require('child_process');
 
+        /*
         // Replace 'python_script.py' with the path to your Python script
         const pythonProcess = spawn('python3', ['python/test_api_fetch.py',
         // userId: will be req.params later
         '65d37b9cf608ce904718e317', 
-        "American, Japanese, Thai, Italian", 
+        // Event id
+        '65d39315f2a7f4725441f1a9',
         "Main course",
         "60",
         "Medium",
-        "Medium",
-        // Adding the event ID argument for dish filtering (will be req.params later)
-        '65d39315f2a7f4725441f1a9'
+        "Medium"
     ]);
+        */
+
+        // New call of spawn - with the body arguments
+        const pythonProcess = spawn('python3', ['python/test_api_fetch.py',
+        // userId: will be req.params later
+        req.params.userId, 
+        // Event id
+        req.body.eventId,
+        req.body.mealCourse,
+        req.body.preferredPrepTime.toString(),
+        req.body.preferredComplexity,
+        req.body.preferredPopularity
+    ]);
+
 
         console.log("After spawning the python script but before receiving the data back")
         pythonProcess.stdout.on('data', (data) => {
@@ -132,7 +142,7 @@ exports.recommendDishes = async (req, res) => {
         // get the data assigned from the event
         const fs = require('fs');
         
-
+        const fileName = req.params.userId + '_dishes.txt'
         let dishIds;
         function readReturnedData(){
             return new Promise((resolve, reject) => {
@@ -162,8 +172,12 @@ exports.recommendDishes = async (req, res) => {
             ////console.log("What is the individual dish found?: ", dish)
             dishArr.push(dish)
         }
+
+        // Before returning, get the name of the user
+        const user = await User.findById(req.params.userId)
+
         ////console.log("What is the array of dishes found?: ", dishArr)
-        res.json({message : "Finished processing the file data", data : dishArr})
+        res.json({message : `Dishes recommended to ${user.firstName} ${user.lastName}`, data : dishArr})
         
 
 

@@ -37,7 +37,7 @@ def ordinalFeatureComputation(entity):
     # Extract the maximum value
     max_value = result[0]["maxValue"]
 
-    print("Maximum value:", max_value)
+    ####print("Maximum value:", max_value)
 
     ## Same steps for the minimum value
     # Define the aggregation pipeline
@@ -56,10 +56,10 @@ def ordinalFeatureComputation(entity):
     # Extract the maximum value
     min_value = result[0]["minValue"]
 
-    print("Minimum value:", min_value)
+    ####print("Minimum value:", min_value)
 
     ## Issue: before taking this difference, what actually is the entity?
-    print('before taking this difference, what actually is the entity?: ', entity)
+    ####print('before taking this difference, what actually is the entity?: ', entity)
     differenceFromMin = entity['preparationTime'] - min_value
 
     entireRange = max_value - min_value
@@ -137,13 +137,17 @@ def dishSetExtraFilter(document):
 
 ## Algorithm 
 # TODO: if we have a fixed user ID, maybe remove the participant preferences field
-def recommend_dishes(dish_set):
+def recommend_dishes():
     recommended_dishes = []
+    
     for dish in dish_set:
+        print("THERE IS A DISH IN THE DISH SET")
+        print("IT IS: ", dish)
         # before computing the score and appending - check the "extra filter"
         if (dishSetExtraFilter(dish) == False):
+            print("Made it to where the extra filter is false for user: ", user_document['firstName'], user_document['lastName'])
             continue
-        print('In the recommend_dishes algorithm. Do we ever make it past the extra filter??')
+        ####print('In the recommend_dishes algorithm. Do we ever make it past the extra filter??')
         score = calculate_score(dish)
         # Append all dishes with their scores
         recommended_dishes.append((dish, score))
@@ -177,8 +181,18 @@ user_cursor = userCollection.find({'_id': ObjectId(user_id)})
 # Note: you should break after the first one
 user_document = {}
 for document in user_cursor:
-    print(document)
     user_document = document
+    break
+
+# Make an event document similar to the user document
+event_id = sys.argv[2]
+eventCollection = client.potluck.events
+event_cursor = eventCollection.find({'_id': ObjectId(event_id)})
+
+# Note: you should break after the first one
+event_document = {}
+for document in event_cursor:
+    event_document = document
     break
 
 print("Test print - for the user cursor - is the first entry a JSON object??: ", type(user_document), user_document)
@@ -188,7 +202,7 @@ print("New with accessing an attribute of it: ", user_document['firstName'])
 # Available dishes - look up the given dish in the sign-up dataset AS YOU GO ALONG (we are already starting the base dataset)
 
 ## Hard coding the cusines and the meal course
-event_cuisines = sys.argv[2].split(", ")
+event_cuisines = event_document['cuisines']
 meal_course = sys.argv[3]
 
 ## TODO: hardcode the NON-filters - just COMPARISIONS for the loop (complexity, preparation time, popularity)
@@ -206,40 +220,26 @@ dish_signup_cursor = dishSignupCollection.find({})
 for document in dish_signup_cursor:
     dish_signup_list.append(document['dish'])
 
+
+
 dish_set = dishCollection.find({'course' : meal_course,
 'dietaryRestrictions' : {"$all" : user_document['dietaryRestrictions']}, 
 '_id' : {"$nin" : dish_signup_list}})
 
-
-
-## Test of the function for the extra filter
-####all_dish_cursor = dishCollection.find({})
-####control = 0
-####for document in all_dish_cursor:
-####    if (dishSetExtraFilter(document) == True):
-####        print("Dish number: ", control, " SATISIFES the allergen and cuisine requirements, what is it: ", document)
-####    if (dishSetExtraFilter(document) == False):
-####        print("Dish number: ", control, " doesn't satisfy the allergen and/or cuisine requirements")
-####    control = control + 1
-
-
-print('note: the user dietary restrictions are: ', user_document['dietaryRestrictions'])
-print('note: the user allergens are: ', user_document['allergens'])
-
 # Calling of the recommendation algorithm:
 
-dishes_for_user = recommend_dishes(dish_set)
-
-print("What dishes have been recommended to the user?: ")
-
-for dish, score in dishes_for_user:
-    # Print out all of the dishes here
-    print('\n')
-    print(dish)
-
-
+dishes_for_user = recommend_dishes()
 # Close the connection when done (after calling all the algorithms)
 client.close()
+
+
+####print("What dishes have been recommended to the user?: ")
+####
+####for dish, score in dishes_for_user:
+####    # Print out all of the dishes here
+####    print('\n')
+####    print(dish)
+
 
 #"Closing step" of the algorithm: return the dishes for user when the spawned instance closes
 ## (store the IDS in a text file by unique user ID)
@@ -261,5 +261,8 @@ print('Final print - what are the arguments?: ')
 print(sys.argv[0])
 print(sys.argv[1])
 print(sys.argv[2])
-    
+print("Final print - what are the dishes for the user?: ", dishes_for_user)
+print("Final print - did we get the event cuisines right?: ", event_cuisines)
+print("What are the dietaryRestrictions of the user?: ", user_document['dietaryRestrictions'])
+
 
