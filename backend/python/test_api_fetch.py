@@ -103,7 +103,7 @@ def calculate_score(dish):
     ### likely take the inverse (or complement) to account for lower things
     
     ### ingredient text comparison:
-    score += (1 - textComparison(user_document['allergens'], dish['ingredients']))
+    ####score += (1 - textComparison(user_document['allergens'], dish['ingredients']))
     
     
     # Add more matching criteria and weights as needed
@@ -170,7 +170,7 @@ dish_cursor = dishCollection.find({})
 # TODO: apply the filters to create available dishes for the client
 ## recall - for users - we need to get it based on the frontend (hardcode for now)
 # But in this section - we will only have ONE USER AT A TIME
-user_id = '65d37b9cf608ce904718e317'
+user_id = sys.argv[1]
 userCollection = client.potluck.users
 user_cursor = userCollection.find({'_id': ObjectId(user_id)})
 
@@ -188,11 +188,11 @@ print("New with accessing an attribute of it: ", user_document['firstName'])
 # Available dishes - look up the given dish in the sign-up dataset AS YOU GO ALONG (we are already starting the base dataset)
 
 ## Hard coding the cusines and the meal course
-event_cuisines = ['American', 'Japanese', 'Thai', 'Italian']
-meal_course = "Main course"
+event_cuisines = sys.argv[2].split(", ")
+meal_course = sys.argv[3]
 
 ## TODO: hardcode the NON-filters - just COMPARISIONS for the loop (complexity, preparation time, popularity)
-user_event_preferences = {"preparationTime" : 60, "complexity" : "Medium", "popularity" : "Medium"}
+user_event_preferences = {"preparationTime" : int(sys.argv[4]), "complexity" : sys.argv[5], "popularity" : sys.argv[6]}
 
 ## Actually APPLY the filters to dish set (theme, dietary restrictions, allergens, course of the meal, dish being available)
 
@@ -201,6 +201,7 @@ user_event_preferences = {"preparationTime" : 60, "complexity" : "Medium", "popu
 # To filter out the dish signups, get the list of dish IDS from the dish signup table
 dishSignupCollection = client.potluck.dishsignups
 dish_signup_list = []
+# Todo later: add to the find condition - 'event' : sys.argv[7]
 dish_signup_cursor = dishSignupCollection.find({})
 for document in dish_signup_cursor:
     dish_signup_list.append(document['dish'])
