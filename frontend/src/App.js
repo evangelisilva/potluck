@@ -23,6 +23,7 @@ const Layout = ({ children }) => {
 
 const App = () => {
 
+  /*
   // hardcoded userId
   const userId = '65d37b9cf608ce904718e317'
   const userId2 = '65d37b72f608ce904718e313'
@@ -35,10 +36,14 @@ const App = () => {
   const preferredComplexity = "Medium"
   const preferredPopularity = "Medium"
 
-  const recommendationData = {eventId : eventId, mealCourse : mealCourse, 
-  preferredPrepTime : preferredPrepTime,
-  preferredComplexity : preferredComplexity,
-  preferredPopularity : preferredPopularity}
+  // user name: Alice Smith
+  // Event name: Family BBQ Party
+  const recommendationData = {eventId : '65d39315f2a7f4725441f1a9', 
+    mealCourse : "Main course"
+    preferredPrepTime : 60
+    preferredComplexity : "Medium"
+    preferredPopularity : "Medium"
+  }
 
   const recommendationData2 = {
 
@@ -57,19 +62,9 @@ const App = () => {
     preferredComplexity: 'Low',
     preferredPopularity: 'Low'
   }
-
-  // For testing the overall project: likely ONLY TEST 3 items for recommendation overall
-  /*
-  const recommendationData4 = {
-    userId: '65d37b9cf608ce904718e317',
-    eventId: '65d39315f2a7f4725441f1a9',
-    mealCourse: 'Dessert',
-    preferredPrepTime: 60,
-    preferredComplexity: 'Medium',
-    preferredPopularity: 'Medium'
-  }
   */
 
+  /*
   // Do an axios post request (preqreq: change the route in routes to be a post instead of get)
   axios.post(`http://localhost:8000/api/dishSignups/recommendDishes/${userId3}`, recommendationData3)
   .then(response => {
@@ -82,6 +77,7 @@ const App = () => {
     // Handle error, if needed
     console.error(error);
   });
+  */
 
 
   return (
