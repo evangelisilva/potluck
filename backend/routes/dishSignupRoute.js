@@ -17,4 +17,7 @@ router.get('/', dishSignupController.getAllDishSignups);
 // Retrieve a dish signup by ID
 router.get('/:dishSignupId', dishSignupController.getDishSignupById);
 
+// Recommend dishes
+router.post('/recommendDishes/:userId', dishSignupController.recommendDishes);
+
 module.exports = router;
