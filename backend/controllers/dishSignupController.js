@@ -153,7 +153,6 @@ exports.recommendDishes = async (req, res) => {
                     }
                     ////console.log('File content:', data);
                     dishIds = data.split("\n");
-                    dishIds.pop()
                     ////console.log("the dish ids: ")
                     ////console.log(dishIds);
                     resolve(data)
@@ -164,12 +163,23 @@ exports.recommendDishes = async (req, res) => {
 
         await readReturnedData();
 
+        // After reading the data, delete the file, since it's only for a single usage (any given time the recommendation API is called)
+        // Delete the file
+        fs.unlink(fileName, (err) => {
+          if (err) {
+            console.error('Error deleting file:', err);
+            return;
+          }
+          console.log('File deleted successfully.');
+        });
+
+
         // creating a json object to return for the dishes
         const dishArr = []
 
         for (let i = 0; i < dishIds.length; i++){
             const dish = await Dish.findById(dishIds[i])
-            ////console.log("What is the individual dish found?: ", dish)
+            console.log("What is the individual dish found?: ", dish)
             dishArr.push(dish)
         }
 

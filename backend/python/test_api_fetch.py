@@ -123,15 +123,15 @@ def dishSetExtraFilter(document):
 
     # Comparison to the cusines
     # common cusines list (you must have at least one to return true)
-    commonCuisinesList = []
-    for dishCuisine in document['cuisines']:
-        for eventCuisine in event_cuisines:
-            # Keep track of the matches
-            if (dishCuisine == eventCuisine):
-                print("In the extra filter cusines section. Do we ever have a matching cuisine?: ", dishCuisine, ", ", eventCuisine)
-                commonCuisinesList.append(dishCuisine)
-    if (len(commonCuisinesList) == 0):
-        return False
+    ####commonCuisinesList = []
+    ####for dishCuisine in document['cuisines']:
+    ####    for eventCuisine in event_cuisines:
+    ####        # Keep track of the matches
+    ####        if (dishCuisine == eventCuisine):
+    ####            print("In the extra filter cusines section. Do we ever have a matching cuisine?: ", dishCuisine, ", ", eventCuisine)
+    ####            commonCuisinesList.append(dishCuisine)
+    ####if (len(commonCuisinesList) == 0):
+    ####    return False
     return True
 
 
@@ -151,7 +151,8 @@ def recommend_dishes():
         score = calculate_score(dish)
         # Append all dishes with their scores
         recommended_dishes.append((dish, score))
-    recommended_dishes.sort(key=lambda x: x[1], reverse=True)
+    # sort in ascending order, since the preferred dishes have the lowest scores
+    recommended_dishes.sort(key=lambda x: x[1], reverse=False)
     # at the end, take the top 3 (if more than 3 exist)
     if (len(recommended_dishes) <= 3):
         return recommended_dishes
@@ -223,9 +224,10 @@ for document in dish_signup_cursor:
 
 
 dish_set = dishCollection.find({'course' : meal_course,
-'dietaryRestrictions' : {"$all" : user_document['dietaryRestrictions']},
+'dietaryRestrictions' : {"$all" : user_document['dietaryRestrictions']}
 # Note: we could just NOT include this, and just the user know (but it may be eaiest to just filter out as I have been doing)
-'_id' : {"$nin" : dish_signup_list}})
+####'_id' : {"$nin" : dish_signup_list}
+})
 
 # Calling of the recommendation algorithm:
 
@@ -251,9 +253,15 @@ fileName = str(user_document['_id']) + '_dishes.txt'
 
 # Open the file in write (and overwrite) mode
 with open(fileName, "w") as file:
+    # Keep track of count so it is known when we get to the last index of the dishes
+    count = 0
     # Write data to the file
     for dish, score in dishes_for_user:
-        file.write(str(dish['_id']) + '\n')
+        if (count == len(dishes_for_user) - 1):
+            file.write(str(dish['_id']))
+        else:
+            file.write(str(dish['_id']) + '\n')
+        count = count + 1
 
 print("Data has been written to the file.")
 
