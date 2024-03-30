@@ -223,7 +223,8 @@ for document in dish_signup_cursor:
 
 
 dish_set = dishCollection.find({'course' : meal_course,
-'dietaryRestrictions' : {"$all" : user_document['dietaryRestrictions']}, 
+'dietaryRestrictions' : {"$all" : user_document['dietaryRestrictions']},
+# Note: we could just NOT include this, and just the user know (but it may be eaiest to just filter out as I have been doing)
 '_id' : {"$nin" : dish_signup_list}})
 
 # Calling of the recommendation algorithm:
