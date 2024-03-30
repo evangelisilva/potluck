@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { Container, Row, Form, Button, Col, Image, Card } from 'react-bootstrap';
 import '../styles/modal.css';
 
-const DishSignupPopup = ({ onClose, onConfirm, userID, categoryName, eventId }) => {
+const DishSignupPopup = ({ onClose, userId, categoryName, eventId }) => {
+
     const [dishName, setDishName] = useState('');
     const [allergens, setAllergens] = useState('');
     const [dietaryRestrictions, setDietaryRestrictions] = useState('');
@@ -59,13 +60,13 @@ const DishSignupPopup = ({ onClose, onConfirm, userID, categoryName, eventId }) 
     
     const handleConfirm = () => {
         const signupData = {
-            userID: userID,
+            userId: userId,
             categoryName: categoryName,
             dishName: dishName,
             allergens: allergens,
             dietaryRestrictions: dietaryRestrictions,
         };
-        onConfirm(signupData);
+        // onConfirm(signupData);
         onClose();
     };
 
