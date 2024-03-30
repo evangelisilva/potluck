@@ -80,13 +80,16 @@ const DishSignupPopup = ({ onClose, onSignup, userId, categoryName, eventId }) =
             try {
                 const response = await axios.post(`http://localhost:8000/api/dishes/`, dishData);
                 console.log('Dish created successfully');
-                setDishId(response.data._id); // Assuming the ID is in response.data
+                onSignup(response.data._id); 
             } catch (error) {
                 console.error('Error creating dish: ', error);
             }
+        } 
+        
+        if (dishId) {
+            onSignup(dishId);
         }
-
-        onSignup(dishId);
+        
         onClose();
     };
 
@@ -291,7 +294,7 @@ const DishSignupPopup = ({ onClose, onSignup, userId, categoryName, eventId }) =
                                         type="text"
                                         placeholder="Enter dish description (optional)"
                                         value={dishDescription}
-                                        onChange={(e) => setDietaryRestrictions(e.target.value)}
+                                        onChange={(e) => setDishDescription(e.target.value)}
                                     />
                                 </Form.Group> <br />
 

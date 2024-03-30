@@ -255,21 +255,21 @@ function MyComponent() {
         }
     };
 
-    const handleDishSignup = async (signupData) => {
+    const handleDishSignup = async (dishId) => {
 
-        const dishSignupData = [
-            
-        ]
+        const dishSignupData = {
+            user: userData._id,
+            event: eventId,
+            dish: dishId  
+        }
 
         try {
-            await axios.post(`http://localhost:8000/api/dishSignups/`, dishSignupData);
-            console.log('Event modified successfully');
-            fetchEventDetails();
+            const response = await axios.post(`http://localhost:8000/api/dishSignups/`, dishSignupData);
+            console.log('Dish signup successful');
         } catch (error) {
-            console.error('Error modifying event:', error);
+            console.error('Error signing up for a dish: ', error);
         }
     }
-     
 
     return (
         <div>
@@ -467,7 +467,7 @@ function MyComponent() {
             {showInviteesPopup && <InviteePopup onClose={closeInviteePopup} onSuccess={handleInviteSuccess} eventId={eventId} />}
             {showEditEventPopup && <EditEventPopup onClose={closeEditEventPopup} onSave={handleEditEvent} />}
             {showCancelEventPopup && <CancelEventPopup onClose={closeCancelEventPopup} onConfirm={handleConfirmCancel} />}
-            {showDishSignupPopup && <DishSignupPopup onClose={closeDishSignupPopup} onSignup={handleDishSignup} userId={userData._id} categoryName={selectedCategory} eventId={eventId} />}
+            {showDishSignupPopup && <DishSignupPopup onClose={closeDishSignupPopup} onSignup={handleDishSignup} userId={userData._id} categoryName={selectedCategory} eventId={eventId}/>}
         </div>
     );
 }
