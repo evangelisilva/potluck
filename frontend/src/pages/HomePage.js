@@ -1,13 +1,39 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 import { Container, Row, Col, Image, Button } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
-// import SignupNavbar from '../components/SignupNavbar';
+import SignupNavbar from '../components/SignupNavbar';
  
 // This component represents the homepage of the application.
 // It includes a header, description, and a button to navigate to the create event page.
 function HomePage() {
+    const [userData, setUserData] = useState(null);
     // Initialize the navigate function from useNavigate hook
     const navigate = useNavigate();
+
+    useEffect(() => {
+        const fetchUserData = async () => {
+          try {
+            const token = localStorage.getItem('token');
+            if (!token) {
+              throw new Error('User not authenticated');
+            }
+    
+            const authResponse = await axios.get('http://localhost:8000/api/auth', {
+              headers: {
+                Authorization: token,
+              },
+            });
+    
+            const userResponse = await axios.get(`http://localhost:8000/api/users/${authResponse.data.userId}`);
+            setUserData(userResponse.data);
+          } catch (error) {
+            console.log(error);
+          }
+        };
+    
+        fetchUserData();
+      }, []);
 
     return (
         <>
@@ -15,6 +41,7 @@ function HomePage() {
             {/* <SignupNavbar /> */}
 
             {/* Main content */}
+            <SignupNavbar userData={userData}/>
             <Container>
                 <Row className="align-items-center">
                     {/* Left column */}

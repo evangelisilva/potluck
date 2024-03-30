@@ -7,11 +7,13 @@ import NewEventPage from './pages/NewEventPage';
 import EventPage from './pages/EventPage';
 import SignupNavbar from './components/SignupNavbar';
 import axios from 'axios';
+import SignupPage from './pages/SignupPage';
+import SigninPage from './pages/SigninPage';
+import DashboardPage from './pages/DashboardPage';
 
 const Layout = ({ children }) => {
   return (
     <div>
-      <SignupNavbar />
       <div style={{ paddingTop: '80px' }}>
         {children}
       </div>
@@ -96,6 +98,9 @@ const App = () => {
         <Route path="/rsvp/:eventId" element={<Layout><RSVP/></Layout>} />
         <Route path="/events/new" element={<Layout><NewEventPage /></Layout>} />
         <Route path="/events/:eventId" element={<Layout><EventPage /></Layout>} />
+        <Route path="/signup" element={<Layout><SignupPage /></Layout>} />
+        <Route path="/signin" element={<Layout><SigninPage /></Layout>} />
+        <Route path="/dashboard" element={<Layout><DashboardPage /></Layout>} />
         {/* <Route path="/rsvp/:eventId" element={<Layout><RSVPPage/></Layout>} /> */}
       </Routes>
     </Router>

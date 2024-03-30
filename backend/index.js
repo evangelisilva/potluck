@@ -9,6 +9,7 @@ const dishRoute = require('./routes/dishRoute');
 const rsvpRoutes = require('./routes/rsvpRoute');
 const dishSignupRoute = require('./routes/dishSignupRoute');
 const { sendEmail } = require('./services/emailService');
+const userService = require('./services/userService');
 
 const dishRecommendationTest = require('./models/Dish');
 
@@ -26,8 +27,22 @@ app.use(bodyParser.json());
 app.use(cors());
 
 // Middleware
-app.use(express.json()); // Parse JSON bodies
-app.use(express.urlencoded({ extended: true })); // Parse URL-encoded bodies
+app.use(express.json()); 
+app.use(express.urlencoded({ extended: true }));
+
+app.get('/api/auth', (req, res) => {
+  try {
+    const token = req.header('Authorization');
+    if (!token) {
+      return res.status(401).json({ message: 'Access denied. No token provided.' });
+    }
+    const userId = userService.extractUserIdFromToken(token);
+    res.json({userId});
+  } catch (error) {
+    console.error('Error retrieving user profile:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
 
 // Routes
 app.use('/api/events', eventRoute);
