@@ -48,7 +48,7 @@ function SignupButton({ userData }) {
         return (
             <Button 
                 variant="outline-secondary" 
-                href="/signup" 
+                href="/signin" 
                 style={{ 
                     borderRadius: '30px', 
                     fontFamily: 'Arial', 
@@ -61,7 +61,7 @@ function SignupButton({ userData }) {
                 }}
                 onMouseEnter={handleMouseEnter} 
                 onMouseLeave={handleMouseLeave}>
-                Sign up
+                Sign In
             </Button>
         );
     }
