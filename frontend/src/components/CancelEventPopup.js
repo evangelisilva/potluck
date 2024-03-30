@@ -16,7 +16,7 @@ const CancelEventPopup = ({ onClose, onConfirm }) => {
     return (
         // Modal overlay
         <div className="modal-overlay">
-            <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable" style={{height: '38%'}}>
+            <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable">
                 <div className="modal-content">
                     <div className="modal-body">
                         {/* Container for the content */}
@@ -87,7 +87,8 @@ const CancelEventPopup = ({ onClose, onConfirm }) => {
                                     border: 'None',
                                     fontFamily: 'Arial',
                                     marginRight: '10px',
-                                    color: ' #4D515A'
+                                    color: ' #4D515A',
+                                    marginBottom: '50px'
                                 }}>
                                 Close
                             </Button>
@@ -103,7 +104,8 @@ const CancelEventPopup = ({ onClose, onConfirm }) => {
                                     fontFamily: 'Arial', 
                                     paddingLeft: '15px', 
                                     paddingRight: '15px', 
-                                    marginRight: '60px' 
+                                    marginRight: '60px',
+                                    marginBottom: '50px' 
                                 }}>
                                 Confirm
                             </Button>
