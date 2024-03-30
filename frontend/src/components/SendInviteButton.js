@@ -56,7 +56,8 @@ class SendInviteButton extends React.Component {
           fontFamily: 'Arial', 
           paddingLeft: '15px', 
           paddingRight: '15px', 
-          marginRight: '60px' 
+          marginRight: '60px',
+          marginBottom: '50px'
         }} 
         onClick={this.handleClick}>
           Send Invites

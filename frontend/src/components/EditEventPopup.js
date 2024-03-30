@@ -42,7 +42,7 @@ const EditEventPopup = ({ onClose, onSave }) => {
     return (
         // Modal overlay
         <div className="modal-overlay">
-            <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable" style={{height: '94%'}}>
+            <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable">
                 <div className="modal-content">
                     <div className="modal-body">
                         {/* Container for the content */}
@@ -134,7 +134,8 @@ const EditEventPopup = ({ onClose, onSave }) => {
                                 border: 'None',
                                 fontFamily: 'Arial',
                                 marginRight: '10px',
-                                color: ' #4D515A'
+                                color: ' #4D515A',
+                                marginBottom: '50px'
                             }}>
                             Cancel
                         </Button>
@@ -150,7 +151,8 @@ const EditEventPopup = ({ onClose, onSave }) => {
                                 fontFamily: 'Arial', 
                                 paddingLeft: '15px', 
                                 paddingRight: '15px', 
-                                marginRight: '60px' 
+                                marginRight: '60px',
+                                marginBottom: '50px'
                             }}>
                             Save Changes
                         </Button>
