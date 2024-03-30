@@ -135,7 +135,7 @@ const EditEventPopup = ({ onClose, onSave }) => {
                                 fontFamily: 'Arial',
                                 marginRight: '10px',
                                 color: ' #4D515A',
-                                marginBottom: '50px'
+                                marginTop: '50px'
                             }}>
                             Cancel
                         </Button>

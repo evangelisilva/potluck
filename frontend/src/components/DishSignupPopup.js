@@ -1,12 +1,15 @@
 import React, { useState } from 'react';
 import { Container, Row, Form, Button, Col, Image, Card } from 'react-bootstrap';
 import '../styles/modal.css';
+import axios from 'axios';
 
-const DishSignupPopup = ({ onClose, userId, categoryName, eventId }) => {
+const DishSignupPopup = ({ onClose, onSignup, userId, categoryName, eventId }) => {
 
     const [dishName, setDishName] = useState('');
+    const [dishDescription, setDishDescription] = useState('');
     const [allergens, setAllergens] = useState('');
     const [dietaryRestrictions, setDietaryRestrictions] = useState('');
+    const [dishId, setDishId] = useState('');
     const [showRecommendationsForm, setShowRecommendationsForm] = useState(false);
     const [showRecommendations, setShowRecommendations] = useState(false); // State for showing recommendations
 
@@ -24,6 +27,7 @@ const DishSignupPopup = ({ onClose, userId, categoryName, eventId }) => {
 
     const dishes = [
         {
+            _id: '12345',
             dishName: 'Spaghetti Carbonara',
             description: 'Pasta with creamy sauce, pancetta, and Parmesan cheese.',
             ingredients: ['Pasta', 'Cream', 'Pancetta', 'Parmesan Cheese'],
@@ -35,6 +39,7 @@ const DishSignupPopup = ({ onClose, userId, categoryName, eventId }) => {
             popularity: 'High'
         }, 
         {
+            _id: '12345',
             dishName: 'Caesar Salad',
             description: 'Romaine lettuce with Caesar dressing, croutons, and Parmesan cheese.',
             ingredients: ['Romaine Lettuce', 'Caesar Dressing', 'Croutons', 'Parmesan Cheese'],
@@ -46,6 +51,7 @@ const DishSignupPopup = ({ onClose, userId, categoryName, eventId }) => {
             popularity: 'Medium'
         }, 
         {
+            _id: '12345',
             dishName: 'Chicken Tikka Masala',
             description: 'Grilled chicken in a spicy tomato-based sauce with Indian spices.',
             ingredients: ['Chicken', 'Tomato Sauce', 'Indian Spices'],
@@ -58,17 +64,35 @@ const DishSignupPopup = ({ onClose, userId, categoryName, eventId }) => {
         }
     ]
     
-    const handleConfirm = () => {
-        const signupData = {
-            userId: userId,
-            categoryName: categoryName,
-            dishName: dishName,
-            allergens: allergens,
-            dietaryRestrictions: dietaryRestrictions,
-        };
-        // onConfirm(signupData);
+    const handleSignup = async () => {
+        if (!dishId) {
+            const allergensArray = allergens ? allergens.split(',').map(item => item.trim()) : [];
+            const dietaryRestrictionsArray = dietaryRestrictions ? dietaryRestrictions.split(',').map(item => item.trim()) : [];
+
+            const dishData = {
+                dishName: dishName,
+                description: dishDescription,
+                allergens: allergensArray,
+                dietaryRestrictions: dietaryRestrictionsArray,
+                course: categoryName,
+            };
+    
+            try {
+                const response = await axios.post(`http://localhost:8000/api/dishes/`, dishData);
+                console.log('Dish created successfully');
+                setDishId(response.data._id); // Assuming the ID is in response.data
+            } catch (error) {
+                console.error('Error creating dish: ', error);
+            }
+        }
+
+        onSignup(dishId);
         onClose();
     };
+
+    const handleRadioChange = (dishId) => {
+        setDishId(dishId);
+    }
 
     return (
         <div className="modal-overlay">
@@ -78,9 +102,9 @@ const DishSignupPopup = ({ onClose, userId, categoryName, eventId }) => {
                         <Container style={{ width: '700px', margin: '50px', color: '#4D515A', fontFamily: 'Arial' }}>
                             <Row>
                                 <Col xs={7}>
-                                    <h2 style={{ fontFamily: 'Times New Roman', fontSize: '45px', marginBottom: '15px' }}>Dish Sign Up</h2></Col>
+                                    <h2 style={{ fontFamily: 'Times New Roman', fontSize: '45px', marginBottom: '15px' }}>Dish Sign Up</h2>
+                                </Col>
                                 <Col xs={5}>
-                                 
                                 {!showRecommendationsForm ? (
                                         <Button
                                             style={{
@@ -234,7 +258,7 @@ const DishSignupPopup = ({ onClose, userId, categoryName, eventId }) => {
                                                             </Card.Body>
                                                         </Card>
                                                     }
-                                                    // onChange={() => handleRadioChange(dish.dishName)}
+                                                    onChange={ () => handleRadioChange(dish._id) }
                                                 />
                                                 </div>
                                              ))}
@@ -245,12 +269,11 @@ const DishSignupPopup = ({ onClose, userId, categoryName, eventId }) => {
                             ) : (
 
                             <Form>
-                                <Form.Group style={{marginBottom: '10px'}}>
+                                <Form.Group style={{}}>
                                 <Form.Text style={{ color: 'gray', fontSize: '13px'}}>
                                     Click 'Recommend Dishes' to explore dishes tailored just for you based on your preferences and dietary needs.
                                 </Form.Text> 
                                 </Form.Group> <br />
-
 
                                 <Form.Group controlId="dishName">
                                     <Form.Label>Dish Name</Form.Label>
@@ -259,6 +282,16 @@ const DishSignupPopup = ({ onClose, userId, categoryName, eventId }) => {
                                         placeholder="Enter dish name"
                                         value={dishName}
                                         onChange={(e) => setDishName(e.target.value)}
+                                    />
+                                </Form.Group> <br />
+
+                                <Form.Group controlId="dishDescription">
+                                    <Form.Label>Dish Description</Form.Label>
+                                    <Form.Control
+                                        type="text"
+                                        placeholder="Enter dish description (optional)"
+                                        value={dishDescription}
+                                        onChange={(e) => setDietaryRestrictions(e.target.value)}
                                     />
                                 </Form.Group> <br />
 
@@ -307,7 +340,7 @@ const DishSignupPopup = ({ onClose, userId, categoryName, eventId }) => {
                             </Button>
                             <Button
                                 variant="primary"
-                                onClick={handleConfirm}
+                                onClick={handleSignup}
                                 style={{
                                     backgroundColor: '#E8843C',
                                     borderColor: '#E8843C',

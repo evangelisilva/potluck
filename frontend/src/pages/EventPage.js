@@ -13,7 +13,6 @@ function MyComponent() {
     const [showEditEventPopup, setShowEditEventPopup] = useState(false);
     const [showCancelEventPopup, setShowCancelEventPopup] = useState(false);
     const [showDishSignupPopup, setDishSignupPopup] = useState(false);
-    const [selectedUserID, setSelectedUserID] = useState(null);
     const [selectedCategory, setSelectedCategory] = useState(null);
     
     const [isConfirmedCancel, setIsConfirmedCancel] = useState(false);
@@ -27,7 +26,7 @@ function MyComponent() {
         fetchEventDetails();
         setDishCategory([
             {
-                name: 'Appetizers',
+                name: 'Appetizer',
                 quantityNeeded: 2,
                 quantityTaken: 2,
                 signups: [
@@ -36,7 +35,7 @@ function MyComponent() {
                 ]
             },
             {
-                name: 'Main Course',
+                name: 'Main course',
                 quantityNeeded: 5,
                 quantityTaken: 2,
                 signups: [
@@ -45,7 +44,7 @@ function MyComponent() {
                 ]
             },
             {
-                name: 'Desserts',
+                name: 'Dessert',
                 quantityNeeded: 3,
                 quantityTaken: 1,
                 signups: [
@@ -256,6 +255,22 @@ function MyComponent() {
         }
     };
 
+    const handleDishSignup = async (signupData) => {
+
+        const dishSignupData = [
+            
+        ]
+
+        try {
+            await axios.post(`http://localhost:8000/api/dishSignups/`, dishSignupData);
+            console.log('Event modified successfully');
+            fetchEventDetails();
+        } catch (error) {
+            console.error('Error modifying event:', error);
+        }
+    }
+     
+
     return (
         <div>
             <SignupNavbar userData={userData}/>
@@ -452,7 +467,7 @@ function MyComponent() {
             {showInviteesPopup && <InviteePopup onClose={closeInviteePopup} onSuccess={handleInviteSuccess} eventId={eventId} />}
             {showEditEventPopup && <EditEventPopup onClose={closeEditEventPopup} onSave={handleEditEvent} />}
             {showCancelEventPopup && <CancelEventPopup onClose={closeCancelEventPopup} onConfirm={handleConfirmCancel} />}
-            {showDishSignupPopup && <DishSignupPopup onClose={closeDishSignupPopup} userId={userData._id} categoryName={selectedCategory} eventId={eventId} />}
+            {showDishSignupPopup && <DishSignupPopup onClose={closeDishSignupPopup} onSignup={handleDishSignup} userId={userData._id} categoryName={selectedCategory} eventId={eventId} />}
         </div>
     );
 }
