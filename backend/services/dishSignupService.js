@@ -6,6 +6,7 @@ exports.createDishSignup = async (dishSignupData) => {
         const dishSignup = await DishSignup.create(dishSignupData);
         return dishSignup;
     } catch (error) {
+        console.error(error);
         throw new Error('Could not create dish signup');
     }
 };

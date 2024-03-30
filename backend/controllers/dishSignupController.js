@@ -9,6 +9,7 @@ exports.createDishSignup = async (req, res) => {
         const dishSignup = await dishSignupService.createDishSignup(req.body);
         res.status(201).json(dishSignup);
     } catch (error) {
+        console.error(error);
         console.error('Error creating dish signup:', error);
         res.status(500).json({ error: 'Internal server error' });
     }
