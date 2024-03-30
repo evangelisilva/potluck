@@ -146,8 +146,7 @@ function MyComponent() {
         setShowCancelEventPopup(false);
     };
 
-    const openDishSignupPopup = (categoryName, userID) => {
-        setSelectedUserID(userID);
+    const openDishSignupPopup = (categoryName) => {
         setSelectedCategory(categoryName);
         setDishSignupPopup(true);
     };
@@ -414,7 +413,7 @@ function MyComponent() {
                                                                             borderRadius: '20px'
                                                                         }}
                                                                         disabled={isConfirmedCancel}
-                                                                        onClick={() => openDishSignupPopup(category.name, userData._id)}>Sign up</Button>
+                                                                        onClick={() => openDishSignupPopup(category.name)}>Sign up</Button>
                                                                 </Col>
                                                         
                                                             </Row>
@@ -453,7 +452,7 @@ function MyComponent() {
             {showInviteesPopup && <InviteePopup onClose={closeInviteePopup} onSuccess={handleInviteSuccess} eventId={eventId} />}
             {showEditEventPopup && <EditEventPopup onClose={closeEditEventPopup} onSave={handleEditEvent} />}
             {showCancelEventPopup && <CancelEventPopup onClose={closeCancelEventPopup} onConfirm={handleConfirmCancel} />}
-            {showDishSignupPopup && <DishSignupPopup onClose={closeDishSignupPopup} userID={selectedUserID} categoryName={selectedCategory} />}
+            {showDishSignupPopup && <DishSignupPopup onClose={closeDishSignupPopup} userId={userData._id} categoryName={selectedCategory} eventId={eventId} />}
         </div>
     );
 }
