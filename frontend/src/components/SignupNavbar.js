@@ -5,7 +5,7 @@ import SignupButton from './SignupButton';
 
 // This component represents the navigation bar of the application.
 // It includes the logo, brand name, navigation links, and a signup button.
-const SignupNavbar = () => {
+const SignupNavbar =  ({ userData }) => {
   // Get the current location using useLocation hook from react-router-dom
   const location = useLocation();
 
@@ -18,14 +18,16 @@ const SignupNavbar = () => {
   return (
     <Navbar expand="lg" className="px-lg-5 fixed-top" style={{ paddingTop: '15px', zIndex: '1000', backgroundColor: '#fff', fontFamily: 'Arial' }}>
       <Navbar.Brand>
+        <NavLink href="/" >
+          <Image
+            src={process.env.PUBLIC_URL + '/logo.png'}
+            alt="Logo"
+            style={{ maxHeight: '45px', paddingRight: '15px'}}
+          />
+          {/* Brand name */}
+          <span style={{ color: '#4D515A', fontSize: '21px' }}>Potluck</span>
+        </NavLink>
         {/* Logo */}
-        <Image
-          src={process.env.PUBLIC_URL + '/logo.png'}
-          alt="Logo"
-          style={{ maxHeight: '45px', paddingRight: '15px'}}
-        />
-        {/* Brand name */}
-        <span style={{ color: '#4D515A', fontSize: '21px' }}>Potluck</span>
       </Navbar.Brand>
       {/* Navbar toggle button */}
       <Navbar.Toggle aria-controls="basic-navbar-nav" />
@@ -40,7 +42,7 @@ const SignupNavbar = () => {
           {/* Contact us link */}
           <NavLink href="/contact" isActive={isLinkActive('/contact')}>Contact us</NavLink>
           {/* Signup button */}
-          <SignupButton />
+          <SignupButton userData={userData}/>
         </Nav>
       </Navbar.Collapse>
     </Navbar>

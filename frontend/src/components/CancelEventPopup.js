@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Container, Row, Col, Form, Image, Button } from 'react-bootstrap';
+import React from 'react';
+import { Container, Row, Form, Button } from 'react-bootstrap';
 import '../styles/modal.css';
 
 // CancelEventPopup component takes onClose function as props

@@ -1,13 +1,40 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom'; 
 import axios from 'axios';
 import NewEventPage1 from './NewEventPage1';
 import NewEventPage2 from './NewEventPage2';
 import NewEventPage3 from './NewEventPage3'; 
+import SignupNavbar from '../components/SignupNavbar';
 
 // Component for managing a multi-page event creation form
 function NewEvent() {
+    const [userData, setUserData] = useState(null);
+
+    useEffect(() => {
+        const fetchUserData = async () => {
+          try {
+            const token = localStorage.getItem('token');
+            if (!token) {
+              throw new Error('User not authenticated');
+            }
+    
+            const authResponse = await axios.get('http://localhost:8000/api/auth', {
+              headers: {
+                Authorization: token,
+              },
+            });
+    
+            const userResponse = await axios.get(`http://localhost:8000/api/users/${authResponse.data.userId}`);
+            setUserData(userResponse.data);
+          } catch (error) {
+            console.log(error);
+          }
+        };
+    
+        fetchUserData();
+      }, []);
+
     const navigate = useNavigate(); // Get history from React Router
 
     // State to track the current page number
@@ -105,6 +132,7 @@ function NewEvent() {
 
     return (
         <div style={{fontFamily: 'Arial'}}>
+            <SignupNavbar userData={userData}/>
 
             {/* Render current page content */}
             {renderPageContent()}
