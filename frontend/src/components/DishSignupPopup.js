@@ -294,7 +294,7 @@ const DishSignupPopup = ({ onClose, onSignup, userId, categoryName, eventId }) =
                                         {/* Display this form conditionally on whether you have the data*/}
                                         
                                         
-                                        {(recommendedDishes.data === undefined) ?
+                                        {(recommendedDishes.data === undefined || recommendedDishes.cuisinesMatch == undefined) ?
                                             (<div>
                                                 <h1>Loading dishes...</h1>
                                             </div>) :
