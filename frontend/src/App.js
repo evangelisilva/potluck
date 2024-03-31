@@ -29,12 +29,6 @@ const App = () => {
   const userId2 = '65d37b72f608ce904718e313'
   const userId3 = '65d37b96f608ce904718e315'
   const eventId = '65d39315f2a7f4725441f1a9'
-  // Remove these here - since it will be easier just to pull the event cuisines directly in the Python code
-  //const eventCuisines = ['American', 'Japanese', 'Thai', 'Italian']
-  const mealCourse = "Main course"
-  const preferredPrepTime = 60
-  const preferredComplexity = "Medium"
-  const preferredPopularity = "Medium"
 
   // user name: Alice Smith
   // Event name: Family BBQ Party
@@ -45,6 +39,8 @@ const App = () => {
     preferredPopularity : "Medium"
   }
 
+  // user name: Emily Brown
+  // Event name: Family BBQ Party
   const recommendationData2 = {
 
     eventId: '65d39315f2a7f4725441f1a9',
@@ -55,13 +51,27 @@ const App = () => {
 
   }
 
+  // user name: Bob Johnson
+  // Event name: Family BBQ Party
+  // *Issue: his dietary restriction is Keto, but there are no Keto desserts, so test desserts with another user
   const recommendationData3 = {
     eventId: '65d39315f2a7f4725441f1a9',
-    mealCourse: 'Main course',
+    mealCourse: 'Main Course',
     preferredPrepTime: 30,
     preferredComplexity: 'Low',
     preferredPopularity: 'Low'
   }
+
+  // user name: John Doe
+  // event name: Family BBQ Party
+  const recommendationData4 = {
+    eventId: '65d39315f2a7f4725441f1a9',
+    mealCourse: 'Dessert',
+    preferredPrepTime: 30,
+    preferredComplexity: 'Low',
+    preferredPopularity: 'High'
+  }
+
   */
 
   /*

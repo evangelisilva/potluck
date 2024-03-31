@@ -111,27 +111,30 @@ def calculate_score(dish):
 
 ## Note: we haven't actually filtered these yet
 ## Helper function for further filtering the dish set - checking for user allergens and event cuisine (to be called in the recommendation algorithm)
-def dishSetExtraFilter(document):
-    # Comparison to the allergens
+def dishSetAllergenFilter(document):
+    # Comparison to the allergens of the USER
     for dishAllergen in document['allergens']:
         for userAllergen in user_document['allergens']:
             # If you have any equality, you know that you can't include this document, so return false
             if (dishAllergen == userAllergen):
                 print('In the extra filter allergens section - what is the conflicting allergen?: ', dishAllergen, ", ", userAllergen)
                 return False
+    return True
 
+    
 
-    # Comparison to the cusines
+def dishSetCuisineFilter(document):
+    # Comparison to the cusines of the EVENT
     # common cusines list (you must have at least one to return true)
-    ####commonCuisinesList = []
-    ####for dishCuisine in document['cuisines']:
-    ####    for eventCuisine in event_cuisines:
-    ####        # Keep track of the matches
-    ####        if (dishCuisine == eventCuisine):
-    ####            print("In the extra filter cusines section. Do we ever have a matching cuisine?: ", dishCuisine, ", ", eventCuisine)
-    ####            commonCuisinesList.append(dishCuisine)
-    ####if (len(commonCuisinesList) == 0):
-    ####    return False
+    commonCuisinesList = []
+    for dishCuisine in document['cuisines']:
+        for eventCuisine in event_cuisines:
+            # Keep track of the matches
+            if (dishCuisine == eventCuisine):
+                print("In the extra filter cusines section. Do we ever have a matching cuisine?: ", dishCuisine, ", ", eventCuisine)
+                commonCuisinesList.append(dishCuisine)
+    if (len(commonCuisinesList) == 0):
+        return False
     return True
 
 
@@ -141,10 +144,8 @@ def recommend_dishes():
     recommended_dishes = []
     
     for dish in dish_set:
-        print("THERE IS A DISH IN THE DISH SET")
-        print("IT IS: ", dish)
-        # before computing the score and appending - check the "extra filter"
-        if (dishSetExtraFilter(dish) == False):
+        # before computing the score and appending - check whether either of the "extra filters" are false
+        if (dishSetAllergenFilter(dish) == False or dishSetCuisineFilter(dish) == False):
             print("Made it to where the extra filter is false for user: ", user_document['firstName'], user_document['lastName'])
             continue
         ####print('In the recommend_dishes algorithm. Do we ever make it past the extra filter??')
@@ -154,7 +155,39 @@ def recommend_dishes():
     # sort in ascending order, since the preferred dishes have the lowest scores
     recommended_dishes.sort(key=lambda x: x[1], reverse=False)
     # at the end, take the top 3 (if more than 3 exist)
-    if (len(recommended_dishes) <= 3):
+    if (len(recommended_dishes) < 3):
+        # in this case, run the loop again to check for extra dishes without allergens
+        
+        
+
+        dish_set2 = dishCollection.find({'course' : meal_course,
+        'dietaryRestrictions' : {"$all" : user_document['dietaryRestrictions']}
+        })
+
+        recommended_dishes_extra = []
+
+
+    
+        for dish in dish_set2:
+            print("THERE IS A DISH IN THE SECOND DISH SET")
+            print("IT IS: ", dish)
+            # ONLY check the allergens this time
+            if (dishSetAllergenFilter(dish) == False):
+                continue
+            ####print('In the recommend_dishes algorithm. Do we ever make it past the extra filter??')
+            score = calculate_score(dish)
+            # Append all dishes with their scores
+            recommended_dishes_extra.append((dish, score))
+        # sort in ascending order, since the preferred dishes have the lowest scores
+        recommended_dishes_extra.sort(key=lambda x: x[1], reverse=False)
+
+
+
+        # append the difference up to 3 before returning
+        lengthDifference = 3 - len(recommended_dishes)
+
+        for i in range(lengthDifference):
+            recommended_dishes.append(recommended_dishes_extra[i])
         return recommended_dishes
     else:
         return recommended_dishes[0:3]
