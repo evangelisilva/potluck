@@ -295,7 +295,9 @@ const DishSignupPopup = ({ onClose, onSignup, userId, categoryName, eventId }) =
                                         
                                         
                                         {(recommendedDishes.data === undefined) ?
-                                            (<div></div>) :
+                                            (<div>
+                                                <h1>Loading dishes...</h1>
+                                            </div>) :
                                             (<div>
                                                <Form>
                                             {recommendedDishes.data.map((dish, index) => (
