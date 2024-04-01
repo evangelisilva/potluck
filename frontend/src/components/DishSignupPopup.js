@@ -3,9 +3,9 @@ import { Container, Row, Form, Button, Col, Image, Card } from 'react-bootstrap'
 import '../styles/modal.css';
 import axios from 'axios';
 
-const DishSignupPopup = ({ onClose, onSignup, userId, categoryName, eventId }) => {
+const DishSignupPopup = ({ onClose, onSignup, userId, categoryName, eventId, dishName }) => {
 
-    const [dishName, setDishName] = useState('');
+    // const [dishName, setDishName] = useState('');
     const [dishDescription, setDishDescription] = useState('');
     const [allergens, setAllergens] = useState('');
     const [dietaryRestrictions, setDietaryRestrictions] = useState('');
@@ -25,61 +25,16 @@ const DishSignupPopup = ({ onClose, onSignup, userId, categoryName, eventId }) =
         setShowRecommendationsForm(false);
     };
 
-    const dishes = [
-        {
-            _id: '12345',
-            dishName: 'Spaghetti Carbonara',
-            description: 'Pasta with creamy sauce, pancetta, and Parmesan cheese.',
-            ingredients: ['Pasta', 'Cream', 'Pancetta', 'Parmesan Cheese'],
-            dietaryRestrictions: [],
-            allergens: ['Dairy', 'Pork'],
-            cuisines: ['Italian'],
-            preparationTime: 30, // in minutes
-            complexity: 'Medium',
-            popularity: 'High'
-        }, 
-        {
-            _id: '12345',
-            dishName: 'Caesar Salad',
-            description: 'Romaine lettuce with Caesar dressing, croutons, and Parmesan cheese.',
-            ingredients: ['Romaine Lettuce', 'Caesar Dressing', 'Croutons', 'Parmesan Cheese'],
-            dietaryRestrictions: ['Vegetarian'],
-            allergens: ['Dairy', 'Gluten'],
-            cuisines: ['American'],
-            preparationTime: 15, // in minutes
-            complexity: 'Low',
-            popularity: 'Medium'
-        }, 
-        {
-            _id: '12345',
-            dishName: 'Chicken Tikka Masala',
-            description: 'Grilled chicken in a spicy tomato-based sauce with Indian spices.',
-            ingredients: ['Chicken', 'Tomato Sauce', 'Indian Spices'],
-            dietaryRestrictions: [],
-            allergens: [],
-            cuisines: ['Indian'],
-            preparationTime: 45, // in minutes
-            complexity: 'High',
-            popularity: 'High'
-        }
-    ]
-    
     const handleSignup = async () => {
-        if (!dishId) {
-            const allergensArray = allergens ? allergens.split(',').map(item => item.trim()) : [];
-            const dietaryRestrictionsArray = dietaryRestrictions ? dietaryRestrictions.split(',').map(item => item.trim()) : [];
-
+        if (!eventId) {
             const dishData = {
-                dishName: dishName,
-                description: dishDescription,
-                allergens: allergensArray,
-                dietaryRestrictions: dietaryRestrictionsArray,
-                course: categoryName,
+                dishId: dishId,
+                userId: userId
             };
     
             try {
-                const response = await axios.post(`http://localhost:8000/api/dishes/`, dishData);
-                console.log('Dish created successfully');
+                const response = await axios.put(`http://localhost:8000/api/events/${eventId}`, dishData);
+                console.log('Dish sign up successfull');
                 onSignup(response.data._id); 
             } catch (error) {
                 console.error('Error creating dish: ', error);
@@ -225,7 +180,7 @@ const DishSignupPopup = ({ onClose, onSignup, userId, categoryName, eventId }) =
                                 </Form.Group> <br />
                                         <Row>
 
-                                        <Form>
+                                        {/* <Form>
                                             {dishes.map((dish, index) => (
                                                 <div key={index} className="mb-3">
                                                 <Form.Check
@@ -265,7 +220,7 @@ const DishSignupPopup = ({ onClose, onSignup, userId, categoryName, eventId }) =
                                                 />
                                                 </div>
                                              ))}
-                                        </Form>
+                                        </Form> */}
                                     
                                         </Row>
                                     </div>  )
@@ -278,7 +233,7 @@ const DishSignupPopup = ({ onClose, onSignup, userId, categoryName, eventId }) =
                                 </Form.Text> 
                                 </Form.Group> <br />
 
-                                <Form.Group controlId="dishName">
+                                {/* <Form.Group controlId="dishName">
                                     <Form.Label>Dish Name</Form.Label>
                                     <Form.Control
                                         type="text"
@@ -286,9 +241,9 @@ const DishSignupPopup = ({ onClose, onSignup, userId, categoryName, eventId }) =
                                         value={dishName}
                                         onChange={(e) => setDishName(e.target.value)}
                                     />
-                                </Form.Group> <br />
+                                </Form.Group> <br /> */}
 
-                                <Form.Group controlId="dishDescription">
+                                {/* <Form.Group controlId="dishDescription">
                                     <Form.Label>Dish Description</Form.Label>
                                     <Form.Control
                                         type="text"
@@ -296,7 +251,7 @@ const DishSignupPopup = ({ onClose, onSignup, userId, categoryName, eventId }) =
                                         value={dishDescription}
                                         onChange={(e) => setDishDescription(e.target.value)}
                                     />
-                                </Form.Group> <br />
+                                </Form.Group> <br /> */}
 
                                 <Form.Group controlId="allergens">
                                     <Form.Label>Allergens</Form.Label>

@@ -2,13 +2,15 @@ import React, { useState } from 'react';
 import { Container, Row, Col, Form, Image, Button } from 'react-bootstrap';
 
 
-function NewEventPage3() {
+function NewEventPage3({ handleEventDataChange }) {
     // State to manage the rows dynamically
-    const [rows, setRows] = useState([{ dish: '', quantity: '', notes: '' }]);
+    const [rows, setRows] = useState([{ name: '', quantityNeeded: '', quantityTaken: '0', notes: '', signups: [ ],dietaryRestrictions: '',
+    allergens: '' }]);
 
     // Function to handle adding a new row
     const handleAddRow = () => {
-        setRows([...rows, { dish: '', quantity: '', notes: '' }]);
+        setRows([...rows, { name: '', quantityNeeded: '', quantityTaken: '0', notes: '', signups: [ ],dietaryRestrictions: '',
+        allergens: '' }]);
     };
 
     // Function to handle changes in input fields
@@ -16,6 +18,7 @@ function NewEventPage3() {
         const newRows = [...rows];
         newRows[index][key] = value;
         setRows(newRows);
+        handleEventDataChange("dishes", rows);
     };
 
     return (
@@ -50,7 +53,7 @@ function NewEventPage3() {
                                         <Form.Control
                                             type="text"
                                             value={row.dish}
-                                            onChange={(e) => handleChange(index, 'dish', e.target.value)}
+                                            onChange={(e) => handleChange(index, 'name', e.target.value)}
                                             style={{width: '200px'}}
                                             required
                                         />
@@ -59,7 +62,7 @@ function NewEventPage3() {
                                         <Form.Control
                                             type="text"
                                             value={row.quantity}
-                                            onChange={(e) => handleChange(index, 'quantity', e.target.value)}
+                                            onChange={(e) => handleChange(index, 'quantityNeeded', e.target.value)}
                                             style={{width: '70px'}}
                                             required
                                         />

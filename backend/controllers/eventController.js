@@ -44,6 +44,7 @@ exports.getEventById = async (req, res) => {
 exports.editEvent = async (req, res) => {
   try {
     const { eventId } = req.params;
+    console.log(req.params);
     const updatedEvent = await Event.findByIdAndUpdate(eventId, req.body, { new: true });
 
     // Check if the event is canceled

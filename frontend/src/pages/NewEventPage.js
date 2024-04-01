@@ -5,7 +5,7 @@ import axios from 'axios';
 import NewEventPage1 from './NewEventPage1';
 import NewEventPage2 from './NewEventPage2';
 import NewEventPage3 from './NewEventPage3'; 
-import SignupNavbar from '../Components/SignupNavbar';
+import SignupNavbar from '../components/SignupNavbar';
 
 // Component for managing a multi-page event creation form
 function NewEvent() {

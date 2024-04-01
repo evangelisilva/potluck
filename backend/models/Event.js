@@ -1,8 +1,13 @@
 const mongoose = require('mongoose');
 
 const dishQuantitySchema = new mongoose.Schema({
-    dish: { type: mongoose.Schema.Types.ObjectId, ref: 'Dish', required: true },
-    quantity: { type: Number, required: true }
+    name: { type: String },
+    quantityTaken: { type: String },
+    quantityNeeded: { type: String },
+    notes: { type: String },
+    dietaryRestrictions: { type: String },
+    allergens: { type: String },
+    signups: { type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true }]}
 });
 
 const locationSchema = new mongoose.Schema({

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Container, Row, Col, Image, Button } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
-import SignupNavbar from '../Components/SignupNavbar';
+import SignupNavbar from '../components/SignupNavbar';
  
 // This component represents the homepage of the application.
 // It includes a header, description, and a button to navigate to the create event page.

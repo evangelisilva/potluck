@@ -1,6 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import RSVP from './Pages/RSVP';
+import RSVP from './pages/RSVP';
 // import RSVPPage from './pages/RSVPPage';
 import { ToastContainer } from 'react-toastify';
 

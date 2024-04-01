@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Container, Row, Col, Card, Button, Image } from 'react-bootstrap';
-import SignupNavbar from '../Components/SignupNavbar';
-import RSVPPopup from '../Components/RSVPPopup';
+import SignupNavbar from '../components/SignupNavbar';
+import RSVPPopup from '../components/RSVPPopup';
 
 function RSVP() {
     const [showRSVPPopup, setShowRSVPPopup] = useState(false);

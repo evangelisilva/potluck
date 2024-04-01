@@ -18,46 +18,11 @@ function MyComponent() {
     const [isConfirmedCancel, setIsConfirmedCancel] = useState(false);
     const [eventDetails, setEventDetails] = useState(null);
     const [userData, setUserData] = useState(null);
-    const [dishCategory, setDishCategory] = useState([]);
 
     const { eventId } = useParams(); 
 
     useEffect(() => {
         fetchEventDetails();
-        setDishCategory([
-            {
-                name: 'Appetizer',
-                quantityNeeded: 2,
-                quantityTaken: 2,
-                signups: [
-                    { _id: '66058818b6618e6111acf901', user: 'Evangeli Silva', dish: 'Spring Rolls', allergens: 'Shellfish', dietaryRestrictions: 'None' },
-                    { _id: '66058818b6618e6111acf901', user: 'Evangeli Silva', dish: 'Bruschetta', allergens: '', dietaryRestrictions: 'Vegetarian' }
-                ]
-            },
-            {
-                name: 'Main course',
-                quantityNeeded: 5,
-                quantityTaken: 2,
-                signups: [
-                    { _id: '66058818b6618e6111acf901', user: 'Evangeli Silva', dish: 'Chicken Alfredo', allergens: 'Dairy', dietaryRestrictions: '' },
-                    { _id: '66058818b6618e6111acf901', user: 'Evangeli Silva', dish: 'Vegetable Stir-Fry', allergens: '', dietaryRestrictions: 'Vegan' }
-                ]
-            },
-            {
-                name: 'Dessert',
-                quantityNeeded: 3,
-                quantityTaken: 1,
-                signups: [
-                    { _id: '66058818b6618e6111acf901', user: 'Evangeli Silva', dish: 'Chocolate Cake', allergens: 'Nuts', dietaryRestrictions: '' },
-                ]
-            },
-            {
-                name: 'Salads',
-                quantityNeeded: 2,
-                quantityTaken: 0,
-                signups: []
-            }
-        ]);
     }, []);
 
     const fetchEventDetails = async () => {
@@ -85,14 +50,7 @@ function MyComponent() {
                 ...response.data,
                 date: formatDate(response.data.date),
                 startTime: formatTime(response.data.startTime),
-                endTime: formatTime(response.data.endTime),
-                dishes: [
-                    { name: 'Lasagna', quantityNeeded: 2, quantityTaken: 0, signups: [] },
-                    { name: 'Potato Salad', quantityNeeded: 3, quantityTaken: 0, signups: [] },
-                    // { name: 'Brownies', quantityNeeded: 2, quantityTaken: 0, signups: [] },
-                    // { name: 'Guacamole', quantityNeeded: 1, quantityTaken: 0, signups: [] },
-                    // { name: 'Fruit Salad', quantityNeeded: 2, quantityTaken: 0, signups: [] }
-                ]
+                endTime: formatTime(response.data.endTime)
             };
             setEventDetails(formattedEventDetails);
         } catch (error) {
@@ -257,18 +215,18 @@ function MyComponent() {
 
     const handleDishSignup = async (dishId) => {
 
-        const dishSignupData = {
-            user: userData._id,
-            event: eventId,
-            dish: dishId  
-        }
+        // const dishSignupData = {
+        //     user: userData._id,
+        //     event: eventId,
+        //     dish: dishId  
+        // }
 
-        try {
-            const response = await axios.post(`http://localhost:8000/api/dishSignups/`, dishSignupData);
+        // try {
+        //     const response = await axios.post(`http://localhost:8000/api/dishSignups/`, dishSignupData);
             console.log('Dish signup successful');
-        } catch (error) {
-            console.error('Error signing up for a dish: ', error);
-        }
+        // } catch (error) {
+        //     console.error('Error signing up for a dish: ', error);
+        // }
     }
 
     return (
@@ -404,7 +362,7 @@ function MyComponent() {
                                                 </Col>}
                                                 
                                                 <Col xs={7}>
-                                                    {dishCategory.map((category, index) => (
+                                                    {eventDetails?.dishes.map((category, index) => (
                                                         <div key={index}>
                                                             <Row>
                                                                 <Col xs={9}>
