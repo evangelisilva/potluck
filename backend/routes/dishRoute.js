@@ -1,5 +1,5 @@
-// const express = require('express');
-// const router = express.Router();
+const express = require('express');
+const router = express.Router();
 // const dishController = require('../controllers/dishController');
 
 // // // Create a new dish
@@ -11,4 +11,4 @@
 // // // Get all dishes
 // // router.get('/', dishController.getAllDishes);
 
-// module.exports = router;
+module.exports = router;
