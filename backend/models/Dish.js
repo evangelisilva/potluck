@@ -15,7 +15,7 @@ const dishSchema = new mongoose.Schema({
     allergens: [String],
     course: {
         type: String,
-        enum: ['Appetizer', 'Main course', 'Dessert', 'Beverage']
+        enum: ['Appetizer', 'Main course', 'Dessert', 'Beverage', 'Salad']
     },
     cuisines: [String],
     preparationTime: Number,

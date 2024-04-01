@@ -1,5 +1,13 @@
 const Event = require('../models/Event');
 const { sendEmail } = require('./emailService');
+const NodeGeocoder = require('node-geocoder');
+require('dotenv').config();
+
+// Configure geocoder with your API key and options
+const geocoder = NodeGeocoder({
+  provider: 'google',
+  apiKey: process.env.GOOGLE_MAP_API_KEY,
+});
 
 // Service function to create a new event
 exports.createEvent = async (eventData) => {
@@ -28,9 +36,52 @@ exports.getEventById = async (eventId) => {
     if (!event) {
       throw new Error('Event not found');
     }
-    return event;
+
+    // Format location as a comma-separated string
+    const { streetAddress1, streetAddress2, city, state, zipCode } = event.location;
+    let locationString = `${streetAddress1}, ${streetAddress2 ? streetAddress2 + ',' : ''} ${city}, ${state} ${zipCode}`;
+
+    // Remove trailing comma if streetAddress2 is not provided
+    locationString = locationString.replace(/,\s*$/, '');
+
+    // Perform geocoding to get coordinates
+    const geocodeResult = await geocoder.geocode(locationString);
+    const coordinates = {
+      lat: geocodeResult[0].latitude,
+      lng: geocodeResult[0].longitude,
+    };
+
+    // Update event object with formatted location and coordinates
+    const eventWithFormattedLocation = {
+      ...event._doc,
+      location: locationString,
+      coordinates,
+    };
+
+    return eventWithFormattedLocation;
   } catch (error) {
     throw new Error('Could not retrieve event details');
+  }
+};
+
+exports.incrementTaken = async (eventId, categoryName) => {
+  const event = await Event.findById(eventId);
+  if (!event) {
+    throw new Error('Event not found');
+  }
+
+  const categoryToUpdate = event.dishCategory.find(category => category.name === categoryName);
+  if (!categoryToUpdate) {
+    throw new Error(`Dish category '${categoryName}' not found in event with ID '${eventId}'.`);
+  }
+
+  categoryToUpdate.taken += 1;
+
+  try {
+    const updatedEvent = await event.save();
+    return updatedEvent;
+  } catch (error) {
+    throw new Error('Error saving updated event data');
   }
 };
 
