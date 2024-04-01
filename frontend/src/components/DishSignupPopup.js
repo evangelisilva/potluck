@@ -80,14 +80,22 @@ const DishSignupPopup = ({ onClose, onSignup, userId, categoryName, eventId }) =
             try {
                 const response = await axios.post(`http://localhost:8000/api/dishes/`, dishData);
                 console.log('Dish created successfully');
-                onSignup(response.data._id); 
+                const signupData = {
+                    dishId: response.data._id,
+                    categoryName: categoryName
+                }
+                onSignup(signupData); 
             } catch (error) {
                 console.error('Error creating dish: ', error);
             }
         } 
         
         if (dishId) {
-            onSignup(dishId);
+            const signupData = {
+                dishId: dishId,
+                categoryName: categoryName
+            }
+            onSignup(signupData);
         }
         
         onClose();

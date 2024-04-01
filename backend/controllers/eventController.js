@@ -29,13 +29,24 @@ exports.getAllEvents = async (req, res) => {
 exports.getEventById = async (req, res) => {
   try {
     const eventId = req.params.eventId;
-    const event = await Event.findById(eventId);
+    const event = await eventService.getEventById(eventId);
     if (!event) {
       return res.status(404).json({ error: 'Event not found' });
     }
     res.json(event);
   } catch (error) {
     console.error('Error retrieving event:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
+exports.updateTakenQuantity = async (req, res) => {
+  const { eventId, categoryName } = req.params;
+  try {
+    const updatedEvent = await eventService.incrementTaken(eventId, categoryName);
+    res.status(200).json(updatedEvent);
+  } catch (error) {
+    console.error('Error updating event:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 };

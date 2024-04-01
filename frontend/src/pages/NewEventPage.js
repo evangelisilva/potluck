@@ -72,9 +72,13 @@ function NewEvent() {
         invitedGuests: [],
         status: 'active',
         visibility: 'public',
-        dishes: [],
+        dishCategory: [],
         coverImage: ''
     });
+
+    const handleDishCategoryChange = (newDishCategory) => {
+        setEventData({ ...eventData, dishCategory: newDishCategory });
+    };
 
     // Function to handle moving to the previous page
     const prevPage = () => {
@@ -89,7 +93,7 @@ function NewEvent() {
             case 2:
                 return <NewEventPage2 handleEventDataChange={handleEventDataChange} />;
             case 3:
-                return <NewEventPage3 handleEventDataChange={handleEventDataChange} />;
+                return <NewEventPage3 handleDishCategoryChange={handleDishCategoryChange} />;
             // case 4:
             //     return <NewEventPage4 />;
             default:

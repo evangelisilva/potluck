@@ -9,7 +9,6 @@ exports.createDishSignup = async (req, res) => {
         const dishSignup = await dishSignupService.createDishSignup(req.body);
         res.status(201).json(dishSignup);
     } catch (error) {
-        console.error(error);
         console.error('Error creating dish signup:', error);
         res.status(500).json({ error: 'Internal server error' });
     }
@@ -42,7 +41,16 @@ exports.deleteDishSignup = async (req, res) => {
 // Controller function to retrieve all dish signups
 exports.getAllDishSignups = async (req, res) => {
     try {
-        const dishSignups = await dishSignupService.getAllDishSignups();
+        const eventId = req.query.event;
+
+        let dishSignups;
+
+        if (eventId) {
+            dishSignups = await dishSignupService.getDishSignupsByEvent(eventId);
+        } else {
+            dishSignups = await dishSignupService.getAllDishSignups();
+        }
+
         res.status(200).json(dishSignups);
     } catch (error) {
         console.error('Error retrieving all dish signups:', error);
