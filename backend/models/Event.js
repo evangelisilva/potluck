@@ -1,13 +1,17 @@
 const mongoose = require('mongoose');
 
-const dishQuantitySchema = new mongoose.Schema({
-    name: { type: String },
-    quantityTaken: { type: String },
-    quantityNeeded: { type: String },
-    notes: { type: String },
+const signUpSchema = new mongoose.Schema({
     dietaryRestrictions: { type: String },
     allergens: { type: String },
-    signups: { type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true }]}
+    userId: { type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true }]}
+});
+
+const dishQuantitySchema = new mongoose.Schema({
+    name: { type: String },
+    quantityTaken: { type: Number },
+    quantityNeeded: { type: Number },
+    notes: { type: String },
+    signups: { type: [signUpSchema]}
 });
 
 const locationSchema = new mongoose.Schema({

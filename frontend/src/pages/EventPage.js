@@ -227,6 +227,7 @@ function MyComponent() {
         // } catch (error) {
         //     console.error('Error signing up for a dish: ', error);
         // }
+        fetchEventDetails();
     }
 
     return (

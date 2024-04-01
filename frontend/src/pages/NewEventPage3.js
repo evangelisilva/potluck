@@ -4,13 +4,11 @@ import { Container, Row, Col, Form, Image, Button } from 'react-bootstrap';
 
 function NewEventPage3({ handleEventDataChange }) {
     // State to manage the rows dynamically
-    const [rows, setRows] = useState([{ name: '', quantityNeeded: '', quantityTaken: '0', notes: '', signups: [ ],dietaryRestrictions: '',
-    allergens: '' }]);
+    const [rows, setRows] = useState([{ name: '', quantityNeeded: 0, quantityTaken: 0, notes: '', signups: [] }]);
 
     // Function to handle adding a new row
     const handleAddRow = () => {
-        setRows([...rows, { name: '', quantityNeeded: '', quantityTaken: '0', notes: '', signups: [ ],dietaryRestrictions: '',
-        allergens: '' }]);
+        setRows([...rows, { name: '', quantityNeeded: 0, quantityTaken: 0, notes: '', signups: [ ]}]);
     };
 
     // Function to handle changes in input fields

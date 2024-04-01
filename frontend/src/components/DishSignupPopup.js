@@ -3,7 +3,7 @@ import { Container, Row, Form, Button, Col, Image, Card } from 'react-bootstrap'
 import '../styles/modal.css';
 import axios from 'axios';
 
-const DishSignupPopup = ({ onClose, onSignup, userId, categoryName, eventId, dishName }) => {
+const DishSignupPopup = ({ onClose, onSignup, userId, categoryName, eventId }) => {
 
     // const [dishName, setDishName] = useState('');
     const [dishDescription, setDishDescription] = useState('');
@@ -26,15 +26,18 @@ const DishSignupPopup = ({ onClose, onSignup, userId, categoryName, eventId, dis
     };
 
     const handleSignup = async () => {
-        if (!eventId) {
+        console.log(eventId)
+        if (eventId) {
             const dishData = {
-                dishId: dishId,
-                userId: userId
+                dishName: categoryName,
+                userId: userId,
+                dietaryRestrictions,
+                allergens
             };
     
             try {
                 const response = await axios.put(`http://localhost:8000/api/events/${eventId}`, dishData);
-                console.log('Dish sign up successfull');
+                console.log('Dish sign up successful');
                 onSignup(response.data._id); 
             } catch (error) {
                 console.error('Error creating dish: ', error);
