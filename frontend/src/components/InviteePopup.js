@@ -54,7 +54,7 @@ const InviteePopup = ({ onClose, eventId, onSuccess }) => {
     return (
         // Modal overlay
         <div className="modal-overlay">
-            <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable" style={{height: '80%'}}>
+            <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable">
                 <div className="modal-content">
                     <div className="modal-body">
                         {/* Container for the content */}
@@ -119,7 +119,8 @@ const InviteePopup = ({ onClose, eventId, onSuccess }) => {
                                 border: 'None',
                                 fontFamily: 'Arial',
                                 marginRight: '10px',
-                                color: ' #4D515A'
+                                color: ' #4D515A',
+                                marginBottom: '50px'
                             }}>
                             Cancel
                         </Button>

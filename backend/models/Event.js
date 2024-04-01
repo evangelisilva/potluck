@@ -15,7 +15,9 @@ const locationSchema = new mongoose.Schema({
 
 const eventSchema = new mongoose.Schema({
     title: { type: String, required: true },
-    description: { type: String, required: true },
+    description: { type: String},
+    // Add this field
+    cuisines : {type : [String]},
     date: { type: Date, required: true },
     startTime: { type: String, required: true },
     endTime: { type: String, required: true },

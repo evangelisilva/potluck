@@ -7,8 +7,14 @@ const eventRoute = require('./routes/eventRoute');
 const userRoute = require('./routes/userRoute');
 const dishRoute = require('./routes/dishRoute');
 const rsvpRoutes = require('./routes/rsvpRoute');
-const dishSignup = require('./models/DishSignup');
+const dishSignupRoute = require('./routes/dishSignupRoute');
 const { sendEmail } = require('./services/emailService');
+const userService = require('./services/userService');
+
+const dishRecommendationTest = require('./models/Dish');
+
+const Event = require('./models/Event');
+
 
 // Load environment variables from .env file
 dotenv.config();
@@ -21,14 +27,28 @@ app.use(bodyParser.json());
 app.use(cors());
 
 // Middleware
-app.use(express.json()); // Parse JSON bodies
-app.use(express.urlencoded({ extended: true })); // Parse URL-encoded bodies
+app.use(express.json()); 
+app.use(express.urlencoded({ extended: true }));
+
+app.get('/api/auth', (req, res) => {
+  try {
+    const token = req.header('Authorization');
+    if (!token) {
+      return res.status(401).json({ message: 'Access denied. No token provided.' });
+    }
+    const userId = userService.extractUserIdFromToken(token);
+    res.json({userId});
+  } catch (error) {
+    console.error('Error retrieving user profile:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
 
 // Routes
 app.use('/api/events', eventRoute);
 app.use('/api/users', userRoute);
 app.use('/api/dishes', dishRoute);
-app.use('/api/dishSignups', dishSignup);
+app.use('/api/dishSignups', dishSignupRoute);
 app.use('/api/rsvp', rsvpRoutes);
 
 app.get('/', (req, res) => {
@@ -60,4 +80,47 @@ mongoose.connect(process.env.DB_CONNECTION)
   console.error('Error connecting to MongoDB:', error);
 });
 
+// Api for filling the dish recommendation table
+app.get('/dish-recommendation-test-fill', async (req, res) => {
 
+  // reset everything in the table first
+  const result = await dishRecommendationTest.deleteMany({});
+
+  const csvtojson = require('csvtojson');
+
+
+  const csvFilePath = 'dishData.csv';
+
+
+  jsonDishData = await csvtojson().fromFile(csvFilePath)
+
+  console.log("What does the json dish data look like?")
+  console.log(jsonDishData)
+
+  try {
+    for (let i = 0; i < jsonDishData.length; i++){
+      // Split the fields of: ingredients: [String], dietaryRestrictions: [String], allergens: [String], cuisines: [String],
+      console.log("Filling out the data - what are the ingredients: ", jsonDishData[i].ingredients)
+      jsonDishData[i].ingredients = jsonDishData[i].ingredients.split("-");
+      jsonDishData[i].dietaryRestrictions = jsonDishData[i].dietaryRestrictions.split("|");
+      // note: you may need to add back dashes in the dietary restrictions
+
+      jsonDishData[i].allergens = jsonDishData[i].allergens.split("-");
+      jsonDishData[i].cuisines = jsonDishData[i].cuisines.split("-");
+      const dishRecord = new dishRecommendationTest(jsonDishData[i]);
+      await dishRecord.save();
+    }
+  }
+  catch(e){
+    console.log("Error: ")
+    console.log(e)
+  }
+
+  res.json({message : "Finished filling out the dish recommendations"})
+})
+
+app.get('/testApi', async (req, res) => {
+  // Test find of the model to do something with it
+  await Event.find({})
+  res.json({Message : "done finding"})
+})

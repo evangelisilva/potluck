@@ -4,11 +4,11 @@ import { Container, Row, Col, Form, Image, Button } from 'react-bootstrap';
 
 function NewEventPage3() {
     // State to manage the rows dynamically
-    const [rows, setRows] = useState([{ product: '', quantity: '', notes: '' }]);
+    const [rows, setRows] = useState([{ dish: '', quantity: '', notes: '' }]);
 
     // Function to handle adding a new row
     const handleAddRow = () => {
-        setRows([...rows, { product: '', quantity: '', notes: '' }]);
+        setRows([...rows, { dish: '', quantity: '', notes: '' }]);
     };
 
     // Function to handle changes in input fields
@@ -49,8 +49,8 @@ function NewEventPage3() {
                                     <Col style={{ paddingRight: '12px' }}>
                                         <Form.Control
                                             type="text"
-                                            value={row.product}
-                                            onChange={(e) => handleChange(index, 'product', e.target.value)}
+                                            value={row.dish}
+                                            onChange={(e) => handleChange(index, 'dish', e.target.value)}
                                             style={{width: '200px'}}
                                             required
                                         />

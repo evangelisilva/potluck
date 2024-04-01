@@ -1,7 +1,37 @@
-import React from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { Navbar, Nav, Image, Container, Row, Col, Form, Button } from 'react-bootstrap';
+import axios from 'axios';
+import { useNavigate } from "react-router-dom";
 
 function SigninPage() {
+    const navigate = useNavigate()
+    const [error, setError] = useState('');
+    const [formData, setFormData] = useState({
+        email: '',
+        password: ''
+    });
+
+    const { email, password } = formData;
+
+    const handleChange = e =>
+        setFormData({ ...formData, [e.target.name]: e.target.value });
+
+    const handleSubmit = async e => {
+        e.preventDefault();
+        try {
+          const res = await axios.post('http://localhost:8000/api/users/signin', formData);
+          console.log(res.data);
+          localStorage.setItem('token', res.data.token);
+          navigate('/dashboard');
+        } catch (err) {
+          if (err.response.data.message) {
+            setError(err.response.data.message);
+          } else {
+            console.error(err.response.data);
+          }
+        }
+    };
+
     return (
         <div>
         <Navbar expand="lg" className="px-lg-5 fixed-top" style={{ paddingTop: '15px', zIndex: '1000', backgroundColor: '#fff', fontFamily: 'Arial' }}>
@@ -21,14 +51,15 @@ function SigninPage() {
         <Container style={{paddingRight: '26%', paddingLeft: '26%', paddingTop: '5%'}}>
             {/* Title */}
             <h2 style={{ fontFamily: 'Times New Roman', fontSize: '50px', marginBottom: '15px' }}>Sign In</h2> <br />
-            <Form> 
+            {error && <p style={{ color: 'red', fontSize: '15px'}}>{error}</p>}
+            <Form onSubmit={handleSubmit}> 
                 <Form.Group>
                     <Form.Label>Email Address</Form.Label>
-                    <Form.Control type="text" />
+                    <Form.Control type='email' name='email' value={email} onChange={handleChange} autoComplete="true" required/>
                 </Form.Group>  <br />            
                 <Form.Group>
                     <Form.Label>Password</Form.Label>
-                    <Form.Control type="password" />
+                    <Form.Control type='password' name='password' value={password} onChange={handleChange} autoComplete='true' required />
                 </Form.Group>  
                 <p style={{textAlign: 'right', paddingTop: '5px', fontSize: '14px', color: 'gray'}}><a href='/' style={{color: 'gray'}}>Forgot password?</a></p>    
                 <Button
@@ -65,6 +96,6 @@ const NavLink = ({ href, isActive, children }) => (
       {/* Link text */}
       <span style={{ fontFamily: 'Arial', color: '#4D515A', fontSize: '17px' }}>{children}</span>
     </Nav.Link>
-  );
+);
 
 export default SigninPage;
