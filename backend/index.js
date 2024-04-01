@@ -11,7 +11,7 @@ const dishSignupRoute = require('./routes/dishSignupRoute');
 const { sendEmail } = require('./services/emailService');
 const userService = require('./services/userService');
 
-const dishRecommendationTest = require('./models/Dish');
+// const dishRecommendationTest = require('./models/Dish');
 
 const Event = require('./models/Event');
 
@@ -84,7 +84,7 @@ mongoose.connect(process.env.DB_CONNECTION)
 app.get('/dish-recommendation-test-fill', async (req, res) => {
 
   // reset everything in the table first
-  const result = await dishRecommendationTest.deleteMany({});
+  // const result = await dishRecommendationTest.deleteMany({});
 
   const csvtojson = require('csvtojson');
 
@@ -107,8 +107,8 @@ app.get('/dish-recommendation-test-fill', async (req, res) => {
 
       jsonDishData[i].allergens = jsonDishData[i].allergens.split("-");
       jsonDishData[i].cuisines = jsonDishData[i].cuisines.split("-");
-      const dishRecord = new dishRecommendationTest(jsonDishData[i]);
-      await dishRecord.save();
+      // const dishRecord = new dishRecommendationTest(jsonDishData[i]);
+      // await dishRecord.save();
     }
   }
   catch(e){

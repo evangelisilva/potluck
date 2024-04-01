@@ -1,12 +1,12 @@
 const dishSignupService = require('../services/dishSignupService');
-const Dish = require('../models/Dish');
+// const Dish = require('../models/Dish');
 const User = require('../models/User');
-const eventService = require('../services/eventService';)
+const eventService = require('../services/eventService');
 
 // Controller function to create a new dish signup
 exports.createDishSignup = async (req, res) => {
     try {
-        const dishSignup = await eventService.editEvent(req.body);
+        // const dishSignup = await eventService.editEvent(req.body);
         const dishSignup = await dishSignupService.createDishSignup(req.body);
         res.status(201).json(dishSignup);
     } catch (error) {
