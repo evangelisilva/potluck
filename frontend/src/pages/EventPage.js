@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Card, Button, Image, Dropdown, Table } from 'react-bootstrap';
 import { useParams } from 'react-router-dom';
+import { GoogleMap, LoadScript, MarkerF } from '@react-google-maps/api';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+
 import InviteePopup from '../components/InviteePopup';
 import EditEventPopup from '../components/EditEventPopup';
 import CancelEventPopup from '../components/CancelEventPopup';
@@ -9,6 +12,8 @@ import DishSignupPopup from '../components/DishSignupPopup';
 import SignupNavbar from '../components/SignupNavbar';
 
 function MyComponent() {
+    const navigate = useNavigate();
+
     const [showInviteesPopup, setShowInviteesPopup] = useState(false);
     const [showEditEventPopup, setShowEditEventPopup] = useState(false);
     const [showCancelEventPopup, setShowCancelEventPopup] = useState(false);
@@ -18,23 +23,46 @@ function MyComponent() {
     const [isConfirmedCancel, setIsConfirmedCancel] = useState(false);
     const [eventDetails, setEventDetails] = useState(null);
     const [userData, setUserData] = useState(null);
-    const [dishCategory, setDishCategory] = useState([]);
+    const [dishSignupData, setDishSignupData] = useState(null);
 
     const { eventId } = useParams(); 
 
-
-
     useEffect(() => {
         fetchEventDetails();
-        //setDishCategory(dish);
+        fetchSignupsByEventId();
+        
     }, []);
+
+    const eventDetail = {
+        guests: [
+            { name: 'Alice', status: 'Attending' },
+            { name: 'Bob', status: 'Invited' },
+            { name: 'Charlie', status: 'Attending' },
+            { name: 'David', status: 'Attending' },
+            { name: 'Eve', status: 'Not Attending' },
+            { name: 'Frank', status: 'Attending' },
+            { name: 'Grace', status: 'Attending' },
+            { name: 'Henry', status: 'Attending' },
+            { name: 'Ivy', status: 'May be' },
+        ]
+    };
+
+    const fetchSignupsByEventId = async () => {
+        try {
+            const signupByEventResponse = await axios.get(`http://localhost:8000/api/dishSignups?event=${eventId}`);
+            setDishSignupData(signupByEventResponse.data);
+        } catch (error) {
+            console.error('Error fetching events:', error);
+        }
+    }
 
     const fetchEventDetails = async () => {
         try {
 
             const token = localStorage.getItem('token');
             if (!token) {
-              throw new Error('User not authenticated');
+                navigate('/signin'); // Redirect to signin page if token is not available
+                return;
             }
     
             const authResponse = await axios.get('http://localhost:8000/api/auth', {
@@ -50,98 +78,13 @@ function MyComponent() {
             if (response.data.status == 'canceled') {
                 setIsConfirmedCancel(true);
             }
-
-            const signup_response = await axios.get(`http://localhost:8000/api/dishSignups`);
-
-            const users = [];
-            signup_response.data.filter((signup => signup.event === eventId)).map((signup, index) => {
-                if(users[signup.dish]) {
-                    users[signup.dish].push(signup.user)
-                } else {
-                    users[signup.dish] = [signup.user]
-                }
-            });
-            console.log("Data", users, response.data);
-
-            // const eventDetails = await axios.get(`http://localhost:8000/api/events/details/${eventId}`);
-
-            // console.log("data", eventDetails);
-
             const formattedEventDetails = {
                 ...response.data,
                 date: formatDate(response.data.date),
                 startTime: formatTime(response.data.startTime),
                 endTime: formatTime(response.data.endTime),
-                // dishes: [
-                //     { name: 'Lasagna', quantityNeeded: 2, quantityTaken: 0, signups: [] },
-                //     { name: 'Potato Salad', quantityNeeded: 3, quantityTaken: 0, signups: [] },
-                //     // { name: 'Brownies', quantityNeeded: 2, quantityTaken: 0, signups: [] },
-                //     // { name: 'Guacamole', quantityNeeded: 1, quantityTaken: 0, signups: [] },
-                //     // { name: 'Fruit Salad', quantityNeeded: 2, quantityTaken: 0, signups: [] }
-                // ]
             };
-            
-
-            let dish = [
-                {
-                    name: 'Appetizer',
-                    quantityNeeded: 2,
-                    quantityTaken: 0,
-                    signups: []
-                },
-                {
-                    name: 'Main course',
-                    quantityNeeded: 5,
-                    quantityTaken: 0,
-                    signups: []
-                },
-                {
-                    name: 'Dessert',
-                    quantityNeeded: 3,
-                    quantityTaken: 0,
-                    signups: []
-                },
-                {
-                    name: 'Salads',
-                    quantityNeeded: 2,
-                    quantityTaken: 0,
-                    signups: []
-                }
-            ]
-
-            let allergen = [];
-            let dietaryRestriction = [];
-
-            formattedEventDetails.dishes.map((dishes, index) => {
-                let num = 3;
-                if(dishes.dish.course == "Appetizer") {
-                    num = 0;
-                } else if(dishes.dish.course == "Main course") {
-                    num = 1;
-                } else if(dishes.dish.course == "Dessert") {
-                    num = 2;
-                }
-                let dishData = {
-                    _id: formattedEventDetails._id,
-                    user: formattedEventDetails.organizer,
-                    dish: dishes.dish.dishName,
-                    allergens: dishes.dish.allergens,
-                    dietaryRestrictions: dishes.dish.dietaryRestrictions
-                }
-                dish[num].signups.push(dishData);
-                if(dishData.allergens != 'None' || dishData.allergens.trim() != ''){
-                    allergen[dishData.allergens] = 1;
-                }
-                if(dishData.dietaryRestrictions != 'None' || dishData.dietaryRestrictions.trim() != ''){
-                    dietaryRestriction[dishData.dietaryRestrictions] = 1;
-                }
-                dish[num].quantityTaken ++;
-            })
-            formattedEventDetails.allergen = Object.keys(allergen);
-            formattedEventDetails.dietaryRestriction = Object.keys(dietaryRestriction);
-            console.log(formattedEventDetails.allergen)
             setEventDetails(formattedEventDetails);
-            setDishCategory(dish);
         } catch (error) {
             console.error('Error fetching data:', error);
         }
@@ -302,20 +245,23 @@ function MyComponent() {
         }
     };
 
-    const handleDishSignup = async (dishId) => {
-        console.log(dishId);
+    const handleDishSignup = async (signupData) => {
 
         const dishSignupData = {
             user: userData._id,
             event: eventId,
-            dish: dishId  
+            dish: signupData.dishId,
+            dishCategory: signupData.categoryName
         }
-        console.log(dishSignupData);
 
         try {
-            const response = await axios.post(`http://localhost:8000/api/dishSignups/`, dishSignupData);
+            await axios.post(`http://localhost:8000/api/dishSignups/`, dishSignupData);
             console.log('Dish signup successful');
+
+            await axios.put(`http://localhost:8000/api/events/${eventId}/update-taken/${signupData.categoryName}`);
             fetchEventDetails();
+
+            window.location.reload();
         } catch (error) {
             console.error('Error signing up for a dish: ', error);
         }
@@ -369,23 +315,9 @@ function MyComponent() {
                                             </Row>
                                             {eventDetails && <Card.Subtitle className="mb-2 text-muted">{eventDetails.date} | {eventDetails.startTime} - {eventDetails.endTime}</Card.Subtitle>}
                                             {eventDetails && <Card.Text style={{ color: isConfirmedCancel? 'gray': '#4D515A' }}><strong>Location: </strong> 
-                                                {eventDetails.location.streetAddress1},&nbsp;
-                                                {eventDetails.location.streetAddress2 && `, ${eventDetails.location.streetAddress2}`}
-                                                {eventDetails.location.city},&nbsp;
-                                                {eventDetails.location.state},&nbsp;
-                                                {eventDetails.location.zipCode}
+                                                {eventDetails.location}
                                             </Card.Text>}
                                             {eventDetails && <Card.Text style={{ fontSize: '15px', color: isConfirmedCancel ? 'gray': '#4D515A' }}>{eventDetails.description}</Card.Text>}
-                                            {eventDetails && eventDetails.dietaryRestriction.length > 0 && (<Card.Text>Dietary Restrictions: {eventDetails.dietaryRestriction.map((item, index) => {
-                                                if(eventDetails.dietaryRestriction.length == index + 1) return item;
-                                                else return item + ","; 
-                                            })}</Card.Text> )}
-                                            {eventDetails && eventDetails.dietaryRestriction.length == 0 &&<Card.Text>Dietary Restrictions: None</Card.Text>}
-                                            {eventDetails && eventDetails.allergen.length > 0 && (<Card.Text>Allergens: {eventDetails.allergen.map((item, index) => {
-                                                if(eventDetails.allergen.length == index + 1) return item;
-                                                else return item + ","; 
-                                            })}</Card.Text> )}
-                                            {eventDetails && eventDetails.allergen.length == 0 &&<Card.Text>Allergens: None</Card.Text>}
                                         </Card.Body>   
                                         {/* Horizontal line */}
                                         <hr style={{ borderTop: '1px solid #ccc', margin: '20px 0' }} />
@@ -393,6 +325,21 @@ function MyComponent() {
                                         {/* Row for dish signups and guest list */}
                                         <Row style={{marginRight: '10px', marginLeft: '10px'}}>
                                             {eventDetails &&  <Col xs={5}>
+                                                <Row>
+                                                    <Col style={{ width: '90%' }}>
+                                                        <Card.Title style={{ fontSize: '18px', color: isConfirmedCancel? 'gray': 'black', marginBottom: '12px' }}>Location</Card.Title>
+                                                    </Col>
+                                                </Row>
+                                                    
+                                                <Row>
+                                                    <LoadScript googleMapsApiKey='AIzaSyCtbRo01fTbzufcODkYOvggZVMj9LnBFyE'>
+                                                        <GoogleMap mapContainerStyle={{ height: '300px', width: '95%', borderRadius: '20px', marginLeft: '8px'}} zoom={15} center={eventDetails.coordinates}>
+                                                            {eventDetails && <MarkerF position={eventDetails.coordinates} />}
+                                                        </GoogleMap>
+                                                    </LoadScript>
+
+                                                </Row> <br />
+
                                                 <Row>
                                                     <Col style={{ width: '90%' }}>
                                                         <Card.Title style={{ fontSize: '18px', color: isConfirmedCancel? 'gray': 'black', marginBottom: '12px' }}>Guest List</Card.Title>
@@ -406,11 +353,11 @@ function MyComponent() {
                                                                 <Row>
                                                                     <Col>
                                                                         {/* <Card.Subtitle style={{fontSize: '25px'}}>{eventDetails.invitedGuests.filter(guest => guest.status === 'Attending').length}</Card.Subtitle> */}
-                                                                        <Card.Subtitle style={{fontSize: '25px'}}>0</Card.Subtitle>
+                                                                        <Card.Subtitle style={{fontSize: '25px'}}>{eventDetail.guests.filter(guest => guest.status == 'Attending').length}</Card.Subtitle>
                                                                     </Col>
                                                                     <Col>
                                                                         {/* <Card.Subtitle style={{fontSize: '25px'}}>{eventDetails.invitedGuests.filter(guest => guest.status === 'May be').length}</Card.Subtitle> */}
-                                                                        <Card.Subtitle style={{fontSize: '25px'}}>0</Card.Subtitle>
+                                                                        <Card.Subtitle style={{fontSize: '25px'}}>{eventDetail.guests.filter(guest => guest.status == 'May be').length}</Card.Subtitle>
                                                                     </Col>
                                                                     <Col>
                                                                         <Card.Subtitle style={{fontSize: '25px'}}>{eventDetails.invitedGuests.length}</Card.Subtitle>
@@ -433,9 +380,12 @@ function MyComponent() {
                                                         </Card>
                                                     </Col>
                                                 </Row>
+
+                                                
                                                 {/* Guest list */}
-                                                {/* {eventDetails.invitedGuests
-                                                    .filter(guest => guest.status !== 'Invited') // Exclude guests with 'Invited' status
+                                                {eventDetail.guests
+                                                    .filter(guest => guest.status !== 'Invited')
+                                                    .filter(guest => guest.status !== 'Not Attending') // Exclude guests with 'Invited' status
                                                     .map((guest, index) => (
                                                         <Row key={index}>
                                                             <Col>
@@ -445,9 +395,9 @@ function MyComponent() {
                                                                             <Col>
                                                                                 <Card.Subtitle>{guest.name}</Card.Subtitle>
                                                                                 <Card.Text style={{fontSize: '13px', color: 'gray'}}>{guest.status}</Card.Text>
-                                                                            </Col> */}
+                                                                            </Col> 
                                                                             {/* Button to send message */}
-                                                                            {/* {guest.status === 'Attending' && (
+                                                                            {guest.status === 'Attending' && (
                                                                                 <Col className="d-flex justify-content-end">
                                                                                     <Button variant="primary" style={{borderColor: '#A39A9A', backgroundColor: "transparent", color: '#4D515A', fontSize: '15px', marginRight: '5px' }}>
                                                                                         <Image src={process.env.PUBLIC_URL + '/chat.png'} style={{ maxWidth: '25px', paddingRight: '5px' }} fluid />
@@ -460,61 +410,71 @@ function MyComponent() {
                                                                 </Card>
                                                             </Col>
                                                         </Row>
-                                                    ))} */}
+                                                    ))}
                                                 </Col>}
-                                                
+
                                                 <Col xs={7}>
-                                                    {dishCategory.map((category, index) => (
-                                                        <div key={index}>
-                                                            <Row>
-                                                                <Col xs={9}>
-                                                                    <Card.Title style={{ fontSize: '18px', color: isConfirmedCancel ? 'gray' : 'black', marginBottom: '2px' }}>{category.name}</Card.Title>
-                                                                    <Card.Text style={{ fontSize: '14px', color: 'gray', marginBottom: '15px' }}>{
-                                                                        category.quantityNeeded - category.quantityTaken} out of {category.quantityNeeded} slots available
-                                                                    </Card.Text>
-                                                                </Col>
-                                                                <Col xs={3}>
-                                                                        <Button
-                                                                            style={{ 
-                                                                            fontFamily: 'Arial',
-                                                                            color: '#4D515A', 
-                                                                            backgroundColor: 'transparent',
-                                                                            border: '1px solid #4D515A',
-                                                                            fontSize: '15px',
-                                                                            paddingLeft: '19px',
-                                                                            paddingRight: '19px',
-                                                                            marginBottom: '5px',
-                                                                            width: '100%',
-                                                                            borderRadius: '20px',
-                                                                        }}
-                                                                        disabled={isConfirmedCancel}
-                                                                        onClick={() => openDishSignupPopup(category.name)}>Sign up</Button>
-                                                                </Col>
-                                                        
-                                                            </Row>
-                                                            <Row>
-                                                                {category.signups.map((signup, signupIndex) => (
-                                                                    <Col key={signupIndex} xs={12}>
-                                                                        <Card style={{ marginBottom: '5px', color: isConfirmedCancel ? 'gray' : '#4D515A', borderRadius: '10px', marginBottom: '10px' }}>
-                                                                            <Card.Body>
-                                                                                <Row>
-                                                                                    <Col xs={2}>
-                                                                                    <Image src={process.env.PUBLIC_URL + '/dish.png'} style={{ maxWidth: '85%', marginLeft: '10px' }} fluid />
-                                                                                    </Col>
-                                                                                    <Col xs={10}>
-                                                                                        <Card.Title style={{ fontSize: '15px' }}>{signup.dish}</Card.Title>
-                                                                                        <Card.Text style={{ fontSize: '12px', color: 'gray' }}>Allergens: { signup.allergens ? signup.allergens : 'None' } | Dietary Restrictions:  { signup.dietaryRestrictions ? signup.dietaryRestrictions : 'None' } </Card.Text>
-                                                                                        {/* <Card.Text style={{ fontSize: '14px' }}>{signup.user.firstName + ' ' + signup.user.lastName}</Card.Text> */}
-                                                                                    </Col>
-                                                                                </Row>
-                                                                            </Card.Body>
-                                                                        </Card>
-                                                                    </Col>
-                                                                ))}
-                                                            </Row> 
-                                                            <hr style={{ borderTop: '1px solid #000', margin: '20px 0' }} />
-                                                        </div> 
-                                                    ))} 
+                                                {eventDetails && eventDetails.dishCategory.map((category, index) => (
+                                                    
+                                                    <div key={index}>
+                                                        <Row>
+                                                            <Col xs={9}>
+                                                                <Card.Title style={{ fontSize: '18px', color: isConfirmedCancel ? 'gray' : 'black', marginBottom: '2px' }}>{category.name}</Card.Title>
+                                                                
+                                                                <Card.Text style={{ fontSize: '14px', color: 'gray', marginBottom: '15px' }}>
+                                                                    {category.taken} out of {category.quantity} slots available
+                                                                </Card.Text>
+                                                            </Col>
+                                                            <Col xs={3}>
+                                                                {category.quantity !== category.taken && (
+                                                                <Button
+                                                                    style={{ 
+                                                                        fontFamily: 'Arial',
+                                                                        color: '#4D515A', 
+                                                                        backgroundColor: 'transparent',
+                                                                        border: '1px solid #4D515A',
+                                                                        fontSize: '15px',
+                                                                        paddingLeft: '19px',
+                                                                        paddingRight: '19px',
+                                                                        marginBottom: '5px',
+                                                                        width: '100%',
+                                                                        borderRadius: '20px'
+                                                                    }}
+                                                                    disabled={isConfirmedCancel}
+                                                                    onClick={() => openDishSignupPopup(category.name)}>Sign up</Button>)}
+                                                            </Col>
+                                                        </Row>
+                                                        <Row>
+                                                        {dishSignupData && dishSignupData.signups.find(signup => Object.keys(signup)[0] === category.name)?.[category.name].map((signup, signupIndex) => (
+                                                            <Col key={signupIndex} xs={12}>
+                                                            <Card style={{ marginBottom: '5px', color: isConfirmedCancel ? 'gray' : '#4D515A', borderRadius: '10px', marginBottom: '10px' }}>
+                                                                <Card.Body>
+                                                                    <Row>
+                                                                        <Col xs={2}>
+                                                                        <Image src={process.env.PUBLIC_URL + '/dish.png'} style={{ maxWidth: '85%', marginLeft: '10px' }} fluid />
+                                                                        </Col>
+                                                                        <Col xs={10}>
+                                                                            <Card.Title style={{ fontSize: '15px' }}>{signup.dishName}</Card.Title>  
+                                                                            {signup.description && <Card.Text style={{ fontSize: '12px' }}>{signup.description}</Card.Text>}  
+                                                                            <Card.Text style={{ fontSize: '12px', color: 'gray' }}>
+                                                                                Allergens: { signup.allergens && signup.allergens.length > 0 ? signup.allergens.join(', ') : 'None' } | 
+                                                                                Dietary Restrictions: { signup.dietaryRestrictions && signup.dietaryRestrictions.length > 0 ? signup.dietaryRestrictions.join(', ') : 'None' }
+                                                                            </Card.Text>
+                                                                            <Card.Text style={{ fontSize: '14px' }}>
+                                                                                <Image src={process.env.PUBLIC_URL + '/profile.png'} style={{ width: '30px', paddingRight: '8px' }} fluid />
+                                                                                {signup.userFirstName} {signup.userLastName}
+                                                                            </Card.Text>
+                                                                        </Col>
+
+                                                                    </Row>
+                                                                </Card.Body>
+                                                            </Card>
+                                                            </Col>
+                                                        ))}
+                                                        </Row> 
+                                                         <hr style={{ borderTop: '1px solid #000', margin: '20px 0' }} />
+                                                    </div>
+                                                ))}
                                                 </Col>
                                             </Row>
                                     </Card>

@@ -23,67 +23,6 @@ const Layout = ({ children }) => {
 
 const App = () => {
 
-  // hardcoded userId
-  const userId = '65d37b9cf608ce904718e317'
-  const userId2 = '65d37b72f608ce904718e313'
-  const userId3 = '65d37b96f608ce904718e315'
-  const eventId = '65d39315f2a7f4725441f1a9'
-  // Remove these here - since it will be easier just to pull the event cuisines directly in the Python code
-  //const eventCuisines = ['American', 'Japanese', 'Thai', 'Italian']
-  const mealCourse = "Main course"
-  const preferredPrepTime = 60
-  const preferredComplexity = "Medium"
-  const preferredPopularity = "Medium"
-
-  const recommendationData = {eventId : eventId, mealCourse : mealCourse, 
-  preferredPrepTime : preferredPrepTime,
-  preferredComplexity : preferredComplexity,
-  preferredPopularity : preferredPopularity}
-
-  const recommendationData2 = {
-
-    eventId: '65d39315f2a7f4725441f1a9',
-    mealCourse: 'Appetizer',
-    preferredPrepTime: 60,
-    preferredComplexity: 'Medium',
-    preferredPopularity: 'Medium'
-
-  }
-
-  const recommendationData3 = {
-    eventId: '65d39315f2a7f4725441f1a9',
-    mealCourse: 'Main course',
-    preferredPrepTime: 30,
-    preferredComplexity: 'Low',
-    preferredPopularity: 'Low'
-  }
-
-  // For testing the overall project: likely ONLY TEST 3 items for recommendation overall
-  /*
-  const recommendationData4 = {
-    userId: '65d37b9cf608ce904718e317',
-    eventId: '65d39315f2a7f4725441f1a9',
-    mealCourse: 'Dessert',
-    preferredPrepTime: 60,
-    preferredComplexity: 'Medium',
-    preferredPopularity: 'Medium'
-  }
-  */
-
-  // Do an axios post request (preqreq: change the route in routes to be a post instead of get)
-  axios.post(`http://localhost:8000/api/dishSignups/recommendDishes/${userId3}`, recommendationData3)
-  .then(response => {
-    // Handle success, if needed
-    console.log("Dish recommendation response: ");
-    // this data element should give the list of dishes recommended
-    console.log(response.data);
-  })
-  .catch(error => {
-    // Handle error, if needed
-    console.error(error);
-  });
-
-
   return (
     <Router>
       <Routes>

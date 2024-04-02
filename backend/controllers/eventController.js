@@ -15,37 +15,38 @@ exports.createEvent = async (req, res) => {
 
 // Controller function to retrieve all events
 exports.getAllEvents = async (req, res) => {
-  try {
-    const events = await eventService.getAllEvents();
-    res.status(200).json(events);
-  } catch (error) {
-    console.error('Error retrieving events:', error);
-    res.status(500).json({ error: 'Internal server error' });
-  }
-};
-
+    try {
+      const events = await eventService.getAllEvents();
+      res.status(200).json(events);
+    } catch (error) {
+      console.error('Error retrieving events:', error);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  };
+  
 
 // Controller function to retrieve event details by event ID
 exports.getEventById = async (req, res) => {
   try {
     const eventId = req.params.eventId;
-    Event.findById(eventId)
-      .populate('organizer') // Populate the 'organizer' field from the 'User' collection
-      .populate('dishes.dish') // Populate the 'dish' field inside the 'dishes' array from the 'Dish' collection
-      .populate('location') // Populate the 'location' field from the 'Location' collection
-      .then((event) => {
-        console.log(event);
-        if (!event) {
-          return res.status(404).json({ error: 'Event not found' });
-        }
-        res.status(200).json(event);
-        
-      }).catch(error => {
-        console.error('Error sending invitations:', error);
-        res.status(500).json({ error: 'Internal server error' });
-      });
+    const event = await eventService.getEventById(eventId);
+    if (!event) {
+      return res.status(404).json({ error: 'Event not found' });
+    }
+    res.json(event);
   } catch (error) {
     console.error('Error retrieving event:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
+exports.updateTakenQuantity = async (req, res) => {
+  const { eventId, categoryName } = req.params;
+  try {
+    const updatedEvent = await eventService.incrementTaken(eventId, categoryName);
+    res.status(200).json(updatedEvent);
+  } catch (error) {
+    console.error('Error updating event:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 };
@@ -83,47 +84,15 @@ exports.cancelEvent = async (req, res) => {
 
 // Controller function to send invitations to guests
 exports.sendInvitations = async (req, res) => {
-  try {
-    const { eventId } = req.params;
-    const { event, invitedGuests } = req.body; // Updated to extract event details
-    const sentInvitation = await eventService.sendInvitations(eventId, event, invitedGuests);
-    res.status(200).json(sentInvitation);
-  } catch (error) {
-    console.error('Error sending invitations:', error);
-    res.status(500).json({ error: 'Internal server error' });
-  }
-};
-
-// exports.getDetails = async (req, res) => {
-//   try {
-//     const { eventId } = req.params;
-//     console.log(eventId);
-//     // const data = Event.findById(eventId)
-//     //   .populate('organizer') // Populate the 'organizer' field from the 'User' collection
-//     //   .populate('dishes.dish') // Populate the 'dish' field inside the 'dishes' array from the 'Dish' collection
-//     //   .populate('location') // Populate the 'location' field from the 'Location' collection
-//     //   .exec((err, event) => {
-//     //       if (err) {
-//     //           console.error(err);
-//     //           return;
-//     //       }
-//     //       console.log(event);
-//     //   });
-//     Event.findById(eventId)
-//       .populate('organizer') // Populate the 'organizer' field from the 'User' collection
-//       .populate('dishes.dish') // Populate the 'dish' field inside the 'dishes' array from the 'Dish' collection
-//       .populate('location') // Populate the 'location' field from the 'Location' collection
-//       .then((event) => {
-//         console.log(event);
-//         res.status(200).json(event);
-        
-//       }).catch(error => {
-//         console.error('Error sending invitations:', error);
-//         res.status(500).json({ error: 'Internal server error' });
-//       });
-//   } catch (error) {
-//     console.error('Error sending invitations:', error);
-//     res.status(500).json({ error: 'Internal server error' });
-//   }
-// }
-
+    try {
+        const { eventId } = req.params;
+        const { event, invitedGuests } = req.body; // Updated to extract event details
+        const eventbyId = await Event.findById(eventId);
+        const sentInvitation = await eventService.sendInvitations(eventId, eventbyId, invitedGuests);
+        res.status(200).json(sentInvitation);
+    } catch (error) {
+        console.error('Error sending invitations:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+  };
+  
