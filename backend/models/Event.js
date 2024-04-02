@@ -1,9 +1,8 @@
 const mongoose = require('mongoose');
 
-const dishCategoryQuantitySchema = new mongoose.Schema({
-    name: { type: String, required: true },
-    quantity: { type: Number, required: true },
-    taken: { type: Number, default: 0 } 
+const dishQuantitySchema = new mongoose.Schema({
+    dish: { type: mongoose.Schema.Types.ObjectId, ref: 'Dish', required: true },
+    quantity: { type: Number, required: true }
 });
 
 const locationSchema = new mongoose.Schema({
@@ -28,7 +27,7 @@ const eventSchema = new mongoose.Schema({
     invitedGuests: [{ type: String }],
     status: { type: String, enum: ['active', 'cancelled'], default: 'active' },
     visibility: { type: String, enum: ['public', 'private'], default: 'public' },
-    dishCategory: [dishCategoryQuantitySchema],
+    dishes: [dishQuantitySchema],
     coverImage: { type: String } 
 });
 

@@ -6,7 +6,6 @@ exports.createDish = async (dishData) => {
         const dish = await Dish.create(dishData);
         return dish;
     } catch (error) {
-        console.error(error);
         throw new Error('Could not create dish');
     }
 };

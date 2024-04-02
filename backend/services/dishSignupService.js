@@ -1,12 +1,20 @@
 const DishSignup = require('../models/DishSignup');
-const User = require('../models/User');
-const Dish = require('../models/Dish');
+const Event = require('../models/Event');
 
 // Service function to create a new dish signup
 exports.createDishSignup = async (dishSignupData) => {
     try {
         const dishSignup = await DishSignup.create(dishSignupData);
-        return dishSignup;
+        Event.updateOne(
+            {_id: dishSignupData.event},
+            {$push:{dishes: {dish: dishSignupData.dish, quantity: 1}}}
+        ).then((event) => {
+            if(!event) return ;
+            return dishSignup;
+        }).catch((error) => {
+            console.error(error);
+            throw new Error('Could not create dish signup');
+        })
     } catch (error) {
         console.error(error);
         throw new Error('Could not create dish signup');
@@ -45,72 +53,6 @@ exports.getAllDishSignups = async () => {
         return dishSignups;
     } catch (error) {
         throw new Error('Could not retrieve dish signups');
-    }
-};
-
-exports.getDishSignupsByEvent = async (eventId) => {
-    try {
-        let query = {};
-        query.event = eventId; 
-
-        const dishSignups = await DishSignup.find(query);
-        const formattedDishSignups = await formatDishSignups(eventId, dishSignups);
-        return formattedDishSignups;
-    } catch (error) {
-        console.log(error);
-        throw new Error('Could not retrieve dish signups');
-    }
-};
-
-const formatDishSignups = async (eventId, dishSignups) => {
-    try {
-        let formattedData = {
-            event: eventId,
-            signups: []
-        };
-
-        // Group dish signups by dish category
-        let groupedByCategory = {};
-        for (const signup of dishSignups) {
-            if (!groupedByCategory[signup.dishCategory]) {
-                groupedByCategory[signup.dishCategory] = [];
-            }
-
-            // Fetch user details by ID
-            const user = await User.findById(signup.user);
-            if (user) {
-                const { firstName, lastName } = user;
-
-                // Fetch dish details by ID
-                const dish = await Dish.findById(signup.dish);
-                if (dish) {
-                    const { dishName, description, allergens, dietaryRestrictions } = dish;
-                    groupedByCategory[signup.dishCategory].push({
-                        user: signup.user,
-                        dish: signup.dish,
-                        userFirstName: firstName,
-                        userLastName: lastName,
-                        dishName: dishName,
-                        description: description,
-                        allergens: allergens,
-                        dietaryRestrictions: dietaryRestrictions
-                    });
-                }
-            }
-        }
-
-        // Format grouped data into the desired format
-        Object.keys(groupedByCategory).forEach(category => {
-            const categoryData = groupedByCategory[category];
-            formattedData.signups.push({
-                [category]: categoryData,
-                taken: categoryData.length // Append length information
-            });
-        });
-
-        return formattedData;
-    } catch (error) {
-        throw new Error('Could not format dish signups data');
     }
 };
 
