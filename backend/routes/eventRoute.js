@@ -20,7 +20,7 @@ router.delete('/:eventId', eventController.cancelEvent);
 // Send invitations for an event
 router.post('/:eventId/invite', eventController.sendInvitations);
 
-// PUT request to update "taken" quantity for a category in an event
-router.put('/:eventId/update-taken/:categoryName', eventController.updateTakenQuantity);
+//Get event details
+// router.get('/details/:eventId', eventController.getDetails);
 
 module.exports = router;

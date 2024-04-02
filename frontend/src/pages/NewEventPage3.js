@@ -2,27 +2,21 @@ import React, { useState } from 'react';
 import { Container, Row, Col, Form, Image, Button } from 'react-bootstrap';
 
 
-function NewEventPage3({handleDishCategoryChange}) {
+function NewEventPage3() {
     // State to manage the rows dynamically
-    const [rows, setRows] = useState([{ name: '', quantity: '', notes: '' }]);
+    const [rows, setRows] = useState([{ dish: '', quantity: '', notes: '' }]);
 
     // Function to handle adding a new row
     const handleAddRow = () => {
-        setRows([...rows, { name: '', quantity: '', notes: '' }]);
+        setRows([...rows, { dish: '', quantity: '', notes: '' }]);
     };
 
+    // Function to handle changes in input fields
     const handleChange = (index, key, value) => {
         const newRows = [...rows];
         newRows[index][key] = value;
         setRows(newRows);
-
-        const newDishCategory = newRows.map(row => ({
-            name: row.name.trim(), // Trim to remove leading/trailing spaces
-            quantity: parseInt(row.quantity) || 0, // Convert to integer or default to 0
-        }));
-        handleDishCategoryChange(newDishCategory);
     };
-
 
     return (
         <Container>
@@ -38,7 +32,7 @@ function NewEventPage3({handleDishCategoryChange}) {
                         </Form.Text> 
                         <Row style={{ maxWidth: '650px', paddingTop: '25px' }}>
                             <Col style={{ paddingRight: '12px' }}>
-                                <Form.Label style={{width: '200px'}}>Dish Category (Course)</Form.Label> 
+                                <Form.Label style={{width: '200px'}}>Dish</Form.Label> 
                             </Col>
                             <Col style={{ paddingLeft: '0', paddingRight: '0' }}>
                                 <Form.Label style={{width: '70px'}}>Quantity</Form.Label> 
@@ -54,9 +48,9 @@ function NewEventPage3({handleDishCategoryChange}) {
                                 <Row key={index} style={{ maxWidth: '650px', marginBottom: '10px' }}>
                                     <Col style={{ paddingRight: '12px' }}>
                                         <Form.Control
-                                            type="name"
-                                            value={row.product}
-                                            onChange={(e) => handleChange(index, 'name', e.target.value)}
+                                            type="text"
+                                            value={row.dish}
+                                            onChange={(e) => handleChange(index, 'dish', e.target.value)}
                                             style={{width: '200px'}}
                                             required
                                         />

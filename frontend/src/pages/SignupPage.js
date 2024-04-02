@@ -10,23 +10,13 @@ const SignupPage = () => {
     firstName: '',
     lastName: '',
     email: '',
-    password: '',
-    allergens: [],
-    dietaryRestrictions: [],
+    password: ''
   });
 
-  const { firstName, lastName, email, password, allergens, dietaryRestrictions } = formData;
+  const { firstName, lastName, email, password } = formData;
 
-  const handleChange = e => {
-    const { name, value } = e.target;
-    if (name === 'allergens') {
-      setFormData({ ...formData, [name]: value.split(', ') }); // Convert comma-separated string to array
-    } else if (name === 'dietaryRestrictions') {
-      setFormData({ ...formData, [name]: value.split(', ') }); 
-    } else {
-      setFormData({ ...formData, [name]: value });
-    }
-  };
+  const handleChange = e =>
+    setFormData({ ...formData, [e.target.name]: e.target.value });
 
   const handleSubmit = async e => {
     e.preventDefault();
@@ -95,15 +85,7 @@ const SignupPage = () => {
                 title='Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character'
                 required 
             />
-        </Form.Group> <br />  
-        <Form.Group>
-            <Form.Label>Allergens</Form.Label>
-            <Form.Control type='text' name='allergens' placeholder='Enter your allergens (if any)' value={allergens.join(', ')} onChange={handleChange} autoComplete="true" required/>
-        </Form.Group>  <br />   
-        <Form.Group>
-            <Form.Label>Dietary Restrictions</Form.Label>
-            <Form.Control type='text' name='dietaryRestrictions' placeholder='Enter your Dietary Restrictions (if any)' value={allergens.join(', ')} onChange={handleChange} autoComplete="true" required/>
-        </Form.Group>  <br />  
+        </Form.Group> <br />   
         <Button
             variant="primary"
             type="submit"
