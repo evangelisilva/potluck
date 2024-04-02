@@ -3,11 +3,8 @@ import { Navbar, Nav, Image, Container, Card, Row, Col, Form, Button } from 'rea
 import { Link } from 'react-router-dom'; 
 import axios from 'axios';
 import SignupNavbar from '../components/SignupNavbar';
-import { useNavigate } from 'react-router-dom';
 
 const DashboardPage = () => {
-  const navigate = useNavigate();
-
   const [userData, setUserData] = useState(null);
   const [eventData, setEventData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -18,8 +15,7 @@ const DashboardPage = () => {
       try {
         const token = localStorage.getItem('token');
         if (!token) {
-          navigate('/signin'); // Redirect to signin page if token is not available
-          return;
+          throw new Error('User not authenticated');
         }
 
         const authResponse = await axios.get('http://localhost:8000/api/auth', {

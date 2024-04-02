@@ -9,7 +9,6 @@ import SignupNavbar from '../components/SignupNavbar';
 
 // Component for managing a multi-page event creation form
 function NewEvent() {
-    const navigate = useNavigate();
     const [userData, setUserData] = useState(null);
 
     useEffect(() => {
@@ -17,8 +16,7 @@ function NewEvent() {
           try {
             const token = localStorage.getItem('token');
             if (!token) {
-                navigate('/signin'); // Redirect to signin page if token is not available
-                return;
+              throw new Error('User not authenticated');
             }
     
             const authResponse = await axios.get('http://localhost:8000/api/auth', {
@@ -36,6 +34,8 @@ function NewEvent() {
     
         fetchUserData();
       }, []);
+
+    const navigate = useNavigate(); // Get history from React Router
 
     // State to track the current page number
     const [currentPage, setCurrentPage] = useState(1);
@@ -72,13 +72,9 @@ function NewEvent() {
         invitedGuests: [],
         status: 'active',
         visibility: 'public',
-        dishCategory: [],
+        dishes: [],
         coverImage: ''
     });
-
-    const handleDishCategoryChange = (newDishCategory) => {
-        setEventData({ ...eventData, dishCategory: newDishCategory });
-    };
 
     // Function to handle moving to the previous page
     const prevPage = () => {
@@ -93,7 +89,7 @@ function NewEvent() {
             case 2:
                 return <NewEventPage2 handleEventDataChange={handleEventDataChange} />;
             case 3:
-                return <NewEventPage3 handleDishCategoryChange={handleDishCategoryChange} />;
+                return <NewEventPage3 handleEventDataChange={handleEventDataChange} />;
             // case 4:
             //     return <NewEventPage4 />;
             default:
