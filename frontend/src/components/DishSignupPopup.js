@@ -13,18 +13,74 @@ const DishSignupPopup = ({ onClose, onSignup, userId, categoryName, eventId }) =
     const [showRecommendationsForm, setShowRecommendationsForm] = useState(false);
     const [showRecommendations, setShowRecommendations] = useState(false); // State for showing recommendations
 
+    // set state values for the user preferences
+    const [prepTime, setPrepTime] = useState(0);
+    const [complexity, setComplexity] = useState('');
+    const [popularity, setPopularity] = useState('');
+
+    const [recommendedDishes, setRecommendedDishes] = useState({})
+
+    // Handlers for these user preferences
+      // Handler function to update prepTime state
+    const handlePrepTimeChange = (event) => {
+      setPrepTime(parseInt(event.target.value)); // Convert to integer if necessary
+    };
+
+    // Handler function to update complexity state
+    const handleComplexityChange = (event) => {
+      setComplexity(event.target.value);
+    };
+
+    // Handler function to update popularity state
+    const handlePopularityChange = (event) => {
+      setPopularity(event.target.value);
+    };
+
+
     const handleRecommendationsFormClick = () => {
         setShowRecommendationsForm(true);
     };
 
+    // Jacob's work here
     const handleRecommendationsClick = () => {
+
+        // Before setting show recommendations to true, the dish recommendations should be fetched
+
+        
+        const recommendationData = {
+            eventId: eventId,
+            // can be taken from the..."categoryName"
+            mealCourse: categoryName,
+            preferredPrepTime: prepTime,
+            preferredComplexity: complexity,
+            preferredPopularity: popularity
+        }
+        
+        
+          // Do an axios post request (preqreq: change the route in routes to be a post instead of get)
+          axios.post(`http://localhost:8000/api/dishSignups/recommendDishes/${userId}`, recommendationData)
+          .then(response => {
+            // Handle success, if needed
+            console.log("Dish recommendation response: ");
+            // this data element should give the list of dishes recommended
+            console.log(response.data);
+            // Assign the data from the API to the response(so you can access the DATA attribute for checking if undefed)
+            setRecommendedDishes(response.data)
+          })
+          .catch(error => {
+            // Handle error, if needed
+            console.error(error);
+          });
+
         setShowRecommendations(true); // Show recommendations when clicked
+
     };
 
     const handleBackClick = () => {
         setShowRecommendationsForm(false);
     };
 
+    
     const dishes = [
         {
             _id: '12345',
@@ -63,6 +119,11 @@ const DishSignupPopup = ({ onClose, onSignup, userId, categoryName, eventId }) =
             popularity: 'High'
         }
     ]
+    
+
+    
+
+
     
     const handleSignup = async () => {
         if (!dishId) {
@@ -173,6 +234,8 @@ const DishSignupPopup = ({ onClose, onSignup, userId, categoryName, eventId }) =
                                                 <Form.Control
                                                     type="number"
                                                     placeholder="Enter Preparation Time"
+                                                    value={prepTime}
+                                                    onChange={handlePrepTimeChange}
                                                     min={1} // Set minimum value (optional)
                                                     max={200} // Set maximum value
                                                 />
@@ -181,9 +244,12 @@ const DishSignupPopup = ({ onClose, onSignup, userId, categoryName, eventId }) =
                                         <Col>
                                             <Form.Group>
                                             <Form.Label>Complexity</Form.Label>
-                                            <Form.Select defaultValue="Choose...">
+                                            <Form.Select defaultValue="Choose..." value={complexity} onChange={handleComplexityChange}>
                                                 <option>Choose...</option>
                                                 {/* Add options */}
+                                                <option value="Low">Low</option>
+                                                <option value="Medium">Medium</option>
+                                                <option value="High">High</option>
                                             </Form.Select>
                                             </Form.Group>
                                         
@@ -191,9 +257,12 @@ const DishSignupPopup = ({ onClose, onSignup, userId, categoryName, eventId }) =
                                         <Col>
                                             <Form.Group>
                                             <Form.Label>Popularity</Form.Label>
-                                            <Form.Select defaultValue="Choose...">
+                                            <Form.Select defaultValue="Choose..." value={popularity} onChange={handlePopularityChange}>
                                                 <option>Choose...</option>
                                                 {/* Add options */}
+                                                <option value="Low">Low</option>
+                                                <option value="Medium">Medium</option>
+                                                <option value="High">High</option>
                                             </Form.Select>
                                             </Form.Group>
                                         
@@ -233,8 +302,16 @@ const DishSignupPopup = ({ onClose, onSignup, userId, categoryName, eventId }) =
                                 </Form.Group> <br />
                                         <Row>
 
-                                        <Form>
-                                            {dishes.map((dish, index) => (
+                                        {/* Display this form conditionally on whether you have the data*/}
+                                        
+                                        
+                                        {(recommendedDishes.data === undefined || recommendedDishes.cuisinesMatch == undefined) ?
+                                            (<div>
+                                                <h1>Loading dishes...</h1>
+                                            </div>) :
+                                            (<div>
+                                               <Form>
+                                            {recommendedDishes.data.map((dish, index) => (
                                                 <div key={index} className="mb-3">
                                                 <Form.Check
                                                     type="radio"
@@ -261,8 +338,12 @@ const DishSignupPopup = ({ onClose, onSignup, userId, categoryName, eventId }) =
                                                                                         <div><strong>Allergens:</strong> {dish.allergens.join(', ')}</div>
                                                                                     ) : (
                                                                                         <div><strong>Allergens:</strong> None</div>
-                                                                                    )}
+                                                                                    )}  
                                                                                 <strong>Preparation Time:</strong> {dish.preparationTime} minutes | <strong>Complexity:</strong> {dish.complexity} | <strong>Popularity:</strong> {dish.popularity}
+                                                                                {/* Condition for whether you have a cuisine match: if true, don't put anything, otherwise, display what the cusines are and say they don't match those of theis event*/}
+                                                                                {(recommendedDishes.cuisinesMatch[index] == true) ? 
+                                                                                    (<div></div>) :
+                                                                                    (<div><strong>Cuisines: </strong>The cusines of this dish don't match any of those of the event. They are: <strong>{dish.cuisines.join(', ')}</strong></div>)}
                                                                             </Card.Text>  
                                                                         </Col>
                                                             </Row>
@@ -274,6 +355,11 @@ const DishSignupPopup = ({ onClose, onSignup, userId, categoryName, eventId }) =
                                                 </div>
                                              ))}
                                         </Form>
+                                            </div>
+                                            )
+                                        }
+
+                                        
                                     
                                         </Row>
                                     </div>  )
