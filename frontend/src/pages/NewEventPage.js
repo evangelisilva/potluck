@@ -9,6 +9,7 @@ import SignupNavbar from '../components/SignupNavbar';
 
 // Component for managing a multi-page event creation form
 function NewEvent() {
+    const navigate = useNavigate();
     const [userData, setUserData] = useState(null);
 
     useEffect(() => {
@@ -16,7 +17,8 @@ function NewEvent() {
           try {
             const token = localStorage.getItem('token');
             if (!token) {
-              throw new Error('User not authenticated');
+                navigate('/signin'); // Redirect to signin page if token is not available
+                return;
             }
     
             const authResponse = await axios.get('http://localhost:8000/api/auth', {
@@ -34,8 +36,6 @@ function NewEvent() {
     
         fetchUserData();
       }, []);
-
-    const navigate = useNavigate(); // Get history from React Router
 
     // State to track the current page number
     const [currentPage, setCurrentPage] = useState(1);
