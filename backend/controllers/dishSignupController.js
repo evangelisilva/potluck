@@ -1,6 +1,7 @@
 const dishSignupService = require('../services/dishSignupService');
 const Dish = require('../models/Dish');
 const User = require('../models/User');
+const Event = require('../models/Event')
 
 
 // Controller function to create a new dish signup
@@ -9,7 +10,6 @@ exports.createDishSignup = async (req, res) => {
         const dishSignup = await dishSignupService.createDishSignup(req.body);
         res.status(201).json(dishSignup);
     } catch (error) {
-        console.error(error);
         console.error('Error creating dish signup:', error);
         res.status(500).json({ error: 'Internal server error' });
     }
@@ -42,7 +42,16 @@ exports.deleteDishSignup = async (req, res) => {
 // Controller function to retrieve all dish signups
 exports.getAllDishSignups = async (req, res) => {
     try {
-        const dishSignups = await dishSignupService.getAllDishSignups();
+        const eventId = req.query.event;
+
+        let dishSignups;
+
+        if (eventId) {
+            dishSignups = await dishSignupService.getDishSignupsByEvent(eventId);
+        } else {
+            dishSignups = await dishSignupService.getAllDishSignups();
+        }
+
         res.status(200).json(dishSignups);
     } catch (error) {
         console.error('Error retrieving all dish signups:', error);
@@ -64,27 +73,11 @@ exports.getDishSignupById = async (req, res) => {
 
 // url to access this: localhost:8000/api/dishSignups/recommendDishes
 exports.recommendDishes = async (req, res) => {
-    try {
-        console.log("Right before doing the spawning")
-        
+    try {        
         const { spawn } = require('child_process');
 
-        /*
-        // Replace 'python_script.py' with the path to your Python script
-        const pythonProcess = spawn('python3', ['python/test_api_fetch.py',
-        // userId: will be req.params later
-        '65d37b9cf608ce904718e317', 
-        // Event id
-        '65d39315f2a7f4725441f1a9',
-        "Main course",
-        "60",
-        "Medium",
-        "Medium"
-    ]);
-        */
-
-        // New call of spawn - with the body arguments
-        const pythonProcess = spawn('python3', ['python/test_api_fetch.py',
+        // Call of spawn - with the body arguments
+        const pythonProcess = spawn('python3', ['python/dish_recommendation_algorithm.py',
         // userId: will be req.params later
         req.params.userId, 
         // Event id
@@ -95,8 +88,7 @@ exports.recommendDishes = async (req, res) => {
         req.body.preferredPopularity
     ]);
 
-
-        console.log("After spawning the python script but before receiving the data back")
+        /*
         pythonProcess.stdout.on('data', (data) => {
           console.log(`stdout: ${data}`);
         });
@@ -104,29 +96,6 @@ exports.recommendDishes = async (req, res) => {
         pythonProcess.stderr.on('data', (data) => {
           console.error(`stderr: ${data}`);
         });
-
-        /*
-        pythonProcess.on('close', async (code) => {
-          console.log(`child process exited with code ${code}`);
-          // at the end, read from the file by the user id (hardcoded for now)
-          const fs = require('fs');
-          
-          let pythonReturn;
-          
-          await fs.readFile(fileName, 'utf8', (err, data) => {
-            if (err) {
-              console.error('Error reading file:', err);
-              return;
-            }
-            console.log('File content:', data);
-            pythonReturn = data;
-            let dishIds = pythonReturn.split("\n");
-            dishIds.pop()
-            console.log("the dish ids: ")
-            console.log(dishIds);
-            res.json({dishesReturned : dishIds})
-          })
-        })
         */
 
         function waitForEvent() {
@@ -152,11 +121,7 @@ exports.recommendDishes = async (req, res) => {
                       console.error('Error reading file:', err);
                       return;
                     }
-                    ////console.log('File content:', data);
                     dishIds = data.split("\n");
-                    dishIds.pop()
-                    ////console.log("the dish ids: ")
-                    ////console.log(dishIds);
                     resolve(data)
                 })
                 
@@ -165,20 +130,57 @@ exports.recommendDishes = async (req, res) => {
 
         await readReturnedData();
 
+        // After reading the data, delete the file, since it's only for a single usage (any given time the recommendation API is called)
+        // Delete the file
+        fs.unlink(fileName, (err) => {
+          if (err) {
+            console.error('Error deleting file:', err);
+            return;
+          }
+          console.log('File deleted successfully.');
+        });
+
+
         // creating a json object to return for the dishes
         const dishArr = []
+        // store whether the cuisines are matching - at the dish by index
+        const cuisinesMatch = []
 
         for (let i = 0; i < dishIds.length; i++){
             const dish = await Dish.findById(dishIds[i])
-            ////console.log("What is the individual dish found?: ", dish)
+            const event = await Event.findById(req.body.eventId)
             dishArr.push(dish)
+            // Check if the cuisines match those of the event
+            // for all the cusines in dish.cuisines, check all the cusines in the event.cuisines
+
+            const commonCuisines = []
+            dish.cuisines.forEach((dishCuisine) => {
+                 event.cuisines.forEach((eventCuisine) => {
+                     if (dishCuisine == eventCuisine){
+                        commonCuisines.push(dishCuisine)
+                     }
+                 })
+                 
+                 // After checking all the event cuisines, set up the cuisnes match array
+                 if (commonCuisines.length == 0){
+                    cuisinesMatch.push(false);
+                 }
+                 else {
+                    cuisinesMatch.push(true);
+                 }
+                }
+
+            )
+
+
+
+
         }
 
         // Before returning, get the name of the user
         const user = await User.findById(req.params.userId)
 
-        ////console.log("What is the array of dishes found?: ", dishArr)
-        res.json({message : `Dishes recommended to ${user.firstName} ${user.lastName}`, data : dishArr})
+        res.json({message : `Dishes recommended to ${user.firstName} ${user.lastName}`, data : dishArr, cuisinesMatch : cuisinesMatch})
         
 
 
