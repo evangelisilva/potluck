@@ -327,8 +327,12 @@ const DishSignupPopup = ({ onClose, onSignup, userId, categoryName, eventId }) =
                                                                                         <div><strong>Allergens:</strong> {dish.allergens.join(', ')}</div>
                                                                                     ) : (
                                                                                         <div><strong>Allergens:</strong> None</div>
-                                                                                    )}
+                                                                                    )}  
                                                                                 <strong>Preparation Time:</strong> {dish.preparationTime} minutes | <strong>Complexity:</strong> {dish.complexity} | <strong>Popularity:</strong> {dish.popularity}
+                                                                                {/* Condition for whether you have a cuisine match: if true, don't put anything, otherwise, display what the cusines are and say they don't match those of theis event*/}
+                                                                                {(recommendedDishes.cuisinesMatch[index] == true) ? 
+                                                                                    (<div></div>) :
+                                                                                    (<div><strong>Cuisines: </strong>The cusines of this dish don't match any of those of the event. They are: <strong>{dish.cuisines.join(', ')}</strong></div>)}
                                                                             </Card.Text>  
                                                                         </Col>
                                                             </Row>
