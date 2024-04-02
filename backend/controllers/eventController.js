@@ -88,8 +88,6 @@ exports.sendInvitations = async (req, res) => {
         const { eventId } = req.params;
         const { event, invitedGuests } = req.body; // Updated to extract event details
         const eventbyId = await Event.findById(eventId);
-        console.log(eventbyId);
-        console.log('----------')
         const sentInvitation = await eventService.sendInvitations(eventId, eventbyId, invitedGuests);
         res.status(200).json(sentInvitation);
     } catch (error) {
