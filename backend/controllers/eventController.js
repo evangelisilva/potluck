@@ -87,7 +87,10 @@ exports.sendInvitations = async (req, res) => {
     try {
         const { eventId } = req.params;
         const { event, invitedGuests } = req.body; // Updated to extract event details
-        const sentInvitation = await eventService.sendInvitations(eventId, event, invitedGuests);
+        const eventbyId = await Event.findById(eventId);
+        console.log(eventbyId);
+        console.log('----------')
+        const sentInvitation = await eventService.sendInvitations(eventId, eventbyId, invitedGuests);
         res.status(200).json(sentInvitation);
     } catch (error) {
         console.error('Error sending invitations:', error);

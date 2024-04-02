@@ -3,6 +3,7 @@ import { Container, Row, Col, Card, Button, Image, Dropdown, Table } from 'react
 import { useParams } from 'react-router-dom';
 import { GoogleMap, LoadScript, MarkerF } from '@react-google-maps/api';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 import InviteePopup from '../components/InviteePopup';
 import EditEventPopup from '../components/EditEventPopup';
@@ -11,6 +12,8 @@ import DishSignupPopup from '../components/DishSignupPopup';
 import SignupNavbar from '../components/SignupNavbar';
 
 function MyComponent() {
+    const navigate = useNavigate();
+
     const [showInviteesPopup, setShowInviteesPopup] = useState(false);
     const [showEditEventPopup, setShowEditEventPopup] = useState(false);
     const [showCancelEventPopup, setShowCancelEventPopup] = useState(false);
@@ -27,7 +30,22 @@ function MyComponent() {
     useEffect(() => {
         fetchEventDetails();
         fetchSignupsByEventId();
+        
     }, []);
+
+    const eventDetail = {
+        guests: [
+            { name: 'Alice', status: 'Attending' },
+            { name: 'Bob', status: 'Invited' },
+            { name: 'Charlie', status: 'Attending' },
+            { name: 'David', status: 'Attending' },
+            { name: 'Eve', status: 'Not Attending' },
+            { name: 'Frank', status: 'Attending' },
+            { name: 'Grace', status: 'Attending' },
+            { name: 'Henry', status: 'Attending' },
+            { name: 'Ivy', status: 'May be' },
+        ]
+    };
 
     const fetchSignupsByEventId = async () => {
         try {
@@ -43,7 +61,8 @@ function MyComponent() {
 
             const token = localStorage.getItem('token');
             if (!token) {
-              throw new Error('User not authenticated');
+                navigate('/signin'); // Redirect to signin page if token is not available
+                return;
             }
     
             const authResponse = await axios.get('http://localhost:8000/api/auth', {
@@ -334,11 +353,11 @@ function MyComponent() {
                                                                 <Row>
                                                                     <Col>
                                                                         {/* <Card.Subtitle style={{fontSize: '25px'}}>{eventDetails.invitedGuests.filter(guest => guest.status === 'Attending').length}</Card.Subtitle> */}
-                                                                        <Card.Subtitle style={{fontSize: '25px'}}>0</Card.Subtitle>
+                                                                        <Card.Subtitle style={{fontSize: '25px'}}>{eventDetail.guests.filter(guest => guest.status == 'Attending').length}</Card.Subtitle>
                                                                     </Col>
                                                                     <Col>
                                                                         {/* <Card.Subtitle style={{fontSize: '25px'}}>{eventDetails.invitedGuests.filter(guest => guest.status === 'May be').length}</Card.Subtitle> */}
-                                                                        <Card.Subtitle style={{fontSize: '25px'}}>0</Card.Subtitle>
+                                                                        <Card.Subtitle style={{fontSize: '25px'}}>{eventDetail.guests.filter(guest => guest.status == 'May be').length}</Card.Subtitle>
                                                                     </Col>
                                                                     <Col>
                                                                         <Card.Subtitle style={{fontSize: '25px'}}>{eventDetails.invitedGuests.length}</Card.Subtitle>
@@ -364,8 +383,9 @@ function MyComponent() {
 
                                                 
                                                 {/* Guest list */}
-                                                {/* {eventDetails.invitedGuests
-                                                    .filter(guest => guest.status !== 'Invited') // Exclude guests with 'Invited' status
+                                                {eventDetail.guests
+                                                    .filter(guest => guest.status !== 'Invited')
+                                                    .filter(guest => guest.status !== 'Not Attending') // Exclude guests with 'Invited' status
                                                     .map((guest, index) => (
                                                         <Row key={index}>
                                                             <Col>
@@ -375,9 +395,9 @@ function MyComponent() {
                                                                             <Col>
                                                                                 <Card.Subtitle>{guest.name}</Card.Subtitle>
                                                                                 <Card.Text style={{fontSize: '13px', color: 'gray'}}>{guest.status}</Card.Text>
-                                                                            </Col> */}
+                                                                            </Col> 
                                                                             {/* Button to send message */}
-                                                                            {/* {guest.status === 'Attending' && (
+                                                                            {guest.status === 'Attending' && (
                                                                                 <Col className="d-flex justify-content-end">
                                                                                     <Button variant="primary" style={{borderColor: '#A39A9A', backgroundColor: "transparent", color: '#4D515A', fontSize: '15px', marginRight: '5px' }}>
                                                                                         <Image src={process.env.PUBLIC_URL + '/chat.png'} style={{ maxWidth: '25px', paddingRight: '5px' }} fluid />
@@ -390,7 +410,7 @@ function MyComponent() {
                                                                 </Card>
                                                             </Col>
                                                         </Row>
-                                                    ))} */}
+                                                    ))}
                                                 </Col>}
 
                                                 <Col xs={7}>
@@ -406,6 +426,7 @@ function MyComponent() {
                                                                 </Card.Text>
                                                             </Col>
                                                             <Col xs={3}>
+                                                                {category.quantity !== category.taken && (
                                                                 <Button
                                                                     style={{ 
                                                                         fontFamily: 'Arial',
@@ -420,7 +441,7 @@ function MyComponent() {
                                                                         borderRadius: '20px'
                                                                     }}
                                                                     disabled={isConfirmedCancel}
-                                                                    onClick={() => openDishSignupPopup(category.name)}>Sign up</Button>
+                                                                    onClick={() => openDishSignupPopup(category.name)}>Sign up</Button>)}
                                                             </Col>
                                                         </Row>
                                                         <Row>
