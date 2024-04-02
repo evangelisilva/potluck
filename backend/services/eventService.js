@@ -123,14 +123,15 @@ exports.sendInvitations = async (eventId, event, invitedGuests) => {
         date: event.date,
         startTime: event.startTime,
         endTime: event.endTime,
-        streetAddress1: event.streetAddress1,
-        city: event.city,
-        state: event.state,
-        zipCode: event.zipCode,
+        streetAddress1: event.location.streetAddress1,
+        city: event.location.city,
+        state: event.location.state,
+        zipCode: event.location.zipCode,
         host: 'Evangeli',
-        // rsvpLink: 'http://localhost:3000/events/' + eventId + '/rsvp'
-        rsvpLink: 'http://localhost:3000/rsvp/65d3d557b90bec95e14f1476'
+        rsvpLink: 'http://localhost:3000/rsvp/' + eventId
+        // rsvpLink: 'http://localhost:3000/rsvp/65d3d557b90bec95e14f1476'
       };
+      console.log(templateData);
       const response = await sendEmail(guest, 'ICSI518-Potluck-InvitationTemplate', templateData);
       const responseWithEventId = { eventId, ...response }; 
       responses.push(responseWithEventId); 
