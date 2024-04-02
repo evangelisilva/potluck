@@ -89,7 +89,7 @@ const RSVPPopup = ({ onClose, eventId, userId }) => {
 
     return (
         <div className="modal-overlay">
-            <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable" style={{ height: '48%' }}>
+            <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable">
                 <div className="modal-content">
                     <div className="modal-body">
                         <Container style={{ width: '500px', margin: '50px', color: '#4D515A', fontFamily: 'Arial' }}>
