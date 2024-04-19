@@ -29,7 +29,7 @@ const eventSchema = new mongoose.Schema({
     status: { type: String, enum: ['active', 'cancelled'], default: 'active' },
     visibility: { type: String, enum: ['public', 'private'], default: 'public' },
     dishCategory: [dishCategoryQuantitySchema],
-    coverImage: { type: String } 
+    coverImage: { type: String }, 
 });
 
 const Event = mongoose.model('Event', eventSchema);

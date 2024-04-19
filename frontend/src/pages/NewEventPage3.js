@@ -1,10 +1,26 @@
 import React, { useState } from 'react';
 import { Container, Row, Col, Form, Image, Button } from 'react-bootstrap';
+import { Typeahead } from 'react-bootstrap-typeahead';
+import 'react-bootstrap-typeahead/css/Typeahead.css';
+
 
 
 function NewEventPage3({handleDishCategoryChange}) {
     // State to manage the rows dynamically
     const [rows, setRows] = useState([{ name: '', quantity: '', notes: '' }]);
+
+    const categories = ['Appetizer', 'Main course', 'Dessert', 'Beverage', 'Side Dish', 'Salad', 'Utensils', 'Other'];
+    const cuisines = [
+        'Any','International','Italian','Mexican','Chinese','Indian','Japanese','Thai','French','Spanish','Greek','Mediterranean','Middle Eastern','Korean',
+        'Vietnamese','Brazilian','Russian','African','Caribbean','American','British','German','Australian','Canadian','Scandinavian','Dutch','Indonesian',
+        'Malaysian','Turkish','Lebanese','Moroccan','Peruvian','Argentinian','Portuguese','Swiss','Irish','Polish','Hungarian','Czech','Belgian','Austrian',
+        'Swedish','Finnish','Norwegian','Danish','Slovak','Croatian','Thai','Ethiopian','Nigerian','South African','Egyptian','Israeli','Iraqi','Iranian',
+        'Afghan','Pakistani','Bangladeshi','Sri Lankan','Nepalese','Tibetan','Mongolian','Filipino','Singaporean','Malaysian','Indonesian','Vietnamese',
+        'Cambodian','Laotian','Burmese','Kazakh','Uzbek','Turkmen','Tajik','Kyrgyz','Moldovan','Romanian','Bulgarian','Ukrainian','Lithuanian','Latvian',
+        'Estonian','Albanian','Slovenian','Cypriot','Maltese','Icelandic','Greenlandic','Guatemalan','Salvadoran','Honduran','Nicaraguan','Costa Rican',
+        'Panamanian','Cuban','Jamaican','Bahamian','Trinidadian and Tobagonian','Barbadian','Puerto Rican','Haitian','Dominican','Brazilian','Colombian',
+        'Venezuelan','Ecuadorian','Chilean','Bolivian','Paraguayan','Uruguayan','Argentinian'
+    ];    
 
     // Function to handle adding a new row
     const handleAddRow = () => {
@@ -28,54 +44,94 @@ function NewEventPage3({handleDishCategoryChange}) {
         <Container>
             <Row>
                 {/* Left column */}
-                <Col md={7} style={{ paddingTop: '50px', paddingLeft: '70px', color: '#4D515A', fontFamily: 'Arial' }}>
+                <Col style={{ paddingTop: '50px', color: '#4D515A', fontFamily: 'Arial' }}>
                     {/* Event Title */}
                     <h2 style={{ fontFamily: 'Times New Roman', fontSize: '45px' }}>What should guests bring?</h2>
-                    
+                    <br />
                     <Form.Group>
-                        <Form.Text style={{ color: 'gray', fontSize: '13px' }}>
-                            If you're not ready to specify dishes for guests to bring just yet, feel free to skip this step.
-                        </Form.Text> 
-                        <Row style={{ maxWidth: '650px', paddingTop: '25px' }}>
-                            <Col style={{ paddingRight: '12px' }}>
-                                <Form.Label style={{width: '200px'}}>Dish Category (Course)</Form.Label> 
+                        <Row>
+                            <Col xs={2}>
+                                <Form.Label>Expected Guest Count</Form.Label>
+                                <Form.Control type="number" required />
                             </Col>
-                            <Col style={{ paddingLeft: '0', paddingRight: '0' }}>
-                                <Form.Label style={{width: '70px'}}>Quantity</Form.Label> 
+                            <Col xs={10}>
+                                <Form.Label>Cuisines</Form.Label>
+                                <Typeahead
+                                    id="cuisines"
+                                    multiple
+                                    options={cuisines}
+                                />   
+                            </Col>
+                        </Row>
+                        <hr style={{ borderTop: '1px solid #ccc' }} />
+                        <Form.Text style={{ color: 'gray', fontSize: '13px' }}>
+                            If you're not ready to specify items for guests to bring just yet, feel free to skip this step.
+                        </Form.Text> 
+                        <Row style={{paddingTop: '25px' }}>
+                            <Col>
+                                <Form.Label>Item Name</Form.Label> 
                             </Col>
                             <Col>
-                                <Form.Label style={{width: '332px'}}>Notes</Form.Label> 
+                                <Form.Label>Category</Form.Label> 
+                            </Col>
+                            <Col>
+                                <Form.Label>Slot count</Form.Label> 
+                            </Col>
+                            <Col>
+                                <Form.Label>Quantity per slot</Form.Label> 
+                            </Col>
+                            <Col  style={{eidth: '400px'}}>
+                                <Form.Label style={{eidth: '400px'}}>Notes</Form.Label> 
                             </Col>
                         </Row>
                         {/* Scrollable container for rows */}
-                        <div style={{ maxHeight: '500px', overflowY: 'auto', marginBottom: '15px' }}>
+                        <div style={{ maxHeight: '300px', overflowY: 'auto', marginBottom: '15px' }}>
                             {/* Render rows */}
                             {rows.map((row, index) => (
-                                <Row key={index} style={{ maxWidth: '650px', marginBottom: '10px' }}>
-                                    <Col style={{ paddingRight: '12px' }}>
+                                <Row key={index} style={{ marginBottom: '10px' }}>
+                                    <Col>
                                         <Form.Control
-                                            type="name"
-                                            value={row.product}
+                                            type="text"
+                                            value={row.name}
                                             onChange={(e) => handleChange(index, 'name', e.target.value)}
-                                            style={{width: '200px'}}
                                             required
                                         />
                                     </Col>
-                                    <Col style={{ paddingLeft: '0', paddingRight: '0' }}>
+                                    <Col>
+                                    <Form.Select
+                                            defaultValue=""
+                                            onChange={(e) => handleChange(index, 'category', e.target.value)}
+                                            required
+                                        >
+                                            <option value="" disabled hidden></option>
+                                            {categories.map((category, index) => (
+                                                <option key={index} value={category}>
+                                                    {category}
+                                                </option>
+                                            ))}
+                                        </Form.Select>
+                                    </Col>
+                                    <Col>
                                         <Form.Control
-                                            type="text"
-                                            value={row.quantity}
-                                            onChange={(e) => handleChange(index, 'quantity', e.target.value)}
-                                            style={{width: '70px'}}
+                                            type="number"
+                                            value={row.slotCount}
+                                            onChange={(e) => handleChange(index, 'slotCount', e.target.value)}
                                             required
                                         />
                                     </Col>
                                     <Col>
                                         <Form.Control
+                                            type="number"
+                                            value={row.slotQuantity}
+                                            onChange={(e) => handleChange(index, 'slotQuantity', e.target.value)}
+                                            required
+                                        />
+                                    </Col>
+                                    <Col style={{eidth: '400px'}}>
+                                        <Form.Control
                                             type="text"
                                             value={row.notes}
                                             onChange={(e) => handleChange(index, 'notes', e.target.value)}
-                                            style={{width: '332px'}}
                                             required
                                         />
                                     </Col>
@@ -104,10 +160,6 @@ function NewEventPage3({handleDishCategoryChange}) {
                             Add rows
                         </Button>
                     </Form.Group>
-                </Col>
-                {/* Right column */}
-                <Col md={5}>
-                    <Image src={process.env.PUBLIC_URL + '/img_3.jpg'} style={{ paddingTop: '60px', paddingRight: '80px' }} fluid />
                 </Col>
             </Row>
         </Container>
