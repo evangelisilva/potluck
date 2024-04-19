@@ -268,7 +268,10 @@ function MyComponent() {
         }
     }
 
+    
+
     return (
+
         <div>
             <SignupNavbar userData={userData}/>
             <div style={{ backgroundColor: '#f8f9fa', fontFamily: 'Arial' }}>
@@ -331,7 +334,8 @@ function MyComponent() {
                                                     dishSignupData={dishSignupData} />
                                             </Tab>
                                             <Tab eventKey="profile" title={<span style={{ color: 'black' }}>Recap</span>}>
-                                                <RecapTab />
+                                                {/* Conditionally to the recap tab on the user data being defeined */}
+                                                {userData === null ? <div></div> : <RecapTab userId={userData._id} eventId={eventId}/>}
                                             </Tab>
                                         </Tabs>
                                         
@@ -347,6 +351,7 @@ function MyComponent() {
             {showCancelEventPopup && <CancelEventPopup onClose={closeCancelEventPopup} onConfirm={handleConfirmCancel} />}
             {showDishSignupPopup && <DishSignupPopup onClose={closeDishSignupPopup} onSignup={handleDishSignup} userId={userData._id} categoryName={selectedCategory} eventId={eventId}/>}
         </div>
+
     );
 }
 
