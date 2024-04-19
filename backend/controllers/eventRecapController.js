@@ -61,6 +61,13 @@ exports.getAllMediaItems = async (req, res) => {
         const params = {
             Bucket: 'potluck-planning-app-event-recap'
         };
+
+        const userId = req.body.userId;
+
+        // Before returning, also get the metadata, and find metadata corresponding to the contens
+        const allMetadata = await FileMetadata.find({});
+        const metaDataArray = [];
+        const userMatchArray = [];
         
         s3.listObjects(params, (err, data) => {
         if (err) {
@@ -68,7 +75,28 @@ exports.getAllMediaItems = async (req, res) => {
         } else {
             console.log('Objects in bucket:', data.Contents);
 
-            res.status(201).json({Objects : data.Contents})
+            // append to the metadata array in order
+            for (let i = 0; i < data.Contents.length; i++){
+                // Find the match of the metadata
+                for (let j = 0; j < allMetadata.length; j++){
+                    
+                    if (data.Contents[i].Key === allMetadata[j].fileKey){
+                        // once you have this match, append BOTH the metadata, and whether the user is false
+                        metaDataArray.push(allMetadata[j]);
+                        if (allMetadata[j].user === userId){
+                            userMatchArray.push(true);
+                        }
+                        else{
+                            userMatchArray.push(false); 
+                        }
+
+
+                    }
+
+                }
+            }
+
+            res.status(201).json({Objects : data.Contents, metaData : metaDataArray, users : userMatchArray})
         }
     });
 

@@ -268,6 +268,26 @@ function MyComponent() {
     }
 
     /* EVENT RECAP SECTION */
+
+    const [s3FileData, setS3FileData] = useState()
+
+
+    /* getting all the file data */
+    useEffect(() => {
+        // Make GET request to Node.js server
+        axios.get(`http://localhost:8000/api/eventRecap`, userData._id)
+          .then(data => {
+            setS3FileData(data.data);
+            console.log("In useEffect - what is the file data result from the server?");
+            console.log(data.data);
+            /* for (let i = 0; i < ) */
+          })
+          .catch(error => {
+            console.error('Error fetching data:', error);
+          });
+      }, []);
+
+
     const [file, setFile] = useState(null)
 
     ////const [currentFileName, setCurrentFileName] = useState('')
