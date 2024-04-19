@@ -268,6 +268,9 @@ function MyComponent() {
     }
 
     return (
+
+        <>
+
         <div>
             <SignupNavbar userData={userData}/>
             <div style={{ backgroundColor: '#f8f9fa', fontFamily: 'Arial' }}>
@@ -489,6 +492,12 @@ function MyComponent() {
             {showCancelEventPopup && <CancelEventPopup onClose={closeCancelEventPopup} onConfirm={handleConfirmCancel} />}
             {showDishSignupPopup && <DishSignupPopup onClose={closeDishSignupPopup} onSignup={handleDishSignup} userId={userData._id} categoryName={selectedCategory} eventId={eventId}/>}
         </div>
+
+        <div>
+
+        </div>
+
+        </>
     );
 }
 
