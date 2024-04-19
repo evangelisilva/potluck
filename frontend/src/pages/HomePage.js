@@ -57,7 +57,13 @@ function HomePage() {
                         </p>
                         {/* Get Started button */}
                         <Button 
-                            onClick={() => navigate('/events/new')} // Navigate to '/events/new' on button click
+                            onClick={() => {
+                                if (!userData) {
+                                    navigate('/signin'); 
+                                } else {
+                                    navigate('/events/new');
+                                }
+                            }}
                             className="mb-4 mb-md-0" 
                             style={{ 
                                 paddingLeft: '1.0625rem', 
