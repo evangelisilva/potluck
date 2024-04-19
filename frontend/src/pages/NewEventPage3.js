@@ -3,8 +3,6 @@ import { Container, Row, Col, Form, Image, Button } from 'react-bootstrap';
 import { Typeahead } from 'react-bootstrap-typeahead';
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 
-
-
 function NewEventPage3({handleDishCategoryChange}) {
     // State to manage the rows dynamically
     const [rows, setRows] = useState([{ name: '', quantity: '', notes: '' }]);
