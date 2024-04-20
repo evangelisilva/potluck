@@ -7,7 +7,7 @@ const storage = multer.memoryStorage()
 const upload = multer({ storage: storage })
 
 // Retrieve all media items
-router.get('/:userId', eventRecapController.getAllMediaItems);
+router.get('/:userId/:eventId', eventRecapController.getAllMediaItems);
 
 // Create a new media item
 router.post('/', upload.single('file'), eventRecapController.createMediaItem);

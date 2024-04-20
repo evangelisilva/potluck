@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { Container, Row, Form, Button, Col, Image, Card } from 'react-bootstrap';
+
 import axios from 'axios';
 
 const RecapTab = ({userId, eventId}) => {
@@ -12,7 +14,7 @@ console.log("Original user id in this class: ", userId)
 /* getting all the file data */
 useEffect(() => {
     // Make GET request to Node.js server
-    axios.get(`http://localhost:8000/api/eventRecap/${userId}`)
+    axios.get(`http://localhost:8000/api/eventRecap/${userId}/${eventId}`)
       .then(data => {
         setS3FileData(data.data);
         console.log("In useEffect - what is the file data result from the server?");
@@ -26,14 +28,19 @@ useEffect(() => {
 
 
 const [file, setFile] = useState(null)
+const [fileName, setFileName] = useState('')
+const [fileCaption, setFileCaption] = useState('')
 
 ////const [currentFileName, setCurrentFileName] = useState('')
 
-const [fileValidation, setFileValidation] = useState()
+const [fileValidation, setFileValidation] = useState('')
+const [submissionValidation, setSubmissionValidation] = useState('')
 
 const [fileList, setFileList] = useState([])
 
 const [fileNameList, setFileNameList] = useState([])
+
+const [showRecap, setShowRecap] = useState(false)
 
 /*
 const handleCurrentFileNameChange = (e) => {
@@ -96,11 +103,13 @@ const handleFileChange = (e) => {
     }
     // otherwise, add the file to the list of files, as well as the STRING list of file NAMES
     else {
-        setFileList([...fileList, currentFile]);
-        setFileNameList([...fileNameList, currentFileName]);
+        ////setFileList([...fileList, currentFile]);
+        ////setFileNameList([...fileNameList, currentFileName]);
+        setFile(currentFile);
+        setFileName(currentFileName);
     }
 
-    setFile(currentFile);
+    
   }
   else {
     setFile(null);
@@ -108,11 +117,15 @@ const handleFileChange = (e) => {
 };
 
 const handleFileSubmit = (e) => {
-    e.preventDefault()
+    e.preventDefault();
 
-    // take the caption for everything
-    const caption = document.getElementById("fileCaption").value;
+    // set the submission validation here (you must have all of a caption and a file)
+    if (file === null || fileCaption === ''){
+      setSubmissionValidation("Invalid submission. your submission must include both a caption and a media file");
+    }
 
+   
+    /*
     for (let i = 0; i < fileList.length; i++){
 
         console.log("What is the ith element in the file name list?");
@@ -123,7 +136,7 @@ const handleFileSubmit = (e) => {
         fileData.append('eventId', eventId);
         fileData.append('file', fileList[i]);
         fileData.append('fileExtension', fileNameList[i].split('.')[1]);
-        fileData.append('caption', caption);
+        fileData.append('caption', fileCaption);
 
         axios.post(`http://localhost:8000/api/eventRecap`, fileData
         , {
@@ -142,6 +155,7 @@ const handleFileSubmit = (e) => {
             if (i === fileList.length - 1){
                 setFileList([]);
                 setFileNameList([]);
+                setSubmissionValidation('');
             }
           })
         .catch(error => {
@@ -150,6 +164,37 @@ const handleFileSubmit = (e) => {
         });
         
     }
+    */
+
+    
+
+        const fileData = new FormData();
+        fileData.append('userId', userId);
+        fileData.append('eventId', eventId);
+        fileData.append('file', file);
+        fileData.append('fileExtension', fileName);
+        fileData.append('caption', fileCaption);
+
+        axios.post(`http://localhost:8000/api/eventRecap`, fileData
+        , {
+        headers: {
+            'Content-Type': 'multipart/form-data'
+        }
+        
+        })
+        .then(response => {
+            // Handle success, if needed
+            console.log("Create image response: ");
+            console.log(response.data);
+
+            setFile(null);
+            setFileName('');
+            setSubmissionValidation('');
+          })
+        .catch(error => {
+          // Handle error, if needed
+          console.error(error);
+        });
     
     
     
@@ -158,25 +203,68 @@ const handleFileSubmit = (e) => {
    
 }
 
+const recapToggle = () => {
+  setShowRecap(!showRecap);
+}
+
+const handleFileCaptionChange = (e) => {
+  setFileCaption(e.target.value);
+}
+
     return (
         <div style={{ marginTop: '20px', marginLeft: '10px', marginRight: '10px' }}>
             <h2>Recap</h2>
             <p>Welcome to the recap tab!</p>
-            <div>
+            
+            {(showRecap === false) ?
+            (<button onClick={recapToggle}><strong>Create Recap</strong></button>) :
+            (<div>
                 <p>Upload an image to represent your inventory item.</p>
                 <input type="file" id="fileUploaded" onChange={handleFileChange}/>
                 <input 
                     type="text" 
                     id="fileCaption"
                     placeholder="Add a caption for your image upload"
+                    value={fileCaption}
+                    onChange={handleFileCaptionChange}
                 required />
                 {fileValidation}
-                <p>Files currently uploaded: </p>
-                {fileNameList.map((name, index) => (<div>{name}</div>))}
-                <button onClick={handleFileSubmit}>Submit to Database</button>                                    
-            </div>
+                <p>File currently uploaded: </p>
+                {/*{fileNameList.map((name, index) => (<div>{name}</div>))}*/}
+                {fileName}
+                <button onClick={handleFileSubmit}>Submit to Database</button>
+                <button onClick={recapToggle}>Done</button>
+                {submissionValidation}                        
+            </div>)}
+
+            {/*Map all of the recap items to cards*/}
+
+            {(s3FileData.metaData === undefined) ? (<></>) : (<div>{s3FileData.metaData.map((Recap, index) => (<Card style={{  marginLeft: '20px' }}>
+            <Card.Body style={{ fontSize: '12px', width: '620px' }}>
+              <p>Recap published by user {Recap.user}</p>
+            </Card.Body>
+            </Card>))}</div>)}
+
+            
+
+            
+
+            
+            
         </div>
     );
 }
+
+/* 
+
+{/*Map all of the recap items to cards 
+
+{(s3FileData.metaData === undefined) ? (<></>) : (<div>{s3FileData.metaData.map((Recap, index) => (<Card style={{  marginLeft: '20px' }}>
+<Card.Body style={{ fontSize: '12px', width: '620px' }}>
+  <p>Recap published by user {Recap.user}</p>
+</Card.Body>
+</Card>))}</div>)}
+
+*/
 
 export default RecapTab;

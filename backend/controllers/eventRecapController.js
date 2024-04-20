@@ -4,11 +4,17 @@ const AWS = require('aws-sdk');
 const fs = require('fs');
 const crypto = require('crypto');
 
-const FileMetadata = require('../models/FileMetadata');
+const FileMetadata = require('../models/FileMetadata'); 
+const Event = require('../models/Event')
+const User = require('../models/User')
 
 
 
 AWS.config.update({
+    credentials: {
+        accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+    }, 
     region: 'us-east-2' // e.g., 'us-east-1'
   });
 
@@ -61,33 +67,83 @@ exports.getAllMediaItems = async (req, res) => {
         };
 
 
-        const userId = req.params.userId;
+       
 
-        console.log("Event recap controller - User id in here");
-        console.log(userId);
+        const eventDetails = await Event.findById(req.params.eventId);
+
+        const hostId = eventDetails.organizer.toString();
 
 
         // Before returning, also get the metadata, and find metadata corresponding to the contens
-        const allMetadata = await FileMetadata.find({});
+        
         const metaDataArray = [];
         const userMatchArray = [];
+        const userNameArray = [];
         
-        s3.listObjects(params, (error, data) => {
+        s3.listObjects(params, async (error, data) => {
         if (error) {
             res.status(400).json({ message: error.message });
         } else {
-            console.log('Objects in bucket:', data.Contents);
+            
+            console.log("Event recap controller get all media items - made it into the async function for listing objects")
+            
+            // new filtering of the data
+            // event id of the object must match (metadata must be equal to the param passed in)
+            // you must store the user name of the recap
+            // if the event id matches, check for the userId of the metadata being that of current user (or if the user ID is the host you just set everything to true)
+            // also if the event id matches, add the username of the item to a list
+            
+            ////console.log('Objects in bucket:', data.Contents);
 
             // append to the metadata array in order
             for (let i = 0; i < data.Contents.length; i++){
+                const currentMetadata = await FileMetadata.findOne({fileKey : data.Contents[i].Key})
+                console.log("Event recap controller get all media items - what is the current metadata?: ");
+                console.log(currentMetadata);
+
+
+                if (currentMetadata.event.toString() === req.params.eventId){
+                    console.log("FOUND - image that matches the desired event")
+
+
+                    metaDataArray.push(currentMetadata);
+
+                    // Find the username of the recap through the metadata
+                    const currentUser = await User.findById(req.params.userId);
+                    const nameOfUser = currentUser.firstName + " " + currentUser.lastName;
+                    userNameArray.push(nameOfUser);
+
+                    
+                    if (currentMetadata.user.toString() === req.params.userId || req.params.userId === hostId){
+                        userMatchArray.push(true);
+                    }
+                    else{
+                        userMatchArray.push(false);
+                    }
+                }
+            }
+
+            res.status(201).json({metaData : metaDataArray, userMatch : userMatchArray, userName : userNameArray});
+
+
+            /*
+            for (let i = 0; i < data.Contents.length; i++){
+
+                
+
+
                 // Find the match of the metadata
                 for (let j = 0; j < allMetadata.length; j++){
+                    
+
                     
                     if (data.Contents[i].Key === allMetadata[j].fileKey){
                         // once you have this match, append BOTH the metadata, and whether the user is false
                         metaDataArray.push(allMetadata[j]);
-                        if (allMetadata[j].user.toString() === userId){
+                        // TODO: also check for the host
+                        if (allMetadata[j].user.toString() === userId || allMetadata[j].user.toString() === hostId){
                             userMatchArray.push(true);
+                            // TODO: find the user by id, and append their name to an array
                         }
                         else{
                             console.log("The two user ids are not equal. What are they?: ")
@@ -101,8 +157,9 @@ exports.getAllMediaItems = async (req, res) => {
 
                 }
             }
+            */
 
-            res.status(201).json({Objects : data.Contents, metaData : metaDataArray, users : userMatchArray})
+            ////res.status(201).json({Objects : data.Contents, metaData : metaDataArray, users : userMatchArray})
         }
     });
 
