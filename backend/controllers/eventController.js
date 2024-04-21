@@ -102,7 +102,6 @@ exports.getEventParticipants = async (req, res) => {
     try {
       const { eventId } = req.params;
       const filteredUsers = await Rsvp.find({ event: eventId }).populate('user', '-password');
-      console.log(filteredUsers);
       res.status(200).json(filteredUsers);
     } catch (error) {
       console.error("Error in getting users for the chat: ", error.message);

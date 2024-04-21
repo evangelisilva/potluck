@@ -19,7 +19,7 @@ exports.signup = async (firstName, lastName, email, password) => {
     await user.save();
 
     const payload = { user: { id: user.id } };
-    const token = jwt.sign(payload, jwt_secret, { expiresIn: 3600 });
+    const token = jwt.sign(payload, jwt_secret, { expiresIn: '24h' });
 
     return token;
   } catch (error) {
@@ -41,7 +41,7 @@ exports.signin = async (email, password) => {
     }
 
     const payload = { user: { id: user.id } };
-    const token = jwt.sign(payload, jwt_secret, { expiresIn: 3600 });
+    const token = jwt.sign(payload, jwt_secret, { expiresIn: '24h' });
     
     return token;
   } catch {

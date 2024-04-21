@@ -90,6 +90,8 @@ function MyComponent() {
             };
             setEventDetails(formattedEventDetails);
 
+            console.log(eventDetails);
+
             const eventGuestsResponse = await axios.get(`http://localhost:8000/api/events/chat/${eventId}`);
             setEventGuestData(eventGuestsResponse.data);
         } catch (error) {
