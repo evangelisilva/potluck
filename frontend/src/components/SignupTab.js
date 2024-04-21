@@ -3,11 +3,16 @@ import Talk from "talkjs";
 import axios from 'axios';
 import { Row, Col, Card, Button, Image, Container } from 'react-bootstrap';
 import { GoogleMap, LoadScript, MarkerF } from '@react-google-maps/api';
+import ItemSignupPopup from './ItemSignupPopup';
+import ItemPopup from './ItemPopup';
 
 const SignupTab = ({ eventDetails, eventGuestData, userData, isConfirmedCancel, openDishSignupPopup }) => {   
 
     const containerRef = useRef(null);
     const [items, setItems] = useState(null);
+    const [showPopup, setShowPopup] = useState(false);
+    const [itemPopup, seItemPopup] = useState(false);
+    const [selectedItem, setSelectedItem] = useState(null);
 
     useEffect(() => {
         fetchItems();
@@ -61,6 +66,16 @@ const SignupTab = ({ eventDetails, eventGuestData, userData, isConfirmedCancel, 
             chatbox.mount(containerRef.current);
         })            
         .catch(e => console.error(e));
+    }
+
+    const togglePopup = (item) => {
+        setSelectedItem(item);
+        setShowPopup(!showPopup); // Toggle popup visibility
+    }
+
+    const toggleItemPopup = (item) => {
+        setSelectedItem(item);
+        seItemPopup(!itemPopup); // Toggle popup visibility
     }
 
     return (
@@ -182,13 +197,14 @@ const SignupTab = ({ eventDetails, eventGuestData, userData, isConfirmedCancel, 
                             <Col xs={12}>
                                 
                             {items[category].map(item => (
+                                <div key={item._id} onClick={() => toggleItemPopup(item)}>
                                 <Card style={{ marginBottom: '5px', color: isConfirmedCancel ? 'gray' : '#4D515A', borderRadius: '10px', marginBottom: '10px' }}>
                                     <Card.Body>
                                         <Row>
                                             <Col xs={2}>
                                             <Image
                                                 src={item.image ? item.image : process.env.PUBLIC_URL + '/dish.png'}
-                                                style={{ width: '150px', height: '75px', objectFit: 'cover', alignItems: 'center', justifyContent: 'center' }}
+                                                style={{ width: '150px', height: '80px', objectFit: 'cover', alignItems: 'center', justifyContent: 'center' }}
                                                 fluid
                                             />
                                             </Col>
@@ -203,24 +219,35 @@ const SignupTab = ({ eventDetails, eventGuestData, userData, isConfirmedCancel, 
                                                 </Row>
                                                 <Row style={{marginTop: '10px'}}>
                                                 <Container className="d-flex flex-row flex-wrap">
-                                                    {item.signups.map((signup) => (
-                                                        <Card.Text key={signup._id} style={{ fontSize: '14px', marginRight: '10px' }}>
-                                                            <Image src={signup.image} style={{ width: '30px', paddingRight: '8px' }} fluid />
-                                                            {signup.firstName} {signup.lastName}
-                                                        </Card.Text>
-                                                    ))}
+                                                    {Object.values(item.signups.reduce((acc, signup) => {
+                                                            if (!acc[signup._id]) {
+                                                                acc[signup._id] = { ...signup, count: 1 };
+                                                            } else {
+                                                                acc[signup._id].count++;
+                                                            }
+                                                            return acc;
+                                                        }, {})).map(signup => (
+                                                            <Card.Text key={signup._id} style={{ fontSize: '14px', marginRight: '10px' }}>
+                                                                <Image src={signup.image} style={{ width: '30px', paddingRight: '8px' }} fluid />
+                                                                {signup.firstName} {signup.lastName} ({signup.count})
+                                                            </Card.Text>
+                                                        ))}
                                                 </Container>
                                                 </Row>
                                             </Col>
                                             <Col xs={3}>
                                             {item.slot_count !== item.signups.length && (
-                                            <Button variant="primary" style={{borderColor: '#A39A9A', backgroundColor: "transparent", color: '#4D515A', fontSize: '15px', marginLeft: '37px', marginTop: '19px' }}>
+                                            <Button 
+                                            variant="primary" 
+                                            style={{borderColor: '#A39A9A', backgroundColor: "transparent", color: '#4D515A', fontSize: '15px', marginLeft: '37px', marginTop: '19px' }}
+                                            onClick={() => togglePopup(item)}>
                                                 Signup
                                             </Button>)}
                                             </Col>
                                         </Row>
                                     </Card.Body>
                                 </Card>
+                                </div>
                             ))}
                             </Col>
                         </Row>
@@ -229,71 +256,9 @@ const SignupTab = ({ eventDetails, eventGuestData, userData, isConfirmedCancel, 
                 ))}
                 </Row>}
             </Col>
-
-
-                {/* <Col xs={7}>
-                    {eventDetails && eventDetails.dishCategory.map((category, index) => (
-                                                    
-                    <div key={index}>
-                        <Row>
-                            <Col xs={9}>
-                                <Card.Title style={{ fontSize: '18px', color: isConfirmedCancel ? 'gray' : 'black', marginBottom: '2px' }}>{category.name}</Card.Title>
-                                                                
-                                <Card.Text style={{ fontSize: '14px', color: 'gray', marginBottom: '15px' }}>
-                                    {category.taken} out of {category.quantity} slots available
-                                </Card.Text>
-                                </Col>
-                                    <Col xs={3}>
-                                        {category.quantity !== category.taken && (
-                                        <Button
-                                            style={{ 
-                                                fontFamily: 'Arial',
-                                                color: '#4D515A', 
-                                                backgroundColor: 'transparent',
-                                                order: '1px solid #4D515A',
-                                                fontSize: '15px',
-                                                paddingLeft: '19px',
-                                                paddingRight: '19px',
-                                                marginBottom: '5px',
-                                                width: '100%',
-                                                borderRadius: '20px'
-                                            }}
-                                            disabled={isConfirmedCancel}
-                                            onClick={() => openDishSignupPopup(category.name)}>Sign up</Button>)}
-                                        </Col>
-                                    </Row>
-                                    <Row>
-                                        {dishSignupData && dishSignupData.signups.find(signup => Object.keys(signup)[0] === category.name)?.[category.name].map((signup, signupIndex) => (
-                                        <Col key={signupIndex} xs={12}>
-                                            <Card style={{ marginBottom: '5px', color: isConfirmedCancel ? 'gray' : '#4D515A', borderRadius: '10px', marginBottom: '10px' }}>
-                                                <Card.Body>
-                                                    <Row>
-                                                        <Col xs={2}>
-                                                            <Image src={process.env.PUBLIC_URL + '/dish.png'} style={{ maxWidth: '85%', marginLeft: '10px' }} fluid />
-                                                        </Col>
-                                                        <Col xs={10}>
-                                                            <Card.Title style={{ fontSize: '15px' }}>{signup.dishName}</Card.Title>  
-                                                            {signup.description && <Card.Text style={{ fontSize: '12px' }}>{signup.description}</Card.Text>}  
-                                                            <Card.Text style={{ fontSize: '12px', color: 'gray' }}>
-                                                                Allergens: { signup.allergens && signup.allergens.length > 0 ? signup.allergens.join(', ') : 'None' } | 
-                                                                Dietary Restrictions: { signup.dietaryRestrictions && signup.dietaryRestrictions.length > 0 ? signup.dietaryRestrictions.join(', ') : 'None' }
-                                                            </Card.Text>
-                                                            <Card.Text style={{ fontSize: '14px' }}>
-                                                                <Image src={process.env.PUBLIC_URL + '/profile.png'} style={{ width: '30px', paddingRight: '8px' }} fluid />
-                                                                {signup.userFirstName} {signup.userLastName}
-                                                            </Card.Text>
-                                                        </Col>
-                                                    </Row>
-                                                </Card.Body>
-                                            </Card>
-                                        </Col>
-                                    ))}
-                                </Row> 
-                                <hr style={{ borderTop: '1px solid #000', margin: '20px 0' }} />
-                            </div>
-                        ))}
-                    </Col> */}
                 </Row>
+                {showPopup && selectedItem && <ItemSignupPopup item={selectedItem} userId={userData._id} eventId={eventDetails._id} onClose={() => setShowPopup(false)} />}
+                {itemPopup && selectedItem && <ItemPopup item={selectedItem} onClose={() => seItemPopup(false)} />}
                 <div style={{position: 'fixed', bottom: 0, height: '500px', right: '2%', width: '350px'}} ref={containerRef}>
                     <div id="talkjs-container" style={{height: "300px"}}><i></i></div>
                 </div>

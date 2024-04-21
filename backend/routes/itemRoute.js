@@ -50,6 +50,28 @@ router.post('/:eventId', async (req, res) => {
     }
 });
 
+router.put('/:itemId/signup', async (req, res) => {
+// async function addUserIdToSignups(itemId, userId) {
+    const {itemId} = req.params;
+    const {userId} = req.body;
+
+    try {
+        // Find the item by ID and update the signups array
+        const updatedItem = await Item.findByIdAndUpdate(
+            itemId,
+            { $push: { signups: userId } }, // Using $push to add the user ID, allowing duplicates
+            { new: true } // Return the updated document
+        );
+
+        if (!updatedItem) {
+            throw new Error('Item not found');
+        }
+
+        return updatedItem;
+    } catch (error) {
+        console.error('Error adding user ID to signups:', error);
+        throw error;
+    }
+})
 
 module.exports = router;
-
