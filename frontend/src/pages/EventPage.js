@@ -12,7 +12,11 @@ import SignupNavbar from '../components/SignupNavbar';
 import SignupTab from '../components/SignupTab';
 import RecapTab from '../components/RecapTab';
 
-function MyComponent() {
+let keyTab = "about";
+
+function MyComponent({tab}) {
+    ////keyTab = "about";
+
     const navigate = useNavigate();
     const containerRef = useRef(null);
 
@@ -152,6 +156,10 @@ function MyComponent() {
     const closeDishSignupPopup = () => {
         setDishSignupPopup(false);
     };
+
+    const changeKeyTab = (eventKey) => {
+        keyTab = eventKey;
+    }
 
     // Inside MyComponent function
     const handleConfirmCancel = async () => {
@@ -310,7 +318,10 @@ function MyComponent() {
         .catch(e => console.error(e));
     }
 
+    
+
     return (
+
         <div>
             <SignupNavbar userData={userData}/>
             <div style={{ backgroundColor: '#f8f9fa', fontFamily: 'Arial' }}>
@@ -379,8 +390,9 @@ function MyComponent() {
                                                     openDishSignupPopup={openDishSignupPopup}
                                                     dishSignupData={dishSignupData} />}
                                             </Tab>
+
                                             <Tab eventKey="recap" title={<span style={{ color: activeKey === 'recap' ? 'black' : 'gray' }}>Recap</span>}>
-                                                <RecapTab />
+                                                {userData === null ? <div></div> : <RecapTab userId={userData._id} eventId={eventId}/>}
                                             </Tab>
                                         </Tabs>
                                         
@@ -399,6 +411,7 @@ function MyComponent() {
             {showCancelEventPopup && <CancelEventPopup onClose={closeCancelEventPopup} onConfirm={handleConfirmCancel} />}
             {showDishSignupPopup && <DishSignupPopup onClose={closeDishSignupPopup} userId={userData._id} eventId={eventId}/>}
         </div>
+
     );
 }
 

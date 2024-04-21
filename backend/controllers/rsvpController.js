@@ -38,6 +38,7 @@ let rsvpFixed = new Rsvp(exampleEventRSVPData);
 
 // Before saving a record - try to delete the original
 // {event: '65d39315f2a7f4725441f1a9', user: '65d37b14f608ce904718e311'}
+
 // Rsvp.deleteMany({}).then(
 //     () => console.log("RSVP controller - Deleted some records from mongo db")
 //   ).then(
