@@ -1,10 +1,55 @@
-import React from 'react';
+import React, { useRef } from 'react';
+import Talk from "talkjs";
+import axios from 'axios';
 import { Row, Col, Card, Button, Image } from 'react-bootstrap';
 import { GoogleMap, LoadScript, MarkerF } from '@react-google-maps/api';
 
-const SignupTab = ({ eventDetails, eventDetail, isConfirmedCancel, openDishSignupPopup, dishSignupData }) => {
+const SignupTab = ({ eventDetails, eventGuestData, userData, isConfirmedCancel, openDishSignupPopup, dishSignupData }) => {   
+
+    const containerRef = useRef(null);
+    
+    function convertToTalkUser(user) {
+        return {
+            id: user._id,
+            name: user.firstName + " " + user.lastName,
+            email: user.email,
+            photoUrl: user.image
+        };
+    } 
+
+    const handleClick = (guest) => {
+        console.log(guest);
+        Talk.ready
+        .then(async () => {
+            const meData = convertToTalkUser(userData);
+            const me = new Talk.User(meData);
+
+            const otherData = convertToTalkUser(guest);
+            const other = new Talk.User(otherData);
+            
+            if (!window.talkSession) {
+                window.talkSession = new Talk.Session({
+                    appId: 'tscOnvIc',
+                    me: me
+                });
+            } 
+
+            const res = await axios.get(`http://localhost:8000/api/events/conversation/${eventDetails._id}`,{ sender: meData.id, receiver: otherData.id });
+            
+            const conversationId = res.data.conversationId;
+            const conversation = window.talkSession.getOrCreateConversation(conversationId);
+            
+            conversation.setParticipant(me);
+            conversation.setParticipant(other);
+
+            const chatbox = window.talkSession.createChatbox(conversation);
+            chatbox.mount(containerRef.current);
+        })            
+        .catch(e => console.error(e));
+    }
+
     return (
-        <div style={{ marginTop: '20px' }}>
+        <div style={{ marginTop: '25px' }}>
             {/* Row for dish signups and guest list */}
             <Row style={{marginRight: '10px', marginLeft: '10px'}}>
             {eventDetails &&  <Col xs={5}>
@@ -34,29 +79,19 @@ const SignupTab = ({ eventDetails, eventDetail, isConfirmedCancel, openDishSignu
                             <Card.Body>
                                 <Row>
                                     <Col>
-                                        {/* <Card.Subtitle style={{fontSize: '25px'}}>{eventDetails.invitedGuests.filter(guest => guest.status === 'Attending').length}</Card.Subtitle> */}
-                                        <Card.Subtitle style={{fontSize: '25px'}}>{eventDetail.guests.filter(guest => guest.status == 'Attending').length}</Card.Subtitle>
-                                    </Col>
-                                    <Col>
-                                        {/* <Card.Subtitle style={{fontSize: '25px'}}>{eventDetails.invitedGuests.filter(guest => guest.status === 'May be').length}</Card.Subtitle> */}
-                                        <Card.Subtitle style={{fontSize: '25px'}}>{eventDetail.guests.filter(guest => guest.status == 'May be').length}</Card.Subtitle>
+                                        <Card.Subtitle style={{fontSize: '25px'}}>{eventGuestData.filter(guest => guest.status == 'attending').length}</Card.Subtitle>
                                     </Col>
                                     <Col>
                                         <Card.Subtitle style={{fontSize: '25px'}}>{eventDetails.invitedGuests.length}</Card.Subtitle>
                                     </Col>
-                                    {/* Exclude guests with 'Invited' status */}
                                 </Row>
                                     <Row style={{color: isConfirmedCancel ? 'gray' : '#E8843C'}}>
                                     <Col>
                                         <Card.Text>Attending</Card.Text>
                                     </Col>
                                     <Col>
-                                        <Card.Text>May be</Card.Text>
-                                    </Col>
-                                    <Col>
                                         <Card.Text>Invited</Card.Text>
                                     </Col>
-                                    {/* No column for 'Invited' status */}
                                 </Row>
                             </Card.Body>
                         </Card>
@@ -64,26 +99,31 @@ const SignupTab = ({ eventDetails, eventDetail, isConfirmedCancel, openDishSignu
                 </Row>
 
                 {/* Guest list */}
-                {eventDetail.guests
-                    .filter(guest => guest.status !== 'Invited')
-                    .filter(guest => guest.status !== 'Not Attending') // Exclude guests with 'Invited' status
+                {eventGuestData
+                    // .filter(guest => guest.status !== 'Invited')
+                    .filter(guest => guest.status == 'attending' ) // Exclude guests with 'Invited' status
+                    .filter(guest => guest.user._id !== userData._id)
                     .map((guest, index) => (
                         <Row key={index}>
                             <Col>
                                 <Card style={{marginBottom: '5px', color: '#4D515A', borderRadius: '10px'}}>
                                     <Card.Body>
                                         <Row>
-                                             <Col>
-                                                <Card.Subtitle>{guest.name}</Card.Subtitle>
-                                                <Card.Text style={{fontSize: '13px', color: 'gray'}}>{guest.status}</Card.Text>
+                                            <Col xs={2}>
+                                                <Image src={guest.user.image} style={{ width: '40px' }} />
+                                            </Col>
+                                             <Col  xs={5} style={{ marginTop: '4%'}}>
+                                                <Card.Subtitle>{guest.user.firstName} {guest.user.lastName}</Card.Subtitle>
                                             </Col> 
                                             {/* Button to send message */}
-                                            {guest.status === 'Attending' && (
-                                                <Col className="d-flex justify-content-end">
+                                            {guest.status === 'attending' && (
+                                                <Col className="d-flex justify-content-end" xs={5}>
+                                                    <div className="user-action">
                                                     <Button variant="primary" style={{borderColor: '#A39A9A', backgroundColor: "transparent", color: '#4D515A', fontSize: '15px', marginRight: '5px' }}>
-                                                        <Image src={process.env.PUBLIC_URL + '/chat.png'} style={{ maxWidth: '25px', paddingRight: '5px' }} fluid />
-                                                        Send Message
+                                                        <Image src={process.env.PUBLIC_URL + '/chat.png'} style={{ maxWidth: '25px', paddingRight: '5px' }} onClick={() => handleClick(guest.user)}/>
+                                                        Message
                                                     </Button>
+                                                    </div>
                                                 </Col>
                                             )}
                                         </Row>
@@ -157,6 +197,9 @@ const SignupTab = ({ eventDetails, eventDetail, isConfirmedCancel, openDishSignu
                         ))}
                     </Col>
                 </Row>
+                <div style={{position: 'fixed', bottom: 0, height: '500px', right: '2%', width: '350px'}} ref={containerRef}>
+                    <div id="talkjs-container" style={{height: "300px"}}><i></i></div>
+                </div>
         </div>
     );
 }

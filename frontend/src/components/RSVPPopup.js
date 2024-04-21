@@ -118,15 +118,6 @@ const RSVPPopup = ({ onClose, eventId, userId }) => {
                                         style={{ marginRight: '30px' }}
                                         inline
                                     />
-                                    <Form.Check
-                                        type="radio"
-                                        label="Maybe"
-                                        name="attendance"
-                                        value="may_be"
-                                        checked={attendance === 'may_be'}
-                                        onChange={() => setAttendance('may_be')}
-                                        inline
-                                    />
                                 </Form.Group><br />
                                 
                                 <Form.Group controlId="messageToHost">
