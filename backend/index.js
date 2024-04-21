@@ -7,6 +7,7 @@ const eventRoute = require('./routes/eventRoute');
 const userRoute = require('./routes/userRoute');
 const dishRoute = require('./routes/dishRoute');
 const rsvpRoutes = require('./routes/rsvpRoute');
+const messageRoute = require('./routes/messageRoute');
 const dishSignupRoute = require('./routes/dishSignupRoute');
 const { sendEmail } = require('./services/emailService');
 const userService = require('./services/userService');
@@ -50,6 +51,7 @@ app.use('/api/users', userRoute);
 app.use('/api/dishes', dishRoute);
 app.use('/api/dishSignups', dishSignupRoute);
 app.use('/api/rsvp', rsvpRoutes);
+app.use('api/messages', messageRoute);
 
 app.get('/', (req, res) => {
     res.send('Server is running'); 

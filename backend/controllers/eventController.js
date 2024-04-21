@@ -1,6 +1,8 @@
 const Event = require('../models/Event');
 const eventService = require('../services/eventService')
 const emailService = require('../services/emailService')
+const Rsvp = require('../models/Rsvp');
+const Conversation = require('../models/Conversation');
 
 // Controller function to create a new event
 exports.createEvent = async (req, res) => {
@@ -95,4 +97,43 @@ exports.sendInvitations = async (req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
   };
-  
+
+exports.getEventParticipants = async (req, res) => {
+    try {
+      const { eventId } = req.params;
+      const filteredUsers = await Rsvp.find({ event: eventId }).populate('user', '-password');
+      console.log(filteredUsers);
+      res.status(200).json(filteredUsers);
+    } catch (error) {
+      console.error("Error in getting users for the chat: ", error.message);
+      res.status(500).json({ error: "Internal server error" });
+    }
+};
+
+
+exports.getConversationId = async (req, res) => {
+  try {
+    const { eventId } = req.params;
+    const { sender, receiver } = req.body;
+
+    // Check if a conversation already exists with the given sender and receiver
+    let conversation = await Conversation.findOne({
+      event: eventId,
+      participants: { $all: [sender, receiver] } // Find conversations where both sender and receiver are participants
+    });
+
+    // If no conversation found, create a new one
+    if (!conversation) {
+      conversation = await Conversation.create({
+      event: eventId,
+      participants: [sender, receiver]
+    });
+    }
+
+    res.status(200).json({ conversationId: conversation._id });
+   
+  } catch (error) {
+    console.error('Error finding or creating conversation:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+}

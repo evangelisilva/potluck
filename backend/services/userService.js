@@ -15,6 +15,7 @@ exports.signup = async (firstName, lastName, email, password) => {
     user = new User({ firstName, lastName, email, password });
     const salt = await bcrypt.genSalt(10);
     user.password = await bcrypt.hash(password, salt);
+    // user.profileImage = 
     await user.save();
 
     const payload = { user: { id: user.id } };
