@@ -112,20 +112,22 @@ exports.getEventParticipants = async (req, res) => {
 
 exports.getConversationId = async (req, res) => {
   try {
-    const { eventId } = req.params;
-    const { sender, receiver } = req.body;
+    const { eventId, senderId, receiverId } = req.params;
+    // const { sender, receiver } = req.body;
+
+    console.log(eventId, senderId, receiverId);
 
     // Check if a conversation already exists with the given sender and receiver
     let conversation = await Conversation.findOne({
       event: eventId,
-      participants: { $all: [sender, receiver] } // Find conversations where both sender and receiver are participants
+      participants: { $all: [senderId, receiverId] } // Find conversations where both sender and receiver are participants
     });
 
     // If no conversation found, create a new one
     if (!conversation) {
       conversation = await Conversation.create({
       event: eventId,
-      participants: [sender, receiver]
+      participants: [senderId, receiverId]
     });
     }
 

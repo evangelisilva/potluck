@@ -5,7 +5,7 @@ import 'react-bootstrap-typeahead/css/Typeahead.css';
 
 function NewEventPage3({handleDishCategoryChange}) {
     // State to manage the rows dynamically
-    const [rows, setRows] = useState([{ name: '', quantity: '', notes: '' }]);
+    const [rows, setRows] = useState([{ name: '', category: '', slot_count: '', quantity: '', notes: '' }]);
 
     const categories = ['Appetizer', 'Main course', 'Dessert', 'Beverage', 'Side Dish', 'Salad', 'Utensils', 'Other'];
     const cuisines = [
@@ -22,20 +22,24 @@ function NewEventPage3({handleDishCategoryChange}) {
 
     // Function to handle adding a new row
     const handleAddRow = () => {
-        setRows([...rows, { name: '', quantity: '', notes: '' }]);
+        setRows([...rows, { name: '', category: '', slot_count: '', quantity: '', notes: '' }]);
     };
 
     const handleChange = (index, key, value) => {
         const newRows = [...rows];
         newRows[index][key] = value;
         setRows(newRows);
-
-        const newDishCategory = newRows.map(row => ({
+    
+        const newItem = newRows.map(row => ({
             name: row.name.trim(), // Trim to remove leading/trailing spaces
-            quantity: parseInt(row.quantity) || 0, // Convert to integer or default to 0
+            category: row.category, // Use consistent naming
+            slot_count: parseInt(row.slot_count) || 0, // Use consistent naming
+            quantity: parseInt(row.quantity) || 0, // Use consistent naming
+            notes: row.notes,
         }));
-        handleDishCategoryChange(newDishCategory);
+        handleDishCategoryChange(newItem);
     };
+    
 
 
     return (
@@ -97,7 +101,8 @@ function NewEventPage3({handleDishCategoryChange}) {
                                     </Col>
                                     <Col>
                                     <Form.Select
-                                            defaultValue=""
+                                            defaultValue=""// or defaultValue={undefined}
+                                            value={row.category}
                                             onChange={(e) => handleChange(index, 'category', e.target.value)}
                                             required
                                         >
@@ -112,16 +117,16 @@ function NewEventPage3({handleDishCategoryChange}) {
                                     <Col>
                                         <Form.Control
                                             type="number"
-                                            value={row.slotCount}
-                                            onChange={(e) => handleChange(index, 'slotCount', e.target.value)}
+                                            value={row.slot_count}
+                                            onChange={(e) => handleChange(index, 'slot_count', e.target.value)}
                                             required
                                         />
                                     </Col>
                                     <Col>
                                         <Form.Control
                                             type="number"
-                                            value={row.slotQuantity}
-                                            onChange={(e) => handleChange(index, 'slotQuantity', e.target.value)}
+                                            value={row.quantity}
+                                            onChange={(e) => handleChange(index, 'quantity', e.target.value)}
                                             required
                                         />
                                     </Col>

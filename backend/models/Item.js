@@ -6,7 +6,8 @@ const itemSchema = new mongoose.Schema({
     event:  { type: mongoose.Schema.Types.ObjectId, ref: 'Event', required: true },
     slot_count: { type: Number, required: true },
     quantity: { type: Number, required: true },
-    signups: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' },]
+    signups: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' },],
+    notes: { type: String },
 });
 
 const Item = mongoose.model('Item', itemSchema);

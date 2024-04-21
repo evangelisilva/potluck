@@ -25,6 +25,6 @@ router.put('/:eventId/update-taken/:categoryName', eventController.updateTakenQu
 
 router.get("/chat/:eventId", eventController.getEventParticipants);
 
-router.get("/conversation/:eventId", eventController.getConversationId);
+router.get("/conversation/:eventId/:senderId/:receiverId", eventController.getConversationId);
 
 module.exports = router;

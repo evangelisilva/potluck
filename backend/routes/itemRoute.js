@@ -30,17 +30,26 @@ router.get('/:eventId', async (req, res) => {
 
 router.post('/:eventId', async (req, res) => {
     const { eventId } = req.params;
+    const { name, category, slot_count, quantity, notes } = req.body;
     
     try {
         // Fetch items from the database for the specified event ID
-        const item = await Item.create({eventId});
+        const item = await Item.create({ 
+            event: eventId, 
+            name: name,
+            category: category, 
+            slot_count: slot_count, 
+            quantity: quantity, 
+            notes: notes 
+        });
         
         res.status(200).json(item);
     } catch (error) {
-        console.error('Error getting grouped items by event ID:', error);
+        console.error('Error creating item:', error);
         res.status(500).json({ error: 'Internal server error' });
     }
 });
+
 
 module.exports = router;
 

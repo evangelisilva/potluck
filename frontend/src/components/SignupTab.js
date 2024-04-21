@@ -49,7 +49,7 @@ const SignupTab = ({ eventDetails, eventGuestData, userData, isConfirmedCancel, 
                 });
             } 
 
-            const res = await axios.get(`http://localhost:8000/api/events/conversation/${eventDetails._id}`,{ sender: meData.id, receiver: otherData.id });
+            const res = await axios.get(`http://localhost:8000/api/events/conversation/${eventDetails._id}/${meData.id}/${otherData.id}`);
             
             const conversationId = res.data.conversationId;
             const conversation = window.talkSession.getOrCreateConversation(conversationId);
@@ -149,8 +149,21 @@ const SignupTab = ({ eventDetails, eventGuestData, userData, isConfirmedCancel, 
                     ))}
                  </Col>}
 
-                {items && 
                  <Col xs={7}>
+                    <Row style={{ marginBottom: '5px'}}>
+                        <Col xs={9}>
+                        </Col>
+                        <Col xs={3}>
+                        <Button variant="primary" style={{borderColor: '#E8843C', backgroundColor: "#E8843C", color: 'white', fontSize: '15px', marginLeft: '20px' }}>
+                            + Add Items
+                        </Button>
+                        </Col>
+                        {/* Your content */}
+                    
+                    </Row>
+
+                {items && 
+                <Row>
                     {Object.keys(items).map(category => (
                         <div key={category}>
                         <Row>
@@ -175,10 +188,15 @@ const SignupTab = ({ eventDetails, eventGuestData, userData, isConfirmedCancel, 
                                             />
                                             </Col>
                                             <Col xs={8}>
+                                                <Row>
                                                 <Card.Title style={{ fontSize: '15px' }}>{item.name}</Card.Title> 
+                                                </Row>
+                                                <Row>
                                                 <Card.Text style={{ fontSize: '12px', color: 'gray' }}> 
                                                     {item.signups.length} out of {item.slot_count} slots available (each serving {item.quantity} portions)
                                                 </Card.Text>
+                                                </Row>
+                                                <Row style={{marginTop: '10px'}}>
                                                 <Container className="d-flex flex-row flex-wrap">
                                                     {item.signups.map((signup) => (
                                                         <Card.Text key={signup._id} style={{ fontSize: '14px', marginRight: '10px' }}>
@@ -187,6 +205,7 @@ const SignupTab = ({ eventDetails, eventGuestData, userData, isConfirmedCancel, 
                                                         </Card.Text>
                                                     ))}
                                                 </Container>
+                                                </Row>
                                             </Col>
                                             <Col xs={2}>
                                             {item.slot_count !== item.signups.length && (
@@ -203,7 +222,8 @@ const SignupTab = ({ eventDetails, eventGuestData, userData, isConfirmedCancel, 
                         <hr style={{ borderTop: '1px solid #000', margin: '20px 0' }} />
                     </div>
                 ))}
-            </Col>}
+                </Row>}
+            </Col>
 
 
                 {/* <Col xs={7}>
