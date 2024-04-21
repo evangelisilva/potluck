@@ -6,7 +6,7 @@ const rsvpSchema = new mongoose.Schema({
     status: { type: String, required: true},
     note: {type: String},
     // Note: anything that may be important for FUTURE LOGIC (i.e. is a clear identnfier, most things other the "message")
-    guestsBringing: { type: Number, required: true}
+    guestsBringing: { type: Number}
 });
 
 const Rsvp = mongoose.model('Rsvp', rsvpSchema);

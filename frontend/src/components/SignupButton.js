@@ -31,7 +31,7 @@ function SignupButton({ userData }) {
                     variant="outline-secondary" 
                     style={{ color: 'black', borderRadius: '20px', backgroundColor: 'transparent' }} 
                     >
-                    <Image src={process.env.PUBLIC_URL + '/profile.png'} style={{ width: '30px', paddingRight: '10px' }} fluid />
+                    <Image src={userData.image} style={{ width: '30px', paddingRight: '10px' }} fluid />
                     {`${userData.firstName} ${userData.lastName}`}
 
                 </Dropdown.Toggle>

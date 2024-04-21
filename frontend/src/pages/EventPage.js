@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Container, Row, Col, Card, Button, Image, Dropdown, Tab, Tabs } from 'react-bootstrap';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
+import Talk from "talkjs";
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
 
 import InviteePopup from '../components/InviteePopup';
 import EditEventPopup from '../components/EditEventPopup';
@@ -18,9 +18,9 @@ function MyComponent({tab}) {
     ////keyTab = "about";
 
     const navigate = useNavigate();
+    const containerRef = useRef(null);
 
-    ////const [keyTab, setKeyTab] = useState("about")
-
+    const [activeKey, setActiveKey] = useState('signup');
     const [showInviteesPopup, setShowInviteesPopup] = useState(false);
     const [showEditEventPopup, setShowEditEventPopup] = useState(false);
     const [showCancelEventPopup, setShowCancelEventPopup] = useState(false);
@@ -30,6 +30,7 @@ function MyComponent({tab}) {
     const [isConfirmedCancel, setIsConfirmedCancel] = useState(false);
     const [eventDetails, setEventDetails] = useState(null);
     const [userData, setUserData] = useState(null);
+    const [eventGuestData, setEventGuestData] = useState(null);
     const [dishSignupData, setDishSignupData] = useState(null);
 
     const { eventId } = useParams(); 
@@ -37,7 +38,6 @@ function MyComponent({tab}) {
     useEffect(() => {
         fetchEventDetails();
         fetchSignupsByEventId();
-        
     }, []);
 
     const eventDetail = {
@@ -77,6 +77,7 @@ function MyComponent({tab}) {
                 Authorization: token,
               },
             });
+
     
             const userResponse = await axios.get(`http://localhost:8000/api/users/${authResponse.data.userId}`);
             setUserData(userResponse.data);
@@ -92,6 +93,11 @@ function MyComponent({tab}) {
                 endTime: formatTime(response.data.endTime),
             };
             setEventDetails(formattedEventDetails);
+
+            console.log(eventDetails);
+
+            const eventGuestsResponse = await axios.get(`http://localhost:8000/api/events/chat/${eventId}`);
+            setEventGuestData(eventGuestsResponse.data);
         } catch (error) {
             console.error('Error fetching data:', error);
         }
@@ -256,26 +262,60 @@ function MyComponent({tab}) {
         }
     };
 
-    const handleDishSignup = async (signupData) => {
+    const handleDishSignup = () => {
+        window.location.reload();
+    }
 
-        const dishSignupData = {
-            user: userData._id,
-            event: eventId,
-            dish: signupData.dishId,
-            dishCategory: signupData.categoryName
-        }
+    const handleTabSelect = (selectedKey) => {
+        setActiveKey(selectedKey);
+    };
 
-        try {
-            await axios.post(`http://localhost:8000/api/dishSignups/`, dishSignupData);
-            console.log('Dish signup successful');
+    function convertArrayToTalkUsers(users) {
+        return users
+        .filter(user => user.status == 'attending')
+        .filter(user => user.user._id !== userData._id)
+        .map(user => (
+            new Talk.User({
+                id: user.user._id,
+                name: user.user.firstName + " " + user.user.lastName,
+                email: user.user.email,
+                photoUrl: user.user.image
+        })));
+    }   
+    
+    function convertArrayToTalkUser(user) {
+        return {
+            id: user._id,
+            name: user.firstName + " " + user.lastName,
+            email: user.email,
+            photoUrl: user.image
+        };
+    } 
 
-            await axios.put(`http://localhost:8000/api/events/${eventId}/update-taken/${signupData.categoryName}`);
-            fetchEventDetails();
+    const handleClick = () => {
+        Talk.ready
+        .then(() => {
+            const me = new Talk.User(convertArrayToTalkUser(userData));
+            const participants = convertArrayToTalkUsers(eventGuestData);
 
-            window.location.reload();
-        } catch (error) {
-            console.error('Error signing up for a dish: ', error);
-        }
+            /* Create a talk session if this does not exist. Remember to replace tthe APP ID with the one on your dashboard */
+            if (!window.talkSession) {
+                window.talkSession = new Talk.Session({
+                    appId: 'tscOnvIc',
+                    me: me
+                });
+            } 
+            
+            const conversationId = eventId;
+            const conversation = window.talkSession.getOrCreateConversation(conversationId);
+            
+            conversation.setParticipant(me);
+            participants.forEach(participant => conversation.setParticipant(participant));
+
+            const chatbox = window.talkSession.createChatbox(conversation);
+            chatbox.mount(containerRef.current);
+        })            
+        .catch(e => console.error(e));
     }
 
     
@@ -316,6 +356,12 @@ function MyComponent({tab}) {
                                                         <Image src={process.env.PUBLIC_URL + '/edit.png'} style={{ maxWidth: '25px', paddingRight: '5px' }} fluid />
                                                         Edit
                                                     </Button>
+                                                    <div className="user-action">
+                                                    <Button variant="primary" style={{borderColor: '#A39A9A', backgroundColor: "transparent", color: '#4D515A', fontSize: '15px', marginRight: '5px' }} onClick={() => handleClick()}>
+                                                        <Image src={process.env.PUBLIC_URL + '/chat.png'} style={{ maxWidth: '25px', paddingRight: '5px' }} fluid />
+                                                        Message
+                                                    </Button>
+                                                    </div>
                                                     <Dropdown>
                                                         <Dropdown.Toggle variant="primary" style={{ borderColor: 'gray', backgroundColor: "transparent", fontSize: '1px', color: 'white', paddingRight: '6px', paddingLeft: '6px' }} disabled={isConfirmedCancel}>
                                                             <Image src={process.env.PUBLIC_URL + '/more.png'} style={{ maxWidth: '22px' }} fluid />
@@ -334,17 +380,18 @@ function MyComponent({tab}) {
                                             {eventDetails && <Card.Text style={{ fontSize: '15px', color: isConfirmedCancel ? 'gray': '#4D515A' }}>{eventDetails.description}</Card.Text>}
                                         </Card.Body>   
 
-                                        <Tabs defaultActiveKey="about" id="eventtabs">
-                                            <Tab eventKey="about" onClick={changeKeyTab("about")} title={<span style={{ color: 'black' }} >Signup</span>}>
-                                                <SignupTab 
+                                        <Tabs id="eventtabs" activeKey={activeKey} onSelect={handleTabSelect} style={{ marginTop: '10px'}}>
+                                            <Tab eventKey="signup" title={<span style={{ color: activeKey === 'signup' ? 'black' : 'gray' }}>Signup</span>}>
+                                                {eventGuestData && <SignupTab 
                                                     eventDetails={eventDetails}
-                                                    eventDetail={eventDetail}
+                                                    eventGuestData={eventGuestData}
+                                                    userData={userData}
                                                     isConfirmedCancel={isConfirmedCancel} 
                                                     openDishSignupPopup={openDishSignupPopup}
-                                                    dishSignupData={dishSignupData} />
+                                                    dishSignupData={dishSignupData} />}
                                             </Tab>
-                                            <Tab eventKey="profile" onClick={changeKeyTab("profile")} title={<span style={{ color: 'black' }}>Recap</span>}>
-                                                {/* Conditionally to the recap tab on the user data being defeined */}
+
+                                            <Tab eventKey="recap" title={<span style={{ color: activeKey === 'recap' ? 'black' : 'gray' }}>Recap</span>}>
                                                 {userData === null ? <div></div> : <RecapTab userId={userData._id} eventId={eventId}/>}
                                             </Tab>
                                         </Tabs>
@@ -354,12 +401,15 @@ function MyComponent({tab}) {
                             </Col>
                         </Row>
                 </Container>
+                <div style={{position: 'fixed', bottom: 0, height: '500px', right: '2%', width: '350px'}} ref={containerRef}>
+                    <div id="talkjs-container" style={{height: "300px"}}><i></i></div>
+                </div>
             </div>
             {/* Invitee popup component */}
             {showInviteesPopup && <InviteePopup onClose={closeInviteePopup} onSuccess={handleInviteSuccess} eventId={eventId} />}
             {showEditEventPopup && <EditEventPopup onClose={closeEditEventPopup} onSave={handleEditEvent} />}
             {showCancelEventPopup && <CancelEventPopup onClose={closeCancelEventPopup} onConfirm={handleConfirmCancel} />}
-            {showDishSignupPopup && <DishSignupPopup onClose={closeDishSignupPopup} onSignup={handleDishSignup} userId={userData._id} categoryName={selectedCategory} eventId={eventId}/>}
+            {showDishSignupPopup && <DishSignupPopup onClose={closeDishSignupPopup} userId={userData._id} eventId={eventId}/>}
         </div>
 
     );

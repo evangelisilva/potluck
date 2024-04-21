@@ -11,6 +11,7 @@ import SignupNavbar from '../components/SignupNavbar';
 function NewEvent() {
     const navigate = useNavigate();
     const [userData, setUserData] = useState(null);
+    const [items, setitems] = useState(null);
 
     useEffect(() => {
         const fetchUserData = async () => {
@@ -72,12 +73,11 @@ function NewEvent() {
         invitedGuests: [],
         status: 'active',
         visibility: 'public',
-        dishCategory: [],
         coverImage: ''
     });
 
-    const handleDishCategoryChange = (newDishCategory) => {
-        setEventData({ ...eventData, dishCategory: newDishCategory });
+    const handleDishCategoryChange = (newItem) => {
+        setitems(newItem);
     };
 
     // Function to handle moving to the previous page
@@ -125,9 +125,16 @@ function NewEvent() {
     // Function to create event
     const createEvent = async () => {
         try {
+            console.log(items)
             // Send POST request to create event
             const response = await axios.post('http://localhost:8000/api/events', eventData);
             console.log('Event created successfully:', response.data);
+            
+            for (const item of items){
+                const itemResponse = await axios.post(`http://localhost:8000/api/items/${response.data._id}`, item);
+                console.log('Item list created successfully:', itemResponse.data);
+            }
+            
             navigate(`/events/${response.data._id}`); // Navigate to event page
         } catch (error) {
             console.error('Error creating event:', error);

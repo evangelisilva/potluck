@@ -23,4 +23,8 @@ router.post('/:eventId/invite', eventController.sendInvitations);
 // PUT request to update "taken" quantity for a category in an event
 router.put('/:eventId/update-taken/:categoryName', eventController.updateTakenQuantity);
 
+router.get("/chat/:eventId", eventController.getEventParticipants);
+
+router.get("/conversation/:eventId/:senderId/:receiverId", eventController.getConversationId);
+
 module.exports = router;

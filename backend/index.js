@@ -8,6 +8,7 @@ const eventRecapRoute = require('./routes/eventRecapRoute')
 const userRoute = require('./routes/userRoute');
 const dishRoute = require('./routes/dishRoute');
 const rsvpRoutes = require('./routes/rsvpRoute');
+const itemRoute = require('./routes/itemRoute');
 const dishSignupRoute = require('./routes/dishSignupRoute');
 const { sendEmail } = require('./services/emailService');
 const userService = require('./services/userService');
@@ -15,7 +16,6 @@ const userService = require('./services/userService');
 const dishRecommendationTest = require('./models/Dish');
 
 const Event = require('./models/Event');
-
 
 // Load environment variables from .env file
 dotenv.config();
@@ -52,6 +52,7 @@ app.use('/api/dishes', dishRoute);
 app.use('/api/dishSignups', dishSignupRoute);
 app.use('/api/rsvp', rsvpRoutes);
 app.use('/api/eventRecap', eventRecapRoute);
+app.use('/api/items', itemRoute);
 
 app.get('/', (req, res) => {
     res.send('Server is running'); 
