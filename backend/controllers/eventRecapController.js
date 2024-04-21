@@ -102,6 +102,9 @@ exports.getAllMediaItems = async (req, res) => {
             ////console.log('Objects in bucket:', data.Contents);
 
             // append to the metadata array in order
+
+
+            /*
             for (let i = 0; i < data.Contents.length; i++){
                 const currentMetadata = await FileMetadata.findOne({fileKey : data.Contents[i].Key})
                 console.log("Event recap controller get all media items - what is the current metadata?: ");
@@ -130,42 +133,40 @@ exports.getAllMediaItems = async (req, res) => {
             }
 
             res.status(201).json({metaData : metaDataArray, userMatch : userMatchArray, userName : userNameArray});
-
-
-            /*
-            for (let i = 0; i < data.Contents.length; i++){
-
-                
-
-
-                // Find the match of the metadata
-                for (let j = 0; j < allMetadata.length; j++){
-                    
-
-                    
-                    if (data.Contents[i].Key === allMetadata[j].fileKey){
-                        // once you have this match, append BOTH the metadata, and whether the user is false
-                        metaDataArray.push(allMetadata[j]);
-                        // TODO: also check for the host
-                        if (allMetadata[j].user.toString() === userId || allMetadata[j].user.toString() === hostId){
-                            userMatchArray.push(true);
-                            // TODO: find the user by id, and append their name to an array
-                        }
-                        else{
-                            console.log("The two user ids are not equal. What are they?: ")
-                            console.log("Metadata user id: ", allMetadata[j].user.toString())
-                            console.log("user id passed in: ", userId)
-                            userMatchArray.push(false); 
-                        }
-
-
-                    }
-
-                }
-            }
             */
 
-            ////res.status(201).json({Objects : data.Contents, metaData : metaDataArray, users : userMatchArray})
+            const allMetadata = await FileMetadata.find({});
+            
+            for (let i = 0; i < allMetadata.length; i++){
+                const currentMetadata = allMetadata[i];
+                console.log("Event recap controller get all media items - what is the current metadata?: ");
+                console.log(currentMetadata);
+
+
+                // Event ID must match
+                if (currentMetadata && (currentMetadata.event.toString() === req.params.eventId)){
+                    console.log("FOUND - image that matches the desired event")
+
+
+                    metaDataArray.push(currentMetadata);
+
+                    // Find the username of the recap through the metadata
+                    const currentUser = await User.findById(currentMetadata.user);
+                    const nameOfUser = currentUser.firstName + " " + currentUser.lastName;
+                    userNameArray.push(nameOfUser);
+
+                    // To have a delete button, the metadata must either represent the current user, or the current user must be the event host
+                    if (currentMetadata.user.toString() === req.params.userId || req.params.userId === hostId){
+                        userMatchArray.push(true);
+                    }
+                    else{
+                        userMatchArray.push(false);
+                    }
+                }
+            }
+
+            res.status(201).json({metaData : metaDataArray, userMatch : userMatchArray, userName : userNameArray});
+            
         }
     });
 
@@ -245,7 +246,7 @@ exports.createMediaItem = async (req, res) => {
 
                 if (imageTypes.indexOf(body.fileExtension) !== -1){
                     console.log("Create media item - inside the image processing error")
-                    imageUrl = s3.getSignedUrl('getObject', { Bucket: params.Bucket, Key: fileName, Expires: 3600});
+                    imageUrl = s3.getSignedUrl('getObject', { Bucket: params.Bucket, Key: fileName});
                     console.log("Function for media item creation - did we get anything for the image url?: ", imageUrl)
                 }
             
@@ -275,9 +276,61 @@ exports.createMediaItem = async (req, res) => {
 
 exports.deleteMediaItem = async (req, res) => {
     try {
-  
+
+        console.log("Delete media item - req is ", req)
+        console.log("Delete media item - req params are ", req.params)
+        console.log("Delete media item - req body is ", req.body)
+
+        const fileMetadata = await FileMetadata.findById(req.params.metadataId);
+        const itemCaption = fileMetadata.caption;
+
+        
+
+        // First, delete the items in S3 (if they are defined)
+
+        if (fileMetadata.fileKey !== undefined){
+
+            const objectsToDelete = fileMetadata.fileKey
+
+            const params = {
+                Bucket: 'YOUR_BUCKET_NAME',
+                Delete: {
+                  Objects: [
+                    { Key: objectsToDelete},
+                    // Add more objects to delete if needed
+                  ],
+                  // Optionally specify whether to delete the objects quietly (without returning response)
+                  // Quiet: false // Set to true if you want to delete quietly
+                }
+            };
+              
+
+            // Delete objects from the specified bucket
+            s3.deleteObjects(params, async (err, data) => {
+                if (err) {
+                  console.error('Error deleting objects:', err);
+                } else {
+                  console.log('Objects deleted successfully:', data);
+                  // next, we must delete the object key of the metadata item
+                  await FileMetadata.findByIdAndDelete(req.params.metadataId)
+                  // return: the id of the object deletd (should be a technical message)
+                  res.status(201).json({message : "Item " + req.params.metadataId + " was deleted."})
+                }
+              });
+        }
+        else{
+            
+            // next, we must delete the object key of the metadata item
+            await FileMetadata.findByIdAndDelete(req.params.metadataId)
+            // return: the id of the object deletd (should be a technical message)
+            res.status(201).json({message : "Item " + req.params.metadataId + " was deleted."})
+        }
+    
+        
+       
     } catch (error) {
-      
+        res.status(400).json({ message: error.message });
+
     }
 }
 exports.updateMediaItem = async (req, res) => {

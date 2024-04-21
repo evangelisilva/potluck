@@ -13,7 +13,7 @@ router.get('/:userId/:eventId', eventRecapController.getAllMediaItems);
 router.post('/', upload.single('file'), eventRecapController.createMediaItem);
 
 // Delete a media item
-router.delete('/:objectKey', eventRecapController.deleteMediaItem);
+router.delete('/:metadataId', eventRecapController.deleteMediaItem);
 
 
 

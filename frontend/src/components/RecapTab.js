@@ -222,10 +222,26 @@ const handleFileCaptionChange = (e) => {
   setFileCaption(e.target.value);
 }
 
+
+let metadataToDelete;
 const handleDelete = () => {
-  alert("Are you sure you want to delete your post?")
+  ////alert("Are you sure you want to delete your post?")
+  const metadata = "";
+  /* const response = await axios.delete('https://your-api-endpoint.com/resource-to-delete'); */
+  const response = axios.delete(`http://localhost:8000/api/eventRecap/${metadata}`)
+  console.log(response);
+  
+
   // TODO: add further logic for deletion
+  // add delete request
+  // reload the page
 }
+
+/**
+const storeDeleteData = (dataToDelete) => {
+  metadataToDelete = dataToDelete;
+}
+*/
 
     return (
         <div style={{ marginTop: '20px', marginLeft: '10px', marginRight: '10px' }}>
@@ -272,10 +288,12 @@ const handleDelete = () => {
                   {(Recap.imageUrl === undefined) ? (<></>) : (<img src={Recap.imageUrl} alt={"image"} style={{ width: '430px', marginRight: '10px'}} />)}
                 <Row>
                   {/* Delete button (conditional)*/}
-                  {(s3FileData.userMatch[index] === false) ? (<></>) : (<button style={{ fontSize: '16px', width: '150px', height: '35px' }} onClick={handleDelete}>Delete post</button>)}
+                  {(s3FileData.userMatch[index] === false) ? (<></>) :                   
+                  (<form onSubmit={handleDelete}>
+                    <button style={{ fontSize: '16px', width: '150px', height: '35px' }} type="submit">Delete post</button>
+                  </form>)}
                 </Row>
               </Container>
-              {/* */}
               
               
               

@@ -12,8 +12,14 @@ import SignupNavbar from '../components/SignupNavbar';
 import SignupTab from '../components/SignupTab';
 import RecapTab from '../components/RecapTab';
 
-function MyComponent() {
+let keyTab = "about";
+
+function MyComponent({tab}) {
+    ////keyTab = "about";
+
     const navigate = useNavigate();
+
+    ////const [keyTab, setKeyTab] = useState("about")
 
     const [showInviteesPopup, setShowInviteesPopup] = useState(false);
     const [showEditEventPopup, setShowEditEventPopup] = useState(false);
@@ -144,6 +150,10 @@ function MyComponent() {
     const closeDishSignupPopup = () => {
         setDishSignupPopup(false);
     };
+
+    const changeKeyTab = (eventKey) => {
+        keyTab = eventKey;
+    }
 
     // Inside MyComponent function
     const handleConfirmCancel = async () => {
@@ -325,7 +335,7 @@ function MyComponent() {
                                         </Card.Body>   
 
                                         <Tabs defaultActiveKey="about" id="eventtabs">
-                                            <Tab eventKey="about" title={<span style={{ color: 'black' }}>Signup</span>}>
+                                            <Tab eventKey="about" onClick={changeKeyTab("about")} title={<span style={{ color: 'black' }} >Signup</span>}>
                                                 <SignupTab 
                                                     eventDetails={eventDetails}
                                                     eventDetail={eventDetail}
@@ -333,7 +343,7 @@ function MyComponent() {
                                                     openDishSignupPopup={openDishSignupPopup}
                                                     dishSignupData={dishSignupData} />
                                             </Tab>
-                                            <Tab eventKey="profile" title={<span style={{ color: 'black' }}>Recap</span>}>
+                                            <Tab eventKey="profile" onClick={changeKeyTab("profile")} title={<span style={{ color: 'black' }}>Recap</span>}>
                                                 {/* Conditionally to the recap tab on the user data being defeined */}
                                                 {userData === null ? <div></div> : <RecapTab userId={userData._id} eventId={eventId}/>}
                                             </Tab>
