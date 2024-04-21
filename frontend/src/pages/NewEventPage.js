@@ -126,8 +126,55 @@ function NewEvent() {
     const createEvent = async () => {
         try {
             // Send POST request to create event
+            console.log(eventData)
             const response = await axios.post('http://localhost:8000/api/events', eventData);
             console.log('Event created successfully:', response.data);
+            const eventId = response.data._id;
+            
+            eventData.dishCategory.map(async (item, index) => {
+                const dishData = {
+                    dishName: item.category,
+                    description: item.notes,
+                    allergens: [],
+                    dietaryRestrictions: [],
+                    course: item.name,
+                };
+
+                try {
+                    const response = await axios.post(`http://localhost:8000/api/dishes/`, dishData);
+                    console.log(response);
+                    const dishId = response.data._id;
+
+                    const token = window.localStorage.getItem('token');
+
+                    const authResponse = await axios.get('http://localhost:8000/api/auth', {
+                        headers: {
+                            Authorization: token,
+                        },
+                    });
+                    
+                    const dishSignupData = {
+                        user: authResponse.data.userId,
+                        event: eventId,
+                        dish: dishId,
+                        dishCategory: dishData.course
+                    }
+
+                    try {
+                        console.log(dishSignupData);
+                        await axios.post(`http://localhost:8000/api/dishSignups/`, dishSignupData);
+                        console.log('Dish signup successful');
+            
+                        await axios.put(`http://localhost:8000/api/events/${eventId}/update-taken/${dishSignupData.dishCategory}`);
+            
+                        // window.location.reload();
+                    } catch (error) {
+                        console.error('Error signing up for a dish: ', error);
+                    }
+                } catch (error) {
+                    console.error('Error creating dish: ', error);
+                }
+            })
             navigate(`/events/${response.data._id}`); // Navigate to event page
         } catch (error) {
             console.error('Error creating event:', error);

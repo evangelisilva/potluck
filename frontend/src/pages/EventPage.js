@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import InviteePopup from '../components/InviteePopup';
 import EditEventPopup from '../components/EditEventPopup';
 import CancelEventPopup from '../components/CancelEventPopup';
+import DuplicateEventPopup from '../components/DuplicateEventPopup';
 import DishSignupPopup from '../components/DishSignupPopup';
 import SignupNavbar from '../components/SignupNavbar';
 import SignupTab from '../components/SignupTab';
@@ -18,10 +19,12 @@ function MyComponent() {
     const [showInviteesPopup, setShowInviteesPopup] = useState(false);
     const [showEditEventPopup, setShowEditEventPopup] = useState(false);
     const [showCancelEventPopup, setShowCancelEventPopup] = useState(false);
+    const [showDuplicateEventPopup, setShowDuplicateEventPopup] = useState(false);
     const [showDishSignupPopup, setDishSignupPopup] = useState(false);
     const [selectedCategory, setSelectedCategory] = useState(null);
     
     const [isConfirmedCancel, setIsConfirmedCancel] = useState(false);
+    const [IsConfirmedDuplicate, setIsConfirmedDuplicate] = useState(false);
     const [eventDetails, setEventDetails] = useState(null);
     const [userData, setUserData] = useState(null);
     const [dishSignupData, setDishSignupData] = useState(null);
@@ -85,6 +88,8 @@ function MyComponent() {
                 startTime: formatTime(response.data.startTime),
                 endTime: formatTime(response.data.endTime),
             };
+
+            console.log(response.data)
             setEventDetails(formattedEventDetails);
         } catch (error) {
             console.error('Error fetching data:', error);
@@ -136,6 +141,15 @@ function MyComponent() {
         setShowCancelEventPopup(false);
     };
 
+    const openDuplicateEventPopup = () => {
+        setShowDuplicateEventPopup(true);
+    };
+
+    // Function to close invitee popup
+    const closeDuplicateEventPopup = () => {
+        setShowDuplicateEventPopup(false);
+    };
+
     const openDishSignupPopup = (categoryName) => {
         setSelectedCategory(categoryName);
         setDishSignupPopup(true);
@@ -156,6 +170,16 @@ function MyComponent() {
         }
     };
 
+    const handleConfirmDuplicate = async () => {
+        setIsConfirmedDuplicate(true); // Set confirmation status to true
+        try {
+            await handleDuplicateInvite(eventId); // Duplicate the event
+        } catch (error) {
+            console.error('Error duplicating event:', error);
+            // Handle error
+        }
+    };
+
     // Function to cancel an event
     const handleCancelInvite = async (eventId) => {
         try {
@@ -164,6 +188,17 @@ function MyComponent() {
             console.log('Event canceled successfully');
         } catch (error) {
             console.error('Error canceling event:', error);
+            // Handle error
+        }
+    };
+
+    const handleDuplicateInvite = async (eventId) => {
+        try {
+            await axios.put(`http://localhost:8000/api/events/${eventId}`, { status: 'active' });
+            // Event duplication successful
+            console.log('Event duplicated successfully');
+        } catch (error) {
+            console.error('Error duplicating event:', error);
             // Handle error
         }
     };
@@ -255,6 +290,8 @@ function MyComponent() {
             dishCategory: signupData.categoryName
         }
 
+        console.log(dishSignupData)
+
         try {
             await axios.post(`http://localhost:8000/api/dishSignups/`, dishSignupData);
             console.log('Dish signup successful');
@@ -308,7 +345,7 @@ function MyComponent() {
                                                             <Image src={process.env.PUBLIC_URL + '/more.png'} style={{ maxWidth: '22px' }} fluid />
                                                         </Dropdown.Toggle>
                                                         <Dropdown.Menu>
-                                                            <Dropdown.Item>Duplicate Event</Dropdown.Item>
+                                                            <Dropdown.Item onClick={openDuplicateEventPopup}>Duplicate Event</Dropdown.Item>
                                                             <Dropdown.Item onClick={openCancelEventPopup}>Cancel Event</Dropdown.Item>
                                                         </Dropdown.Menu>
                                                     </Dropdown>
@@ -345,6 +382,7 @@ function MyComponent() {
             {showInviteesPopup && <InviteePopup onClose={closeInviteePopup} onSuccess={handleInviteSuccess} eventId={eventId} />}
             {showEditEventPopup && <EditEventPopup onClose={closeEditEventPopup} onSave={handleEditEvent} />}
             {showCancelEventPopup && <CancelEventPopup onClose={closeCancelEventPopup} onConfirm={handleConfirmCancel} />}
+            {showDuplicateEventPopup && <DuplicateEventPopup onClose={closeDuplicateEventPopup} onConfirm={handleConfirmDuplicate} />}
             {showDishSignupPopup && <DishSignupPopup onClose={closeDishSignupPopup} onSignup={handleDishSignup} userId={userData._id} categoryName={selectedCategory} eventId={eventId}/>}
         </div>
     );

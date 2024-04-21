@@ -3,6 +3,7 @@ const Dish = require('../models/Dish');
 // Service function to create a new dish
 exports.createDish = async (dishData) => {
     try {
+        console.log(dishData)
         const dish = await Dish.create(dishData);
         return dish;
     } catch (error) {

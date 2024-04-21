@@ -22,7 +22,7 @@ function NewEventPage3({handleDishCategoryChange}) {
 
     // Function to handle adding a new row
     const handleAddRow = () => {
-        setRows([...rows, { name: '', quantity: '', notes: '' }]);
+        setRows([...rows, { name: '', quantity: '', notes: '', slotCount: 0, slotQuantity: 0, category: '' }]);
     };
 
     const handleChange = (index, key, value) => {
@@ -31,8 +31,12 @@ function NewEventPage3({handleDishCategoryChange}) {
         setRows(newRows);
 
         const newDishCategory = newRows.map(row => ({
-            name: row.name.trim(), // Trim to remove leading/trailing spaces
-            quantity: parseInt(row.quantity) || 0, // Convert to integer or default to 0
+            name: row.category, // Trim to remove leading/trailing spaces
+            quantity: parseInt(row.slotCount) || 0, // Convert to integer or default to 0
+            notes: row.notes,
+            slotCount: parseInt(row.slotCount),
+            slotQuantity: parseInt(row.slotQuantity),
+            category: row.name
         }));
         handleDishCategoryChange(newDishCategory);
     };

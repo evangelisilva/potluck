@@ -45,10 +45,13 @@ exports.getEventById = async (eventId) => {
     locationString = locationString.replace(/,\s*$/, '');
 
     // Perform geocoding to get coordinates
-    const geocodeResult = await geocoder.geocode(locationString);
+    // const geocodeResult = await geocoder.geocode(locationString);
     const coordinates = {
-      lat: geocodeResult[0].latitude,
-      lng: geocodeResult[0].longitude,
+      // lat: geocodeResult[0].latitude,
+      // lng: geocodeResult[0].longitude,
+
+      lat: 0,
+      lng: 0,
     };
 
     // Update event object with formatted location and coordinates
@@ -56,6 +59,7 @@ exports.getEventById = async (eventId) => {
       ...event._doc,
       location: locationString,
       coordinates,
+      _id: eventId
     };
 
     return eventWithFormattedLocation;

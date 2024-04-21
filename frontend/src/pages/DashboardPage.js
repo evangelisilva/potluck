@@ -12,6 +12,11 @@ const DashboardPage = () => {
   const [eventData, setEventData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [isTypeEvents, setIsTypeEvents] = useState('public');
+
+  useEffect(() => {
+    console.log(isTypeEvents)
+  })
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -90,8 +95,12 @@ const DashboardPage = () => {
     <div>
       <SignupNavbar userData={userData}/>
       <Container style={{color: '#4D515A', fontFamily: 'Arial', paddingTop: '20px' }}>
-      <div className="d-flex align-items-center mb-4 mb-md-5">
-        <h1 style={{ color: '#4D515A', fontSize: '2rem', marginRight: 'auto', marginBottom: '0'}}>My Dashboard</h1>
+      <div className="d-flex align-items-center mb-4 mb-md-5" style={{justifyContent: 'space-between'}}>
+        <h1 style={{ color: '#4D515A', fontSize: '2rem', marginRight: 'auto', marginBottom: '0', display: 'contents'}}>My Dashboard</h1>
+        <div>
+          <button className='btn btn-primary' style={{marginRight: '10px'}} onClick={() => setIsTypeEvents("public")}>Open Events</button>
+          <button className='btn btn-danger' onClick={() => setIsTypeEvents("private")}>Private Events</button>
+        </div>
         <Link to={`/events/new`}>
           <Button variant="primary" style={{ border: 'none', backgroundColor: '#E8843C', fontSize: '15px', marginRight: '5px' }}>
             + Create New Event
@@ -106,6 +115,7 @@ const DashboardPage = () => {
             <h5>Upcoming Events</h5> <br />
             <Row>
               {upcomingEvents.map(event => (
+                event.visibility == isTypeEvents &&
                 <Col key={event._id} lg={4} md={6} sm={12} style={cardStyle}>
                   <Link to={`/events/${event._id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
                   <Card>
@@ -134,6 +144,7 @@ const DashboardPage = () => {
             <h5>Past Events</h5> <br />
             <Row>
               {pastEvents.map(event => (
+                event.visibility == isTypeEvents &&
                 <Col key={event._id} lg={4} md={6} sm={12} style={cardStyle}>
                   <Link to={`/events/${event._id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
                   <Card>
