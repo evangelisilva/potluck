@@ -11,9 +11,13 @@ const mongoose = require('mongoose');
 const fileMetadataSchema = new mongoose.Schema({
     user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
     event: { type: mongoose.Schema.Types.ObjectId, ref: 'Event', required: true },
-    fileKey: {type : String, required : true},
-    caption: String,
-});
+    fileKey: {type : String},
+    caption: {type: String, required : true},
+    imageUrl: {type : String}
+}, {
+    // Add timestamps option (createdAt, updatedAt)
+    timestamps: true,
+  });
 
 // Create and export the model
 const FileMetadata = mongoose.model('FileMetadata', fileMetadataSchema);

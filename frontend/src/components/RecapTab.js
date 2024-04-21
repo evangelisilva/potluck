@@ -7,7 +7,7 @@ const RecapTab = ({userId, eventId}) => {
 
     /* EVENT RECAP SECTION */
 
-const [s3FileData, setS3FileData] = useState()
+const [s3FileData, setS3FileData] = useState({metaData : [], userMatch : [], userName : []})
 
 console.log("Original user id in this class: ", userId)
 
@@ -41,6 +41,15 @@ const [fileList, setFileList] = useState([])
 const [fileNameList, setFileNameList] = useState([])
 
 const [showRecap, setShowRecap] = useState(false)
+
+/*
+const [loadingImage, setLoadingImage] = useState(false);
+
+setTimeout(() => {
+  // Check for the image url from the s3 data
+  if (s3FileData.metaData[0].imageUrl)
+})
+*/
 
 /*
 const handleCurrentFileNameChange = (e) => {
@@ -116,11 +125,13 @@ const handleFileChange = (e) => {
   }
 };
 
+
+
 const handleFileSubmit = (e) => {
     e.preventDefault();
 
     // set the submission validation here (you must have all of a caption and a file)
-    if (file === null || fileCaption === ''){
+    if (fileCaption === ''){
       setSubmissionValidation("Invalid submission. your submission must include both a caption and a media file");
     }
 
@@ -172,7 +183,7 @@ const handleFileSubmit = (e) => {
         fileData.append('userId', userId);
         fileData.append('eventId', eventId);
         fileData.append('file', file);
-        fileData.append('fileExtension', fileName);
+        fileData.append('fileExtension', fileName.split(".")[1]);
         fileData.append('caption', fileCaption);
 
         axios.post(`http://localhost:8000/api/eventRecap`, fileData
@@ -211,6 +222,11 @@ const handleFileCaptionChange = (e) => {
   setFileCaption(e.target.value);
 }
 
+const handleDelete = () => {
+  alert("Are you sure you want to delete your post?")
+  // TODO: add further logic for deletion
+}
+
     return (
         <div style={{ marginTop: '20px', marginLeft: '10px', marginRight: '10px' }}>
             <h2>Recap</h2>
@@ -239,9 +255,32 @@ const handleFileCaptionChange = (e) => {
 
             {/*Map all of the recap items to cards*/}
 
+            {/* Note: if ynot contained the metadata, you need to reference directly from the S3 data returned*/}
+
             {(s3FileData.metaData === undefined) ? (<></>) : (<div>{s3FileData.metaData.map((Recap, index) => (<Card style={{  marginLeft: '20px' }}>
-            <Card.Body style={{ fontSize: '12px', width: '620px' }}>
-              <p>Recap published by user {Recap.user}</p>
+            <Card.Body style={{ fontSize: '16px', width: '620px', height: '1000px' }}>
+              <Container>
+                <Row>
+                  <p>Recap published by user {s3FileData.userName[index]} </p>
+                  <p>at {Recap.createdAt.split("T")[0] + " at " + Recap.createdAt.split("T")[1]}</p>
+                </Row>
+                <Row>
+                  {/* Description*/}
+                  {Recap.caption}
+                </Row>
+                  {/* Images (conditional)*/}
+                  {(Recap.imageUrl === undefined) ? (<></>) : (<img src={Recap.imageUrl} alt={"image"} style={{ width: '430px', marginRight: '10px'}} />)}
+                <Row>
+                  {/* Delete button (conditional)*/}
+                  {(s3FileData.userMatch[index] === false) ? (<></>) : (<button style={{ fontSize: '16px', width: '150px', height: '35px' }} onClick={handleDelete}>Delete post</button>)}
+                </Row>
+              </Container>
+              {/* */}
+              
+              
+              
+
+
             </Card.Body>
             </Card>))}</div>)}
 

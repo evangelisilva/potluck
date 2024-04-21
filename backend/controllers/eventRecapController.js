@@ -1,6 +1,10 @@
 /* TODO: no model or services required, and therefore just configure the S3 STUFF HERE */
 
 const AWS = require('aws-sdk');
+const { S3Client, PutObjectCommand, GetObjectCommand }  = require('@aws-sdk/client-s3');
+////const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
+
+
 const fs = require('fs');
 const crypto = require('crypto');
 
@@ -62,6 +66,8 @@ exports.getAllMediaItems = async (req, res) => {
   
     try {
 
+        
+
         const params = {
             Bucket: 'potluck-planning-app-event-recap'
         };
@@ -102,14 +108,14 @@ exports.getAllMediaItems = async (req, res) => {
                 console.log(currentMetadata);
 
 
-                if (currentMetadata.event.toString() === req.params.eventId){
+                if (currentMetadata && (currentMetadata.event.toString() === req.params.eventId)){
                     console.log("FOUND - image that matches the desired event")
 
 
                     metaDataArray.push(currentMetadata);
 
                     // Find the username of the recap through the metadata
-                    const currentUser = await User.findById(req.params.userId);
+                    const currentUser = await User.findById(currentMetadata.user);
                     const nameOfUser = currentUser.firstName + " " + currentUser.lastName;
                     userNameArray.push(nameOfUser);
 
@@ -172,11 +178,41 @@ exports.getAllMediaItems = async (req, res) => {
 exports.createMediaItem = async (req, res) => {
     try {
 
+        // note: if the file name is null, then NO S3 stuff is required (go straght tpo setting the metadata)
+        console.log("What is request.file: ", req.file);
+        if (req.file === undefined){
+            console.log("Inside the req.file undefined - before ");
+             // add the metadata into the model
+             const metaData = {
+                user: req.body.userId,
+                event: req.body.eventId,
+                caption: req.body.caption
+            }
+        
+            const fileMetaData = new FileMetadata(metaData);
+            
+            await fileMetaData.save();
+            console.log("Inside the req.file undefined - after ");
+            res.status(201).json({message : 'File uploaded successfully.'})
+        }
+
+
+        const params = {
+            Bucket: 'potluck-planning-app-event-recap'
+        };
+
         const body = req.body;
 
         console.log("Test print - create media item - body data contained at the backend - ", body);
 
         const fileName = randomFileName() + "." + body.fileExtension;
+
+
+        
+
+
+
+
         // Define parameters for the object
         const uploadParams = {
             Bucket: 'potluck-planning-app-event-recap',
@@ -187,25 +223,49 @@ exports.createMediaItem = async (req, res) => {
         };
 
         // Upload file to the S3 bucket
-        s3.upload(uploadParams, (err, data) => {
+
+          console.log("Create media item - Before upload");
+          s3.upload(uploadParams, async (err, data) => {
             if (err) {
                 console.log('Error uploading file: ', err);
             } else {
-                console.log('File uploaded successfully.'); 
-                res.status(201).json({message : 'File uploaded successfully.', storageLocation : data.Location})
+                ////console.log('File uploaded successfully.');
+                 ////s3.send(new PutObjectCommand(uploadParams))
+                console.log("Create media item - After upload");
+
+                let imageUrl = '';
+                // If the extension is found, then create the imageUrl
+
+                const imageTypes = ['jpg', 'jpeg', 'png', 
+                'JPG', 'JPEG', 'PNG', 'SVG']
+
+                console.log("Result for finding the file extension in the image types", imageTypes.indexOf(body.fileExtension))
+                console.log("What is the file extension?: ", body.fileExtension)
+
+
+                if (imageTypes.indexOf(body.fileExtension) !== -1){
+                    console.log("Create media item - inside the image processing error")
+                    imageUrl = s3.getSignedUrl('getObject', { Bucket: params.Bucket, Key: fileName, Expires: 3600});
+                    console.log("Function for media item creation - did we get anything for the image url?: ", imageUrl)
+                }
+            
+                // add the metadata into the model
+                const metaData = {
+                    user: req.body.userId,
+                    event: req.body.eventId,
+                    fileKey: fileName,
+                    caption: req.body.caption,
+                    imageUrl: imageUrl
+                }
+            
+                const fileMetaData = new FileMetadata(metaData);
+                await fileMetaData.save();
+                res.status(201).json({message : 'File uploaded successfully.'})
             }
-        })
+          })
 
-        // add the metadata into the model
-        const metaData = {
-            user: req.body.userId,
-            event: req.body.eventId,
-            fileKey: fileName,
-            caption: req.body.caption
-        }
-
-        const fileMetaData = new FileMetadata(metaData);
-        await fileMetaData.save();
+          
+         
 
     }
     catch (error) {
