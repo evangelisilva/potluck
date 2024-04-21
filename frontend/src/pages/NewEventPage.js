@@ -130,7 +130,7 @@ function NewEvent() {
             const response = await axios.post('http://localhost:8000/api/events', eventData);
             console.log('Event created successfully:', response.data);
             
-            for ( const item of items ){
+            for (const item of items){
                 const itemResponse = await axios.post(`http://localhost:8000/api/items/${response.data._id}`, item);
                 console.log('Item list created successfully:', itemResponse.data);
             }

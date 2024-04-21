@@ -254,26 +254,8 @@ function MyComponent() {
         }
     };
 
-    const handleDishSignup = async (signupData) => {
-
-        const dishSignupData = {
-            user: userData._id,
-            event: eventId,
-            dish: signupData.dishId,
-            dishCategory: signupData.categoryName
-        }
-
-        try {
-            await axios.post(`http://localhost:8000/api/dishSignups/`, dishSignupData);
-            console.log('Dish signup successful');
-
-            await axios.put(`http://localhost:8000/api/events/${eventId}/update-taken/${signupData.categoryName}`);
-            fetchEventDetails();
-
-            window.location.reload();
-        } catch (error) {
-            console.error('Error signing up for a dish: ', error);
-        }
+    const handleDishSignup = () => {
+        window.location.reload();
     }
 
     const handleTabSelect = (selectedKey) => {
@@ -415,7 +397,7 @@ function MyComponent() {
             {showInviteesPopup && <InviteePopup onClose={closeInviteePopup} onSuccess={handleInviteSuccess} eventId={eventId} />}
             {showEditEventPopup && <EditEventPopup onClose={closeEditEventPopup} onSave={handleEditEvent} />}
             {showCancelEventPopup && <CancelEventPopup onClose={closeCancelEventPopup} onConfirm={handleConfirmCancel} />}
-            {showDishSignupPopup && <DishSignupPopup onClose={closeDishSignupPopup} onSignup={handleDishSignup} userId={userData._id} categoryName={selectedCategory} eventId={eventId}/>}
+            {showDishSignupPopup && <DishSignupPopup onClose={closeDishSignupPopup} userId={userData._id} eventId={eventId}/>}
         </div>
     );
 }

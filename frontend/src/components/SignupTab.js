@@ -4,7 +4,7 @@ import axios from 'axios';
 import { Row, Col, Card, Button, Image, Container } from 'react-bootstrap';
 import { GoogleMap, LoadScript, MarkerF } from '@react-google-maps/api';
 
-const SignupTab = ({ eventDetails, eventGuestData, userData, isConfirmedCancel, openDishSignupPopup, dishSignupData }) => {   
+const SignupTab = ({ eventDetails, eventGuestData, userData, isConfirmedCancel, openDishSignupPopup }) => {   
 
     const containerRef = useRef(null);
     const [items, setItems] = useState(null);
@@ -154,7 +154,12 @@ const SignupTab = ({ eventDetails, eventGuestData, userData, isConfirmedCancel, 
                         <Col xs={9}>
                         </Col>
                         <Col xs={3}>
-                        <Button variant="primary" style={{borderColor: '#E8843C', backgroundColor: "#E8843C", color: 'white', fontSize: '15px', marginLeft: '20px' }}>
+                        <Button 
+                            variant="primary" 
+                            style={{borderColor: 'transparent', backgroundColor: "transparent", color: '#E8843C', fontSize: '15px', marginLeft: '20px' }}
+                            disabled={isConfirmedCancel}
+                            onClick={() => openDishSignupPopup()}
+                        >
                             + Add Items
                         </Button>
                         </Col>
@@ -187,7 +192,7 @@ const SignupTab = ({ eventDetails, eventGuestData, userData, isConfirmedCancel, 
                                                 fluid
                                             />
                                             </Col>
-                                            <Col xs={8}>
+                                            <Col xs={7}>
                                                 <Row>
                                                 <Card.Title style={{ fontSize: '15px' }}>{item.name}</Card.Title> 
                                                 </Row>
@@ -207,9 +212,9 @@ const SignupTab = ({ eventDetails, eventGuestData, userData, isConfirmedCancel, 
                                                 </Container>
                                                 </Row>
                                             </Col>
-                                            <Col xs={2}>
+                                            <Col xs={3}>
                                             {item.slot_count !== item.signups.length && (
-                                            <Button variant="primary" style={{borderColor: '#A39A9A', backgroundColor: "transparent", color: '#4D515A', fontSize: '15px', marginRight: '5px', marginTop: '10px' }}>
+                                            <Button variant="primary" style={{borderColor: '#A39A9A', backgroundColor: "transparent", color: '#4D515A', fontSize: '15px', marginLeft: '37px', marginTop: '19px' }}>
                                                 Signup
                                             </Button>)}
                                             </Col>

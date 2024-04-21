@@ -2,11 +2,17 @@ import React, { useState } from 'react';
 import { Container, Row, Form, Button, Col, Image, Card } from 'react-bootstrap';
 import '../styles/modal.css';
 import axios from 'axios';
+import { Typeahead } from 'react-bootstrap-typeahead';
+import 'react-bootstrap-typeahead/css/Typeahead.css';
 
-const DishSignupPopup = ({ onClose, onSignup, userId, categoryName, eventId }) => {
+const DishSignupPopup = ({ onClose, userId, eventId, onSignup }) => {
 
-    const [dishName, setDishName] = useState('');
-    const [dishDescription, setDishDescription] = useState('');
+    const [itemName, setItemName] = useState('');
+    const [categoryName, setcategoryName] = useState('');
+    const [itemCategory, setItemCategory] = useState('');
+    const [itemDescription, setItemDescription] = useState('');
+    const [slotCount, setSlotCount] = useState('');
+    const [quantity, setQuantity] = useState('');
     const [allergens, setAllergens] = useState('');
     const [dietaryRestrictions, setDietaryRestrictions] = useState('');
     const [dishId, setDishId] = useState('');
@@ -19,6 +25,30 @@ const DishSignupPopup = ({ onClose, onSignup, userId, categoryName, eventId }) =
     const [popularity, setPopularity] = useState('');
 
     const [recommendedDishes, setRecommendedDishes] = useState({})
+
+    const categories = ['Appetizer', 'Main course', 'Dessert', 'Beverage', 'Side Dish', 'Salad', 'Utensils', 'Other'];
+    const courses = ['Appetizer', 'Main course', 'Dessert', 'Beverage', 'Side Dish', 'Salad'];
+
+    const allergen = [
+        'Milk', 'Eggs', 'Peanuts', 'Tree nuts', 'Fish', 'Shellfish', 'Soy', 'Wheat', 'Sesame seeds', 'Sulfites', 'Mustard', 'Celery', 'Lupin', 'Molluscs', 'Gluten',
+        'Crustaceans', 'Soybeans', 'Corn', 'Beef', 'Pork', 'Chicken', 'Lamb', 'Turkey', 'Rabbit', 'Venison', 'Game meats', 'Honey', 'Garlic', 'Onions', 'Scallions',
+        'Leeks', 'Chives', 'Asparagus', 'Artichokes', 'Spinach', 'Kale', 'Collard greens', 'Broccoli', 'Cauliflower', 'Brussels sprouts', 'Cabbage', 'Carrots',
+        'Beets', 'Radishes', 'Turnips', 'Parsnips', 'Rutabagas', 'Potatoes', 'Sweet potatoes', 'Yams', 'Taro', 'Cassava', 'Plantains', 'Bananas', 'Apples', 'Pears',
+        'Peaches', 'Plums', 'Apricots', 'Cherries', 'Berries (strawberries, raspberries, blueberries, blackberries)', 'Grapes', 'Citrus fruits (oranges, lemons, limes, grapefruits)',
+        'Melons (watermelon, cantaloupe, honeydew)', 'Pineapple', 'Mangoes', 'Papayas', 'Coconut', 'Avocado', 'Tomatoes', 'Bell peppers', 'Cucumbers', 'Zucchini', 'Eggplant',
+        'Squash (butternut squash, acorn squash, spaghetti squash)', 'Beans (black beans, kidney beans, chickpeas, lentils)', 'Peas', 'Corn', 'Soy products (tofu, tempeh)',
+        'Nuts (almonds, walnuts, cashews, pecans)', 'Seeds (sunflower seeds, pumpkin seeds, chia seeds)', 'Grains (quinoa, rice, oats, barley)', 'Flours (wheat flour, almond flour, coconut flour)',
+        'Dairy products (milk, cheese, yogurt, butter)', 'Meat (beef, pork, chicken, lamb, turkey)', 'Seafood (fish, shellfish)', 'Processed foods (packaged snacks, frozen meals, canned goods)',
+        'Food additives (artificial colors, flavors, preservatives)',
+      ];
+    
+      const dietaryRestriction = [
+        'Vegetarian', 'Vegan', 'Gluten-Free', 'Dairy-Free', 'Nut-Free', 'Shellfish-Free', 'Soy-Free', 'Egg-Free', 'Paleo', 'Keto', 'Low-FODMAP', 'Halal',
+        'Kosher', 'Pescatarian', 'Raw Food', 'Low-Sodium', 'Sugar-Free', 'Organic', 'Non-GMO', 'Whole30-compliant'
+      ];
+
+      const allergenOptions = allergen.map(option => ({ label: option, value: option }));
+      const dietaryRestrictionOptions = dietaryRestriction.map(option => ({ label: option, value: option }));
 
     // Handlers for these user preferences
       // Handler function to update prepTime state
@@ -79,87 +109,36 @@ const DishSignupPopup = ({ onClose, onSignup, userId, categoryName, eventId }) =
     const handleBackClick = () => {
         setShowRecommendationsForm(false);
     };
-
     
-    const dishes = [
-        {
-            _id: '12345',
-            dishName: 'Spaghetti Carbonara',
-            description: 'Pasta with creamy sauce, pancetta, and Parmesan cheese.',
-            ingredients: ['Pasta', 'Cream', 'Pancetta', 'Parmesan Cheese'],
-            dietaryRestrictions: [],
-            allergens: ['Dairy', 'Pork'],
-            cuisines: ['Italian'],
-            preparationTime: 30, // in minutes
-            complexity: 'Medium',
-            popularity: 'High'
-        }, 
-        {
-            _id: '12345',
-            dishName: 'Caesar Salad',
-            description: 'Romaine lettuce with Caesar dressing, croutons, and Parmesan cheese.',
-            ingredients: ['Romaine Lettuce', 'Caesar Dressing', 'Croutons', 'Parmesan Cheese'],
-            dietaryRestrictions: ['Vegetarian'],
-            allergens: ['Dairy', 'Gluten'],
-            cuisines: ['American'],
-            preparationTime: 15, // in minutes
-            complexity: 'Low',
-            popularity: 'Medium'
-        }, 
-        {
-            _id: '12345',
-            dishName: 'Chicken Tikka Masala',
-            description: 'Grilled chicken in a spicy tomato-based sauce with Indian spices.',
-            ingredients: ['Chicken', 'Tomato Sauce', 'Indian Spices'],
-            dietaryRestrictions: [],
-            allergens: [],
-            cuisines: ['Indian'],
-            preparationTime: 45, // in minutes
-            complexity: 'High',
-            popularity: 'High'
+    const handleChange = (selectedOptions, name) => {
+        if (name === 'allergens') {
+          setAllergens(selectedOptions.map(option => option.label));
+        } else if (name === 'dietaryRestrictions') {
+          setDietaryRestrictions(selectedOptions.map(option => option.label));
         }
-    ]
-    
+      };
 
-    
-
-
-    
-    const handleSignup = async () => {
-        if (!dishId) {
-            const allergensArray = allergens ? allergens.split(',').map(item => item.trim()) : [];
-            const dietaryRestrictionsArray = dietaryRestrictions ? dietaryRestrictions.split(',').map(item => item.trim()) : [];
-
+    const handleAddItem = async () => {
+       
             const dishData = {
-                dishName: dishName,
-                description: dishDescription,
-                allergens: allergensArray,
-                dietaryRestrictions: dietaryRestrictionsArray,
-                course: categoryName,
+                name: itemName,
+                category: itemCategory,
+                notes: itemDescription,
+                allergens: allergens,
+                dietaryRestrictions: dietaryRestrictions,
+                slot_count: slotCount,
+                quantity: quantity
             };
     
             try {
-                const response = await axios.post(`http://localhost:8000/api/dishes/`, dishData);
-                console.log('Dish created successfully');
-                const signupData = {
-                    dishId: response.data._id,
-                    categoryName: categoryName
-                }
-                onSignup(signupData); 
+                const response = await axios.post(`http://localhost:8000/api/items/${eventId}`, dishData);
+                console.log(response);
+                onClose();
+                window.location.reload();
             } catch (error) {
                 console.error('Error creating dish: ', error);
             }
-        } 
         
-        if (dishId) {
-            const signupData = {
-                dishId: dishId,
-                categoryName: categoryName
-            }
-            onSignup(signupData);
-        }
-        
-        onClose();
     };
 
     const handleRadioChange = (dishId) => {
@@ -173,10 +152,10 @@ const DishSignupPopup = ({ onClose, onSignup, userId, categoryName, eventId }) =
                     <div className="modal-body">
                         <Container style={{ width: '700px', margin: '50px', color: '#4D515A', fontFamily: 'Arial' }}>
                             <Row>
-                                <Col xs={7}>
-                                    <h2 style={{ fontFamily: 'Times New Roman', fontSize: '45px', marginBottom: '15px' }}>Dish Sign Up</h2>
+                                <Col xs={6}>
+                                    <h2 style={{ fontFamily: 'Times New Roman', fontSize: '45px', marginBottom: '7px' }}>Add Items</h2>
                                 </Col>
-                                <Col xs={5}>
+                                <Col xs={6}>
                                 {!showRecommendationsForm ? (
                                         <Button
                                             style={{
@@ -189,11 +168,11 @@ const DishSignupPopup = ({ onClose, onSignup, userId, categoryName, eventId }) =
                                                 paddingLeft: '19px',
                                                 paddingRight: '19px',
                                                 alignSelf: 'flex-end',
-                                                marginLeft: '90px',
+                                                marginLeft: '120px',
                                                 marginTop: '10px'
                                             }}
                                             onClick={handleRecommendationsFormClick}>
-                                            Recommend Dishes
+                                            Recommend Dish Items
                                         </Button>
                                     ) : (
                                         <Button
@@ -207,7 +186,7 @@ const DishSignupPopup = ({ onClose, onSignup, userId, categoryName, eventId }) =
                                                 paddingLeft: '19px',
                                                 paddingRight: '19px',
                                                 alignSelf: 'flex-end',
-                                                marginLeft: '140px',
+                                                marginLeft: '200px',
                                                 marginTop: '10px'
                                             }}
                                             onClick={handleBackClick}>
@@ -254,6 +233,8 @@ const DishSignupPopup = ({ onClose, onSignup, userId, categoryName, eventId }) =
                                             </Form.Group>
                                         
                                         </Col>
+                                        </Row><br/>
+                                        <Row>
                                         <Col>
                                             <Form.Group>
                                             <Form.Label>Popularity</Form.Label>
@@ -263,6 +244,25 @@ const DishSignupPopup = ({ onClose, onSignup, userId, categoryName, eventId }) =
                                                 <option value="Low">Low</option>
                                                 <option value="Medium">Medium</option>
                                                 <option value="High">High</option>
+                                            </Form.Select>
+                                            </Form.Group>
+                                        
+                                        </Col>
+                                        <Col>
+                                            <Form.Group>
+                                            <Form.Label>Meal Course</Form.Label>
+                                           <Form.Select
+                                            defaultValue=""
+                                            required
+                                            value={ categoryName }
+                                            onChange={(e) => setcategoryName(e.target.value)}
+                                        >
+                                            <option value="" disabled hidden></option>
+                                            {courses.map((course, index) => (
+                                                <option key={index} value={course}>
+                                                    {course}
+                                                </option>
+                                            ))}
                                             </Form.Select>
                                             </Form.Group>
                                         
@@ -368,49 +368,103 @@ const DishSignupPopup = ({ onClose, onSignup, userId, categoryName, eventId }) =
                             <Form>
                                 <Form.Group style={{}}>
                                 <Form.Text style={{ color: 'gray', fontSize: '13px'}}>
-                                    Click 'Recommend Dishes' to explore dishes tailored just for you based on your preferences and dietary needs.
+                                    Click 'Recommend Dishe Items' to explore dishes tailored just for you based on your preferences and dietary needs.
                                 </Form.Text> 
                                 </Form.Group> <br />
 
                                 <Form.Group controlId="dishName">
-                                    <Form.Label>Dish Name</Form.Label>
+                                    <Form.Label>Item Name</Form.Label>
                                     <Form.Control
                                         type="text"
-                                        placeholder="Enter dish name"
-                                        value={dishName}
-                                        onChange={(e) => setDishName(e.target.value)}
+                                        placeholder="Enter item name"
+                                        value={itemName}
+                                        onChange={(e) => setItemName(e.target.value)}
                                     />
                                 </Form.Group> <br />
 
                                 <Form.Group controlId="dishDescription">
-                                    <Form.Label>Dish Description</Form.Label>
+                                    <Form.Label>Description</Form.Label>
                                     <Form.Control
-                                        type="text"
-                                        placeholder="Enter dish description (optional)"
-                                        value={dishDescription}
-                                        onChange={(e) => setDishDescription(e.target.value)}
+                                        as="textarea"
+                                        placeholder="Enter description (optional)"
+                                        rows={3} 
+                                        onChange={(e) => setItemDescription(e.target.value)}
                                     />
                                 </Form.Group> <br />
 
-                                <Form.Group controlId="allergens">
-                                    <Form.Label>Allergens</Form.Label>
-                                    <Form.Control
-                                        type="text"
-                                        placeholder="Enter allergens (if any)"
-                                        value={allergens}
-                                        onChange={(e) => setAllergens(e.target.value)}
-                                    />
+                                <Form.Group controlId="dishName">
+                                    <Form.Label>Category</Form.Label>
+                                    <Form.Select
+                                            defaultValue=""
+                                            required
+                                            value={itemCategory}
+                                            onChange={(e) => setItemCategory(e.target.value)}
+                                        >
+                                            <option value="" disabled hidden></option>
+                                            {categories.map((category, index) => (
+                                                <option key={index} value={category}>
+                                                    {category}
+                                                </option>
+                                            ))}
+                                    </Form.Select>
                                 </Form.Group> <br />
 
-                                <Form.Group controlId="dietaryRestrictions">
-                                    <Form.Label>Dietary Restrictions</Form.Label>
-                                    <Form.Control
-                                        type="text"
-                                        placeholder="Enter dietary restrictions (if any)"
-                                        value={dietaryRestrictions}
-                                        onChange={(e) => setDietaryRestrictions(e.target.value)}
-                                    />
-                                </Form.Group> 
+                                { itemCategory === 'Appetizer' || itemCategory === 'Main course' || itemCategory === 'Dessert' ||
+                                  itemCategory === 'Beverage' || itemCategory === 'Side Dish' || itemCategory === 'Salad' ? (
+                                    <>
+                                        <Form.Group controlId="allergens">
+                                            <Form.Label>Allergens</Form.Label>
+                                            <Typeahead
+                                            id='allergens'
+                                            name='allergens'
+                                            multiple
+                                            options={allergenOptions}
+                                            placeholder='Enter your allergens (if any)'
+                                            onChange={(selectedOptions) => handleChange(selectedOptions, 'allergens')}
+                                            />
+                                        </Form.Group>
+                                        <br />
+                                        <Form.Group controlId="dietaryRestrictions">
+                                            <Form.Label>Dietary Restrictions</Form.Label>
+                                            <Typeahead
+                                            id='dietaryRestrictions'
+                                            name='dietaryRestrictions'
+                                            multiple
+                                            options={dietaryRestrictionOptions}
+                                            placeholder='Enter dietary restrictions (if any)'
+                                            onChange={(selectedOptions) => handleChange(selectedOptions, 'dietaryRestrictions')}
+                                            />
+                                        </Form.Group>
+                                        <br />
+                                    </>
+                                ) : null}
+
+                                <Row>
+                                    <Col>
+                                            <Form.Group controlId="dishDescription">
+                                            <Form.Label>Slot count</Form.Label>
+                                            <Form.Control
+                                                type="number"
+                                                placeholder="Enter slot count"
+                                                value={slotCount}
+                                                onChange={(e) => setSlotCount(e.target.value)}
+                                                required
+                                            />
+                                        </Form.Group> 
+                                    </Col>
+                                    <Col>
+                                            <Form.Group controlId="dishDescription">
+                                            <Form.Label>Quantity per slot</Form.Label>
+                                            <Form.Control
+                                                type="number"
+                                                placeholder="Enter quantity per slot"
+                                                value={quantity}
+                                                onChange={(e) => setQuantity(e.target.value)}
+                                                required
+                                            />
+                                        </Form.Group>
+                                    </Col>
+                                </Row>
                             </Form>
                             )}
                         </Container>
@@ -428,7 +482,6 @@ const DishSignupPopup = ({ onClose, onSignup, userId, categoryName, eventId }) =
                                     backgroundColor: 'transparent',
                                     border: 'none',
                                     fontFamily: 'Arial',
-                                    marginRight: '10px',
                                     color: '#4D515A',
                                     marginTop: '10px',
                                     marginBottom: '30px'
@@ -437,7 +490,7 @@ const DishSignupPopup = ({ onClose, onSignup, userId, categoryName, eventId }) =
                             </Button>
                             <Button
                                 variant="primary"
-                                onClick={handleSignup}
+                                onClick={handleAddItem}
                                 style={{
                                     backgroundColor: '#E8843C',
                                     borderColor: '#E8843C',
@@ -449,7 +502,7 @@ const DishSignupPopup = ({ onClose, onSignup, userId, categoryName, eventId }) =
                                     marginTop: '10px',
                                     marginBottom: '30px'
                                 }}>
-                                Sign Up
+                                    Save
                             </Button>
                         </div>
                     </div>
