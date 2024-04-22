@@ -382,7 +382,7 @@ function MyComponent() {
             {showInviteesPopup && <InviteePopup onClose={closeInviteePopup} onSuccess={handleInviteSuccess} eventId={eventId} />}
             {showEditEventPopup && <EditEventPopup onClose={closeEditEventPopup} onSave={handleEditEvent} />}
             {showCancelEventPopup && <CancelEventPopup onClose={closeCancelEventPopup} onConfirm={handleConfirmCancel} />}
-            {showDuplicateEventPopup && <DuplicateEventPopup onClose={closeDuplicateEventPopup} onConfirm={handleConfirmDuplicate} visibility={eventDetails.visibility} />}
+            {showDuplicateEventPopup && <DuplicateEventPopup onClose={closeDuplicateEventPopup} onConfirm={handleConfirmDuplicate} visibility={eventDetails.visibility == "public" ? "private" : "public"} />}
             {showDishSignupPopup && <DishSignupPopup onClose={closeDishSignupPopup} onSignup={handleDishSignup} userId={userData._id} categoryName={selectedCategory} eventId={eventId}/>}
         </div>
     );
