@@ -149,6 +149,7 @@ exports.sendInvitations = async (eventId, event, invitedGuests) => {
 
 exports.sendCancellationEmail = async (updatedEvent) => {
   try {
+
     const templateData = {
       name: updatedEvent.title,
       host: 'Evangeli'
@@ -156,7 +157,7 @@ exports.sendCancellationEmail = async (updatedEvent) => {
 
     // Iterate through invitedGuests array and send email to each guest
     for (const guestEmail of updatedEvent.invitedGuests) {
-      const response = await sendEmail(guestEmail, 'ICSI518-Potluck-CancelEventTemplate', templateData);
+      const response = await sendEmail(guestEmail , 'ICSI518-Potluck-CancelEventTemplate', templateData);
       console.log(`Cancellation email sent to ${guestEmail}`);
     }
 

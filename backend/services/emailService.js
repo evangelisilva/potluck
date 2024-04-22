@@ -21,7 +21,6 @@ const sendEmail = async (to, templateName, templateData) => {
 
     try {
         const response = await ses.send(new SendTemplatedEmailCommand(params));
-        // console.log('Email sent to', to, ':', response);
         return response;
     } catch (error) {
         console.error('Error sending email to', to, ':', error.message);

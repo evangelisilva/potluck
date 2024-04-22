@@ -1,6 +1,6 @@
 const Event = require('../models/Event');
 const eventService = require('../services/eventService')
-const emailService = require('../services/emailService')
+// const emailService = require('../services/emailService')
 
 // Controller function to create a new event
 exports.createEvent = async (req, res) => {
