@@ -104,38 +104,11 @@ exports.getAllMediaItems = async (req, res) => {
             // append to the metadata array in order
 
 
-            /*
-            for (let i = 0; i < data.Contents.length; i++){
-                const currentMetadata = await FileMetadata.findOne({fileKey : data.Contents[i].Key})
-                console.log("Event recap controller get all media items - what is the current metadata?: ");
-                console.log(currentMetadata);
+           
 
+            let allMetadata = await FileMetadata.find({});
+            allMetadata = allMetadata.reverse();
 
-                if (currentMetadata && (currentMetadata.event.toString() === req.params.eventId)){
-                    console.log("FOUND - image that matches the desired event")
-
-
-                    metaDataArray.push(currentMetadata);
-
-                    // Find the username of the recap through the metadata
-                    const currentUser = await User.findById(currentMetadata.user);
-                    const nameOfUser = currentUser.firstName + " " + currentUser.lastName;
-                    userNameArray.push(nameOfUser);
-
-                    
-                    if (currentMetadata.user.toString() === req.params.userId || req.params.userId === hostId){
-                        userMatchArray.push(true);
-                    }
-                    else{
-                        userMatchArray.push(false);
-                    }
-                }
-            }
-
-            res.status(201).json({metaData : metaDataArray, userMatch : userMatchArray, userName : userNameArray});
-            */
-
-            const allMetadata = await FileMetadata.find({});
             
             for (let i = 0; i < allMetadata.length; i++){
                 const currentMetadata = allMetadata[i];
@@ -161,6 +134,12 @@ exports.getAllMediaItems = async (req, res) => {
                     }
                     else{
                         userMatchArray.push(false);
+                    }
+
+                    // Udate of the metadata: if the file key is not undefined, use the file key to generate a new url for the image
+                    if (currentMetadata.fileKey !== undefined){
+                        const newUrl = s3.getSignedUrl('getObject', { Bucket: params.Bucket, Key: currentMetadata.fileKey});
+                        currentMetadata.imageUrl = newUrl;
                     }
                 }
             }
@@ -196,74 +175,77 @@ exports.createMediaItem = async (req, res) => {
             console.log("Inside the req.file undefined - after ");
             res.status(201).json({message : 'File uploaded successfully.'})
         }
-
-
-        const params = {
-            Bucket: 'potluck-planning-app-event-recap'
-        };
-
-        const body = req.body;
-
-        console.log("Test print - create media item - body data contained at the backend - ", body);
-
-        const fileName = randomFileName() + "." + body.fileExtension;
+        else {
+            const params = {
+                Bucket: 'potluck-planning-app-event-recap'
+            };
+    
+            const body = req.body;
+    
+            console.log("Test print - create media item - body data contained at the backend - ", body);
+    
+            const fileName = randomFileName() + "." + body.fileExtension;
+    
+    
+            
+    
+    
+    
+    
+            // Define parameters for the object
+            const uploadParams = {
+                Bucket: 'potluck-planning-app-event-recap',
+                Key: fileName, // Specify the key (filename) under which the object will be stored in the bucket
+                // Read the file as a (binary) stream
+                Body: req.file.buffer,
+                ContentType: req.file.mimetype
+            };
+    
+            // Upload file to the S3 bucket
+    
+              console.log("Create media item - Before upload");
+              s3.upload(uploadParams, async (err, data) => {
+                if (err) {
+                    console.log('Error uploading file: ', err);
+                } else {
+                    ////console.log('File uploaded successfully.');
+                     ////s3.send(new PutObjectCommand(uploadParams))
+                    console.log("Create media item - After upload");
+    
+                    let imageUrl = '';
+                    // If the extension is found, then create the imageUrl
+    
+                    const imageTypes = ['jpg', 'jpeg', 'png', 
+                    'JPG', 'JPEG', 'PNG', 'SVG']
+    
+                    console.log("Result for finding the file extension in the image types", imageTypes.indexOf(body.fileExtension))
+                    console.log("What is the file extension?: ", body.fileExtension)
+    
+    
+                    if (imageTypes.indexOf(body.fileExtension) !== -1){
+                        console.log("Create media item - inside the image processing error")
+                        imageUrl = s3.getSignedUrl('getObject', { Bucket: params.Bucket, Key: fileName});
+                        console.log("Function for media item creation - did we get anything for the image url?: ", imageUrl)
+                    }
+                
+                    // add the metadata into the model
+                    const metaData = {
+                        user: req.body.userId,
+                        event: req.body.eventId,
+                        fileKey: fileName,
+                        caption: req.body.caption,
+                        imageUrl: imageUrl
+                    }
+                
+                    const fileMetaData = new FileMetadata(metaData);
+                    await fileMetaData.save();
+                    res.status(201).json({message : 'File uploaded successfully.'})
+                }
+              })
+        }
 
 
         
-
-
-
-
-        // Define parameters for the object
-        const uploadParams = {
-            Bucket: 'potluck-planning-app-event-recap',
-            Key: fileName, // Specify the key (filename) under which the object will be stored in the bucket
-            // Read the file as a (binary) stream
-            Body: req.file.buffer,
-            ContentType: req.file.mimetype
-        };
-
-        // Upload file to the S3 bucket
-
-          console.log("Create media item - Before upload");
-          s3.upload(uploadParams, async (err, data) => {
-            if (err) {
-                console.log('Error uploading file: ', err);
-            } else {
-                ////console.log('File uploaded successfully.');
-                 ////s3.send(new PutObjectCommand(uploadParams))
-                console.log("Create media item - After upload");
-
-                let imageUrl = '';
-                // If the extension is found, then create the imageUrl
-
-                const imageTypes = ['jpg', 'jpeg', 'png', 
-                'JPG', 'JPEG', 'PNG', 'SVG']
-
-                console.log("Result for finding the file extension in the image types", imageTypes.indexOf(body.fileExtension))
-                console.log("What is the file extension?: ", body.fileExtension)
-
-
-                if (imageTypes.indexOf(body.fileExtension) !== -1){
-                    console.log("Create media item - inside the image processing error")
-                    imageUrl = s3.getSignedUrl('getObject', { Bucket: params.Bucket, Key: fileName});
-                    console.log("Function for media item creation - did we get anything for the image url?: ", imageUrl)
-                }
-            
-                // add the metadata into the model
-                const metaData = {
-                    user: req.body.userId,
-                    event: req.body.eventId,
-                    fileKey: fileName,
-                    caption: req.body.caption,
-                    imageUrl: imageUrl
-                }
-            
-                const fileMetaData = new FileMetadata(metaData);
-                await fileMetaData.save();
-                res.status(201).json({message : 'File uploaded successfully.'})
-            }
-          })
 
           
          
@@ -282,21 +264,18 @@ exports.deleteMediaItem = async (req, res) => {
         console.log("Delete media item - req body is ", req.body)
 
         const fileMetadata = await FileMetadata.findById(req.params.metadataId);
-        const itemCaption = fileMetadata.caption;
-
+        console.log("The file metadata to be deleted: ", fileMetadata)
         
 
         // First, delete the items in S3 (if they are defined)
 
         if (fileMetadata.fileKey !== undefined){
 
-            const objectsToDelete = fileMetadata.fileKey
-
             const params = {
-                Bucket: 'YOUR_BUCKET_NAME',
+                Bucket: 'potluck-planning-app-event-recap',
                 Delete: {
                   Objects: [
-                    { Key: objectsToDelete},
+                    { Key: fileMetadata.fileKey},
                     // Add more objects to delete if needed
                   ],
                   // Optionally specify whether to delete the objects quietly (without returning response)

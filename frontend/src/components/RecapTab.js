@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Row, Form, Button, Col, Image, Card } from 'react-bootstrap';
 
+import DeleteComponent from '../components/DeleteComponent';
+
+
 import axios from 'axios';
 
 const RecapTab = ({userId, eventId}) => {
@@ -59,6 +62,14 @@ const handleCurrentFileNameChange = (e) => {
 
 const handleFileChange = (e) => {
 
+  // must reset the file and its name fisrt thing
+  setFile(null);
+  setFileName('');
+
+  if (e.target.value === undefined || e.target.files === undefined){
+    return false;
+  }
+
   console.log("Option 1 for setting the file: ")
   console.log(document.getElementById("fileUploaded").value);
   console.log("Option 2 for setting the file: ")
@@ -74,6 +85,10 @@ const handleFileChange = (e) => {
 
 
   const currentFileName = e.target.value.split("\\")[2];
+
+  if (currentFileName === undefined){
+    return false;
+  }
 
   let periodCount = 0;
 
@@ -226,15 +241,20 @@ const handleFileCaptionChange = (e) => {
 let metadataToDelete;
 const handleDelete = () => {
   ////alert("Are you sure you want to delete your post?")
-  const metadata = "";
   /* const response = await axios.delete('https://your-api-endpoint.com/resource-to-delete'); */
-  const response = axios.delete(`http://localhost:8000/api/eventRecap/${metadata}`)
+  const response = axios.delete(`http://localhost:8000/api/eventRecap/${metadataToDelete}`)
   console.log(response);
   
 
   // TODO: add further logic for deletion
   // add delete request
   // reload the page
+}
+
+const [doDelete, setDoDelete] = useState(false)
+
+const toggleDoDelete = () => {
+  setDoDelete(!doDelete)
 }
 
 /**
@@ -249,10 +269,21 @@ const storeDeleteData = (dataToDelete) => {
             <p>Welcome to the recap tab!</p>
             
             {(showRecap === false) ?
-            (<button onClick={recapToggle}><strong>Create Recap</strong></button>) :
+
+            (<Container>
+              <Row>
+              <Button 
+              variant="primary" 
+              onClick={recapToggle} 
+              style={{ float: 'right', borderColor: '#A39A9A', backgroundColor: "transparent", color: '#4D515A', fontSize: '15px', marginRight: '5px'  }}>+ Create Recap</Button>
+              </Row>
+            </Container>
+            ) :
             (<div>
+                <Container>
                 <p>Upload an image to represent your inventory item.</p>
                 <input type="file" id="fileUploaded" onChange={handleFileChange}/>
+                <Row>
                 <input 
                     type="text" 
                     id="fileCaption"
@@ -260,21 +291,29 @@ const storeDeleteData = (dataToDelete) => {
                     value={fileCaption}
                     onChange={handleFileCaptionChange}
                 required />
+                </Row>
+                
                 {fileValidation}
+                <Row>
                 <p>File currently uploaded: </p>
                 {/*{fileNameList.map((name, index) => (<div>{name}</div>))}*/}
                 {fileName}
-                <button onClick={handleFileSubmit}>Submit to Database</button>
-                <button onClick={recapToggle}>Done</button>
-                {submissionValidation}                        
+                </Row>
+                <Row>
+                  <button onClick={handleFileSubmit}>Submit to Database</button>
+                  <button onClick={recapToggle}>Done</button>
+                </Row>
+                {submissionValidation}
+                </Container>                      
             </div>)}
 
             {/*Map all of the recap items to cards*/}
 
             {/* Note: if ynot contained the metadata, you need to reference directly from the S3 data returned*/}
+            {/* style={(Recap.fileKey === undefined) ? ({ fontSize: '16px', width: '620px', height: '1000px' }) : ({ fontSize: '16px', width: '620px', height: '1000px' })*/}
 
             {(s3FileData.metaData === undefined) ? (<></>) : (<div>{s3FileData.metaData.map((Recap, index) => (<Card style={{  marginLeft: '20px' }}>
-            <Card.Body style={{ fontSize: '16px', width: '620px', height: '1000px' }}>
+            <Card.Body style={{ fontSize: '16px', width: '100%', height: '100%' }}>
               <Container>
                 <Row>
                   <p>Recap published by user {s3FileData.userName[index]} </p>
@@ -289,9 +328,15 @@ const storeDeleteData = (dataToDelete) => {
                 <Row>
                   {/* Delete button (conditional)*/}
                   {(s3FileData.userMatch[index] === false) ? (<></>) :                   
-                  (<form onSubmit={handleDelete}>
+                  (<form onSubmit={() => {axios.delete(`http://localhost:8000/api/eventRecap/${Recap._id}`)}}>
+                    {/* Method of passing parameter from here - likely conditionally call a form for doing delete, and make them form return by setting do delete as false*/}
+                    
                     <button style={{ fontSize: '16px', width: '150px', height: '35px' }} type="submit">Delete post</button>
                   </form>)}
+                  {/* <div>{(doDelete === true) ? (<div></div>) : (<DeleteComponent metadata={Recap._id} returnFunction={toggleDoDelete}/>)}</div> */}
+                  
+                  
+
                 </Row>
               </Container>
               
@@ -301,6 +346,7 @@ const storeDeleteData = (dataToDelete) => {
 
             </Card.Body>
             </Card>))}</div>)}
+            {/* New thing - do a conditional rendering for each card in the mapping (if the image of the recap ojbect is undefined, make the height 500 instead of 1000*/}
 
             
 
