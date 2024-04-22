@@ -59,6 +59,7 @@ exports.editEvent = async (req, res) => {
 
     // Check if the event is canceled
     if (req.body.status === 'canceled') {
+      console.log('sdfsdf')
       // Send cancellation email notification
       await eventService.sendCancellationEmail(updatedEvent);
     }
@@ -88,6 +89,7 @@ exports.sendInvitations = async (req, res) => {
         const { eventId } = req.params;
         const { event, invitedGuests } = req.body; // Updated to extract event details
         const eventbyId = await Event.findById(eventId);
+        console.log(eventId, eventbyId, invitedGuests)
         const sentInvitation = await eventService.sendInvitations(eventId, eventbyId, invitedGuests);
         res.status(200).json(sentInvitation);
     } catch (error) {

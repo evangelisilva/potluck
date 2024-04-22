@@ -47,11 +47,11 @@ exports.getEventById = async (eventId) => {
     // Perform geocoding to get coordinates
     // const geocodeResult = await geocoder.geocode(locationString);
     const coordinates = {
-      lat: geocodeResult[0].latitude,
-      lng: geocodeResult[0].longitude,
+      // lat: geocodeResult[0].latitude,
+      // lng: geocodeResult[0].longitude,
 
-      // lat: 0,
-      // lng: 0,
+      lat: 0,
+      lng: 0,
     };
 
     // Update event object with formatted location and coordinates
@@ -154,6 +154,7 @@ exports.sendCancellationEmail = async (updatedEvent) => {
       name: updatedEvent.title,
       host: 'Evangeli'
     };
+    console.log(updatedEvent)
 
     // Iterate through invitedGuests array and send email to each guest
     for (const guestEmail of updatedEvent.invitedGuests) {

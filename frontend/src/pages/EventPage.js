@@ -89,7 +89,7 @@ function MyComponent() {
                 endTime: formatTime(response.data.endTime),
             };
 
-            console.log(response.data)
+            console.log(formattedEventDetails)
             setEventDetails(formattedEventDetails);
         } catch (error) {
             console.error('Error fetching data:', error);
@@ -194,7 +194,7 @@ function MyComponent() {
 
     const handleDuplicateInvite = async (eventId) => {
         try {
-            await axios.put(`http://localhost:8000/api/events/${eventId}`, { status: 'active' });
+            await axios.put(`http://localhost:8000/api/events/${eventId}`, { visibility: eventDetails.visibility == "public" ? "private" : "public" });
             // Event duplication successful
             console.log('Event duplicated successfully');
         } catch (error) {
@@ -382,7 +382,7 @@ function MyComponent() {
             {showInviteesPopup && <InviteePopup onClose={closeInviteePopup} onSuccess={handleInviteSuccess} eventId={eventId} />}
             {showEditEventPopup && <EditEventPopup onClose={closeEditEventPopup} onSave={handleEditEvent} />}
             {showCancelEventPopup && <CancelEventPopup onClose={closeCancelEventPopup} onConfirm={handleConfirmCancel} />}
-            {showDuplicateEventPopup && <DuplicateEventPopup onClose={closeDuplicateEventPopup} onConfirm={handleConfirmDuplicate} />}
+            {showDuplicateEventPopup && <DuplicateEventPopup onClose={closeDuplicateEventPopup} onConfirm={handleConfirmDuplicate} visibility={eventDetails.visibility} />}
             {showDishSignupPopup && <DishSignupPopup onClose={closeDishSignupPopup} onSignup={handleDishSignup} userId={userData._id} categoryName={selectedCategory} eventId={eventId}/>}
         </div>
     );

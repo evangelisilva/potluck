@@ -3,7 +3,7 @@ import { Container, Row, Form, Button } from 'react-bootstrap';
 import '../styles/modal.css';
 
 // DuplicateEventPopup component takes onClose function as props
-const DuplicateEventPopup = ({ onClose, onConfirm }) => {
+const DuplicateEventPopup = ({ onClose, onConfirm, visibility }) => {
 
     const handleConfirm = () => {
         onClose();
@@ -33,7 +33,7 @@ const DuplicateEventPopup = ({ onClose, onConfirm }) => {
                                             {/* <Form.Label style={{ width: '450px' }}>Duplicate Event</Form.Label> */}
                                             {/* Explanation */}
                                             <Form.Text style={{ color: 'gray', fontSize: '13px' }}>
-                                               If you duplicate your event, guests will be notified. You'll be able to access the event page but won't be able to edit the event. If you wish to proceed with duplicating the event, please confirm.
+                                               Duplicate the Event.
                                             </Form.Text>
                                         {/* </Col>
                                         Radio button
@@ -104,7 +104,7 @@ const DuplicateEventPopup = ({ onClose, onConfirm }) => {
                                     marginRight: '60px',
                                     marginBottom: '50px' 
                                 }}>
-                                Confirm
+                                {visibility}
                             </Button>
                         </div>
                     </div>
