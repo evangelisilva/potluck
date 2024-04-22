@@ -6,13 +6,20 @@ import DeleteComponent from '../components/DeleteComponent';
 
 import axios from 'axios';
 
-const RecapTab = ({userId, eventId}) => {
+const RecapTab = ({userId, eventId, eventCallback}) => {
 
     /* EVENT RECAP SECTION */
 
 const [s3FileData, setS3FileData] = useState({metaData : [], userMatch : [], userName : []})
 
 console.log("Original user id in this class: ", userId)
+
+
+
+// so make a state array
+const [initialDeletes, setInitialDeletes] = useState([])
+
+
 
 /* getting all the file data */
 useEffect(() => {
@@ -23,6 +30,17 @@ useEffect(() => {
         console.log("In useEffect - what is the file data result from the server?");
         console.log(data.data);
         /* for (let i = 0; i < ) */
+        console.log("Number of recaps IN USE EFFECT: ", data.data.metaData.length);
+
+        // create array to add to the state array
+        const initialDeletesArray = []
+        for (let i = 0; i < data.data.metaData.length; i++){
+          initialDeletesArray.push(false);
+        }
+
+        // add the array
+        setInitialDeletes(initialDeletesArray);
+
       })
       .catch(error => {
         console.error('Error fetching data:', error);
@@ -44,6 +62,14 @@ const [fileList, setFileList] = useState([])
 const [fileNameList, setFileNameList] = useState([])
 
 const [showRecap, setShowRecap] = useState(false)
+
+////must be converted to a state variable: let initialDelete = false;
+
+
+
+
+
+// what about if we just create a REGULAR state array? - how do we update the inidivudal elements?
 
 /*
 const [loadingImage, setLoadingImage] = useState(false);
@@ -257,11 +283,16 @@ const toggleDoDelete = () => {
   setDoDelete(!doDelete)
 }
 
-/**
-const storeDeleteData = (dataToDelete) => {
-  metadataToDelete = dataToDelete;
-}
-*/
+////const setInitialDeletesElement = (index) => {
+////  const initialDeletesTemp = initialDeletes;
+////  // Only set to true when you get to the index
+////  for (let i = 0; i < numberOfRecaps; i++){
+////    if (i == index){
+////      initialDeletesTemp[i] = true;
+////    }
+////  }
+////  setInitialDeletes(initialDeletesTemp);
+////}
 
     return (
         <div style={{ marginTop: '20px', marginLeft: '10px', marginRight: '10px' }}>
@@ -327,11 +358,40 @@ const storeDeleteData = (dataToDelete) => {
                   {(Recap.imageUrl === undefined) ? (<></>) : (<img src={Recap.imageUrl} alt={"image"} style={{ width: '430px', marginRight: '10px'}} />)}
                 <Row>
                   {/* Delete button (conditional)*/}
-                  {(s3FileData.userMatch[index] === false) ? (<></>) :                   
-                  (<form onSubmit={() => {axios.delete(`http://localhost:8000/api/eventRecap/${Recap._id}`)}}>
-                    {/* Method of passing parameter from here - likely conditionally call a form for doing delete, and make them form return by setting do delete as false*/}
+                  {(s3FileData.userMatch[index] === false || initialDeletes[0] === undefined) ? (<></>) :                   
+                  (<form onSubmit={() => {let initialDeletesTemp = initialDeletes;
                     
+                        initialDeletesTemp[index] = false;
+                    setInitialDeletes([...initialDeletes]);
+                  axios.delete(`http://localhost:8000/api/eventRecap/${Recap._id}`);
+                  ////eventCallback("recap");
+                  }}>
+
+                    {/* Try to define initial delete as a variable only for the mapping */}
+                    
+
+                    {/* Method of passing parameter from here - likely conditionally call a form for doing delete, and make them form return by setting do delete as false*/}
+                    <button onClick={() => {let initialDeletesTemp = initialDeletes;
+                      console.log("As we're setting it, what is the length: ", initialDeletesTemp.length)
+                      // Only set to true when you get to the index
+                      initialDeletesTemp[index] = true;
+                      console.log("Is it true now?: ", initialDeletesTemp[index])
+                      setInitialDeletes([...initialDeletes]);
+                      console.log("But what about actually AT the index?: ", initialDeletes[index])
+                      }} type="button">Delete</button>
+
+                    {/* Any time you set the initial delete, you have to eventually set it as false somewhere */}
+
+                    {/* Only show the "delete post" button if the inital delete has been checked (is true), and otherwise, show a cencel button*/}
+                    {(initialDeletes[index] === false) ? (<div></div>) : (
+                    <div>
+                    <p>Are you sure you want to delete this post?</p>
+                    <button onClick={() => {let initialDeletesTemp = initialDeletes;
+                        initialDeletesTemp[index] = false;
+                        setInitialDeletes([...initialDeletes]);
+                    }} type="button">Cancel</button> 
                     <button style={{ fontSize: '16px', width: '150px', height: '35px' }} type="submit">Delete post</button>
+                    </div>)}
                   </form>)}
                   {/* <div>{(doDelete === true) ? (<div></div>) : (<DeleteComponent metadata={Recap._id} returnFunction={toggleDoDelete}/>)}</div> */}
                   
