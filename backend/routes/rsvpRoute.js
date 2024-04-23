@@ -11,5 +11,7 @@ router.post('/create/:eventId', rsvpController.createRSVP);
 // Update an already-existing RSVP record
 router.put('/update/:rsvpId', rsvpController.updateRSVP);
 
+router.get('/:userId', rsvpController.getRSvpByUserId);
+
 
 module.exports = router;

@@ -13,6 +13,8 @@ const DashboardPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [showPrivate, setShowPrivate] = useState(true);
+  const [rsvpData, setRsvpData] = useState(null);
+  const [userRsvp, setUserRsvp] = useState(null);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -42,6 +44,14 @@ const DashboardPage = () => {
         }));
 
         setEventData(formattedEventData);
+
+        const rsvpResponse = await axios.get(`http://localhost:8000/api/rsvp/${authResponse.data.userId}`);
+        setRsvpData(rsvpResponse.data);
+
+        const rsvpEvents = rsvpResponse.data.map(rsvp => rsvp.event);
+        setUserRsvp(rsvpEvents);
+        
+
 
         setLoading(false);
       } catch (err) {
@@ -140,10 +150,17 @@ const DashboardPage = () => {
                          <span className="badge rounded-pill bg-danger" style={{ borderColor: 'white', borderWidth: '1px', borderStyle: 'solid' }}>Host</span>
                         </div>
                       )}
-                      {userData._id !== event.organizer && event.visibility == 'Private' && (
+                      {userData._id !== event.organizer && userRsvp.includes(event._id) ? (
                         <div style={{ position: 'absolute', bottom: 0, right: 60, padding: '5px' }}>
-                         <span className="badge rounded-pill bg-danger" style={{ borderColor: 'white', borderWidth: '1px', borderStyle: 'solid' }}>Attending</span>
-                        </div>)}
+                          <span className="badge rounded-pill bg-danger" style={{ borderColor: 'white', borderWidth: '1px', borderStyle: 'solid' }}>Attending</span>
+                        </div>
+                      ) : (
+                        userData._id !== event.organizer && event.invitedGuests.includes(userData.email) && event.visibility === 'Private' && (
+                          <div style={{ position: 'absolute', bottom: 0, right: 60, padding: '5px' }}>
+                            <span className="badge rounded-pill bg-danger" style={{ borderColor: 'white', borderWidth: '1px', borderStyle: 'solid' }}>Invited</span>
+                          </div>
+                        )
+                      )}
                       </div>
                     <Card.Body>
                       <Card.Title style={{ fontSize: '1.1rem' }}>{event.title}</Card.Title>
@@ -183,10 +200,17 @@ const DashboardPage = () => {
                          <span className="badge rounded-pill bg-danger" style={{ borderColor: 'white', borderWidth: '1px', borderStyle: 'solid' }}>Host</span>
                         </div>
                       )}
-                      {userData._id !== event.organizer && event.visibility == 'Private' && (
+                      {userData._id !== event.organizer && userRsvp.includes(event._id) ? (
                         <div style={{ position: 'absolute', bottom: 0, right: 60, padding: '5px' }}>
-                         <span className="badge rounded-pill bg-danger" style={{ borderColor: 'white', borderWidth: '1px', borderStyle: 'solid' }}>Attending</span>
-                        </div>)}
+                          <span className="badge rounded-pill bg-danger" style={{ borderColor: 'white', borderWidth: '1px', borderStyle: 'solid' }}>Attended</span>
+                        </div>
+                      ) : (
+                        userData._id !== event.organizer && event.invitedGuests.includes(userData.email) && event.visibility === 'Private' && (
+                          <div style={{ position: 'absolute', bottom: 0, right: 60, padding: '5px' }}>
+                            <span className="badge rounded-pill bg-danger" style={{ borderColor: 'white', borderWidth: '1px', borderStyle: 'solid' }}>Invited</span>
+                          </div>
+                        )
+                      )}
                       </div>
                     <Card.Body>
                       <Card.Title style={{ fontSize: '1.1rem' }}>{event.title}</Card.Title>

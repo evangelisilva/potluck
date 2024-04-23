@@ -10,7 +10,7 @@
 });
  */
 
-
+const Event = require('../models/Event');
 const Rsvp = require('../models/Rsvp');
 const DishSignup = require('../models/DishSignup');
 
@@ -122,3 +122,14 @@ exports.updateRSVP = async(req, res) => {
         res.status(400).json({ message: error.message });
     }
 }
+
+exports.getRSvpByUserId = async (req, res) => {
+    try {
+      const userId = req.params.userId;
+      const events = await Rsvp.find({ user: userId, status: 'attending' });
+      res.status(200).json(events);
+    } catch (error) {
+      console.error('Error retrieving user by id:', error);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+};
