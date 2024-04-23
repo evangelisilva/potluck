@@ -84,12 +84,17 @@ const DashboardPage = () => {
   };
 
   // Filter events based on visibility
-  const filteredEvents = showPrivate
-    ? eventData.filter(event => event.visibility === 'Private')
-    : eventData.filter(event => event.visibility === 'Public');
+  // const filteredEvents = showPrivate
+  //   ? eventData.filter(event => event.visibility === 'Private')
+  //   : eventData.filter(event => event.visibility === 'Public');
 
-  // Separate events into upcoming and past events
+  // // Separate events into upcoming and past events
+  // const currentDate = new Date();
+  // const upcomingEvents = filteredEvents.filter(event => new Date(event.date) > currentDate);
+  // const pastEvents = filteredEvents.filter(event => new Date(event.date) <= currentDate);
+
   const currentDate = new Date();
+  const filteredEvents = eventData.filter(event => showPrivate || event.visibility === 'Private');
   const upcomingEvents = filteredEvents.filter(event => new Date(event.date) > currentDate);
   const pastEvents = filteredEvents.filter(event => new Date(event.date) <= currentDate);
 
@@ -103,7 +108,7 @@ const DashboardPage = () => {
         <Form.Check
             type="switch"
             id="visibility-switch"
-            label="Private Events"
+            label="Public Events"
             style={{marginRight:'25px'}}
             checked={showPrivate}
             onChange={() => setShowPrivate(!showPrivate)}

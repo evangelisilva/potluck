@@ -1,5 +1,6 @@
 const Event = require('../models/Event');
 const Rsvp = require('../models/Rsvp');
+const User = require('../models/User');
 const { sendEmail } = require('./emailService');
 const NodeGeocoder = require('node-geocoder');
 require('dotenv').config();
@@ -67,15 +68,16 @@ exports.getEventById = async (eventId) => {
 
 exports.getEventsByUserId = async (userId) => {
   try {
-    // const events = await Event.find({
-    //   $or: [{ organizer: userId }, { visibility: 'public' }]
-    // });
+
+    const user = await User.findById(userId);
+    const userEmail = user.email;
 
     const events = await Event.find({
       $or: [
         { organizer: userId },
         { visibility: 'Public' },
-        { _id: { $in: await Rsvp.distinct('event', { user: userId, status: 'attending' }) } }
+        { _id: { $in: await Rsvp.distinct('event', { user: userId, status: 'attending' }) } },
+        { invitedGuests: userEmail }
       ]
     });
 
