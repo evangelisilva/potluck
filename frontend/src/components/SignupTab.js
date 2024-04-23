@@ -145,7 +145,10 @@ const SignupTab = ({ eventDetails, eventGuestData, userData, isConfirmedCancel, 
                                     <Card.Body>
                                         <Row>
                                             <Col xs={2}>
-                                                <Image src={guest.user.image} style={{ width: '40px' }} />
+                                                {guest.user.image ? 
+                                                    <Image src={guest.user.image} style={{ width: '40px' }} /> :
+                                                    <Image src={process.env.PUBLIC_URL + '/profile.png'} style={{ width: '40px' }} />
+                                                }
                                             </Col>
                                              <Col  xs={5} style={{ marginTop: '4%'}}>
                                                 <Card.Subtitle>{guest.user.firstName} {guest.user.lastName}</Card.Subtitle>

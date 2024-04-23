@@ -166,7 +166,9 @@ const handleFileChange = (e) => {
   }
 };
 
-
+const recapToggle = () => {
+  setShowRecap(!showRecap);
+}
 
 const handleFileSubmit = (e) => {
     e.preventDefault();
@@ -248,16 +250,11 @@ const handleFileSubmit = (e) => {
           console.error(error);
         });
     
-    
-    
-
-    
-   
+        recapToggle();
+        window.location.reload();
 }
 
-const recapToggle = () => {
-  setShowRecap(!showRecap);
-}
+
 
 const handleFileCaptionChange = (e) => {
   setFileCaption(e.target.value);
@@ -296,45 +293,58 @@ const toggleDoDelete = () => {
 
     return (
         <div style={{ marginTop: '20px', marginLeft: '10px', marginRight: '10px' }}>
-            <h2>Recap</h2>
-            <p>Welcome to the recap tab!</p>
             
             {(showRecap === false) ?
 
             (<Container>
-              <Row>
               <Button 
               variant="primary" 
               onClick={recapToggle} 
-              style={{ float: 'right', borderColor: '#A39A9A', backgroundColor: "transparent", color: '#4D515A', fontSize: '15px', marginRight: '5px'  }}>+ Create Recap</Button>
-              </Row>
+              style={{ marginLeft: '79%', borderColor: '#A39A9A', backgroundColor: "transparent", color: '#4D515A', fontSize: '15px', marginBottom: '20px' }}>Create Recap</Button>
             </Container>
             ) :
             (<div>
                 <Container>
-                <p>Upload an image to represent your inventory item.</p>
-                <input type="file" id="fileUploaded" onChange={handleFileChange}/>
-                <Row>
-                <input 
-                    type="text" 
+                  <Form>
+                  <Row>
+                    <Col>
+                   
+                  <Form.Group controlId="formFile" className="mb-3">
+                    <Form.Label>Image (Optional)</Form.Label>
+                    <Form.Control type="file" id="fileUploaded" onChange={handleFileChange} />
+                  </Form.Group>
+                
+                </Col>
+                  <Col>
+                <Form.Group controlId="formTitle">
+                <Form.Label>Caption</Form.Label>
+                    <Form.Control 
+                    type="text"  
                     id="fileCaption"
                     placeholder="Add a caption for your image upload"
                     value={fileCaption}
                     onChange={handleFileCaptionChange}
                 required />
+                 </Form.Group>
+                 </Col>
+                 
+                {/* <input 
+                    type="text" 
+                    id="fileCaption"
+                    placeholder="Add a caption for your image upload"
+                    value={fileCaption}
+                    onChange={handleFileCaptionChange}
+                required /> */}
                 </Row>
                 
                 {fileValidation}
-                <Row>
-                <p>File currently uploaded: </p>
-                {/*{fileNameList.map((name, index) => (<div>{name}</div>))}*/}
-                {fileName}
-                </Row>
-                <Row>
-                  <button onClick={handleFileSubmit}>Submit to Database</button>
-                  <button onClick={recapToggle}>Done</button>
-                </Row>
+
+                  <Button
+                    style={{ borderColor: '#A39A9A', backgroundColor: "transparent", color: '#4D515A', marginLeft:'92%', marginBottom:'20px'}}
+                    onClick={handleFileSubmit}>Submit</Button>     
+
                 {submissionValidation}
+                </Form>
                 </Container>                      
             </div>)}
 
@@ -343,19 +353,31 @@ const toggleDoDelete = () => {
             {/* Note: if ynot contained the metadata, you need to reference directly from the S3 data returned*/}
             {/* style={(Recap.fileKey === undefined) ? ({ fontSize: '16px', width: '620px', height: '1000px' }) : ({ fontSize: '16px', width: '620px', height: '1000px' })*/}
 
-            {(s3FileData.metaData === undefined) ? (<></>) : (<div>{s3FileData.metaData.map((Recap, index) => (<Card style={{  marginLeft: '20px' }}>
-            <Card.Body style={{ fontSize: '16px', width: '100%', height: '100%' }}>
+            {(s3FileData.metaData === undefined) ? (<></>) : (<div>{s3FileData.metaData.map((Recap, index) => (<Card style={{  marginLeft: '10%',  marginRight: '10%', marginBottom: '2%' }}>
+            <Card.Body style={{ width: '100%', height: '100%' }}>
               <Container>
                 <Row>
-                  <p>Recap published by user {s3FileData.userName[index]} </p>
-                  <p>at {Recap.createdAt.split("T")[0] + " at " + Recap.createdAt.split("T")[1]}</p>
+                <Col xs={1}>
+                {s3FileData.userName.image ? 
+                  <Image src={s3FileData.userName.image} style={{ width: '40px' }} /> :
+                  <Image src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTF26T5HCESNKfp-xIPUMqH87CfB6zVdkH_y_F7bs9EZoUyKVrUKxX9ghVF9x--pUzb_1w&usqp=CAU' style={{ width: '40px' }} />
+                }
+                </Col>
+                <Col xs={11}>
+                  <div>
+                    <b>{s3FileData.userName[index]}</b>
+                  </div>
+                  <div style={{ fontSize: '13px', color: 'gray' }}>
+                    {new Date(Recap.createdAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+                  </div>
+                </Col>
                 </Row>
-                <Row>
+                <Row style={{ marginLeft: '2px', marginTop: '7px', marginBottom: '8px'}}>
                   {/* Description*/}
                   {Recap.caption}
                 </Row>
                   {/* Images (conditional)*/}
-                  {(Recap.imageUrl === undefined) ? (<></>) : (<img src={Recap.imageUrl} alt={"image"} style={{ width: '430px', marginRight: '10px'}} />)}
+                  {(Recap.imageUrl === undefined) ? (<></>) : (<img src={Recap.imageUrl} alt={"image"} style={{ width: '100%', marginRight: '10px', marginBottom: '10px'}} />)}
                 <Row>
                   {/* Delete button (conditional)*/}
                   {(s3FileData.userMatch[index] === false || initialDeletes[0] === undefined) ? (<></>) :                   
@@ -371,26 +393,26 @@ const toggleDoDelete = () => {
                     
 
                     {/* Method of passing parameter from here - likely conditionally call a form for doing delete, and make them form return by setting do delete as false*/}
-                    <button onClick={() => {let initialDeletesTemp = initialDeletes;
+                    <Button onClick={() => {let initialDeletesTemp = initialDeletes;
                       console.log("As we're setting it, what is the length: ", initialDeletesTemp.length)
                       // Only set to true when you get to the index
                       initialDeletesTemp[index] = true;
                       console.log("Is it true now?: ", initialDeletesTemp[index])
                       setInitialDeletes([...initialDeletes]);
                       console.log("But what about actually AT the index?: ", initialDeletes[index])
-                      }} type="button">Delete</button>
+                      }} style={{borderColor: '#A39A9A', backgroundColor: "transparent", color: '#4D515A'}}>Delete</Button>
 
                     {/* Any time you set the initial delete, you have to eventually set it as false somewhere */}
 
                     {/* Only show the "delete post" button if the inital delete has been checked (is true), and otherwise, show a cencel button*/}
                     {(initialDeletes[index] === false) ? (<div></div>) : (
-                    <div>
+                    <div style={{marginTop:'5px'}}>
                     <p>Are you sure you want to delete this post?</p>
-                    <button onClick={() => {let initialDeletesTemp = initialDeletes;
+                    <Button type="submit" style={{borderColor: '#A39A9A', backgroundColor: "transparent", color: '#4D515A', marginRight: '5px'}}>Yes</Button>
+                    <Button onClick={() => {let initialDeletesTemp = initialDeletes;
                         initialDeletesTemp[index] = false;
                         setInitialDeletes([...initialDeletes]);
-                    }} type="button">Cancel</button> 
-                    <button style={{ fontSize: '16px', width: '150px', height: '35px' }} type="submit">Delete post</button>
+                    }}style={{borderColor: '#A39A9A', backgroundColor: "transparent", color: '#4D515A', marginLeft: '2px'}}>No</Button> 
                     </div>)}
                   </form>)}
                   {/* <div>{(doDelete === true) ? (<div></div>) : (<DeleteComponent metadata={Recap._id} returnFunction={toggleDoDelete}/>)}</div> */}

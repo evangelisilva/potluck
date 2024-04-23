@@ -54,8 +54,8 @@ function SignupButton({ userData }) {
                     borderRadius: '30px', 
                     fontFamily: 'Arial', 
                     color: hovered ? '#FFFFFF' : '#4D515A', 
-                    backgroundColor: hovered ? '#4D515A' : 'transparent',
-                    border: '1px solid #4D515A',
+                    backgroundColor: hovered ? '#E8843C' : 'transparent',
+                    border: hovered ? 'transparent' : '1px solid #4D515A',
                     fontSize: '17px',
                     paddingLeft: '19px',
                     paddingRight: '19px'
