@@ -11,6 +11,8 @@ router.get('/', eventController.getAllEvents);
 // Retrieve event details by event ID
 router.get('/:eventId', eventController.getEventById);
 
+router.get('/u/:userId', eventController.getEventsByUserId);
+
 // Edit an existing event
 router.put('/:eventId', eventController.editEvent);
 

@@ -1,4 +1,5 @@
 const Event = require('../models/Event');
+const Rsvp = require('../models/Rsvp');
 const { sendEmail } = require('./emailService');
 const NodeGeocoder = require('node-geocoder');
 require('dotenv').config();
@@ -64,6 +65,27 @@ exports.getEventById = async (eventId) => {
   }
 };
 
+exports.getEventsByUserId = async (userId) => {
+  try {
+    // const events = await Event.find({
+    //   $or: [{ organizer: userId }, { visibility: 'public' }]
+    // });
+
+    const events = await Event.find({
+      $or: [
+        { organizer: userId },
+        { visibility: 'Public' },
+        { _id: { $in: await Rsvp.distinct('event', { user: userId, status: 'attending' }) } }
+      ]
+    });
+
+    return events;
+    } catch (error) {
+      console.log(error);
+      throw new Error('Could not retrieve event details');
+    }
+}
+
 exports.incrementTaken = async (eventId, categoryName) => {
   const event = await Event.findById(eventId);
   if (!event) {
@@ -101,7 +123,7 @@ exports.editEvent = async (eventId, eventData) => {
 // Service function to cancel an event
 exports.cancelEvent = async (eventId) => {
   try {
-    const event = await Event.findByIdAndUpdate(eventId, { status: 'cancelled' }, { new: true });
+    const event = await Event.findByIdAndUpdate(eventId, { status: 'Cancelled' }, { new: true });
     if (!event) {
       throw new Error('Event not found');
     }

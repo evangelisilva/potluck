@@ -42,20 +42,6 @@ function MyComponent({tab}) {
         fetchSignupsByEventId();
     }, []);
 
-    const eventDetail = {
-        guests: [
-            { name: 'Alice', status: 'Attending' },
-            { name: 'Bob', status: 'Invited' },
-            { name: 'Charlie', status: 'Attending' },
-            { name: 'David', status: 'Attending' },
-            { name: 'Eve', status: 'Not Attending' },
-            { name: 'Frank', status: 'Attending' },
-            { name: 'Grace', status: 'Attending' },
-            { name: 'Henry', status: 'Attending' },
-            { name: 'Ivy', status: 'May be' },
-        ]
-    };
-
     const fetchSignupsByEventId = async () => {
         try {
             const signupByEventResponse = await axios.get(`http://localhost:8000/api/dishSignups?event=${eventId}`);
@@ -96,7 +82,7 @@ function MyComponent({tab}) {
             };
             setEventDetails(formattedEventDetails);
 
-            console.log(eventDetails);
+            
 
             const eventGuestsResponse = await axios.get(`http://localhost:8000/api/events/chat/${eventId}`);
             setEventGuestData(eventGuestsResponse.data);
@@ -185,7 +171,7 @@ function MyComponent({tab}) {
     // Function to cancel an event
     const handleCancelInvite = async (eventId) => {
         try {
-            await axios.put(`http://localhost:8000/api/events/${eventId}`, { status: 'canceled' });
+            await axios.put(`http://localhost:8000/api/events/${eventId}`, { status: 'cancelled' });
             // Event cancellation successful
             console.log('Event canceled successfully');
         } catch (error) {
@@ -357,20 +343,23 @@ function MyComponent({tab}) {
                                                 {/* </Col> */}
                                                 <Col xs={4} className="d-flex align-items-end justify-content-end">
                                                     {/* Buttons for inviting, editing, and more options */}
+                                                    { eventDetails && eventDetails.organizer === userData._id && 
                                                     <Button variant="primary" style={{ border: 'none', backgroundColor: isConfirmedCancel ? 'gray' : '#E8843C', fontSize: '15px', marginRight: '5px' }} onClick={openInviteePopup} disabled={isConfirmedCancel}>
                                                         <Image src={process.env.PUBLIC_URL + '/invite.png'} style={{ maxWidth: '25px', paddingRight: '5px' }} fluid />
                                                         Invite
-                                                    </Button>
-                                                    <Button variant="primary" style={{ borderColor: 'gray', backgroundColor: "transparent", color: '#4D515A', fontSize: '15px', marginRight: '5px' }} onClick={openEditEventPopup} disabled={isConfirmedCancel}>
+                                                    </Button> }
+                                                    { eventDetails && eventDetails.organizer === userData._id && 
+                                                     <Button variant="primary" style={{ borderColor: 'gray', backgroundColor: "transparent", color: '#4D515A', fontSize: '15px', marginRight: '5px' }} onClick={openEditEventPopup} disabled={isConfirmedCancel}>
                                                         <Image src={process.env.PUBLIC_URL + '/edit.png'} style={{ maxWidth: '25px', paddingRight: '5px' }} fluid />
                                                         Edit
-                                                    </Button>
+                                                    </Button>  }  
                                                     <div className="user-action">
                                                     <Button variant="primary" style={{borderColor: '#A39A9A', backgroundColor: "transparent", color: '#4D515A', fontSize: '15px', marginRight: '5px' }} onClick={() => handleClick()}>
                                                         <Image src={process.env.PUBLIC_URL + '/chat.png'} style={{ maxWidth: '25px', paddingRight: '5px' }} fluid />
                                                         Message
                                                     </Button>
                                                     </div>
+                                                    { eventDetails && eventDetails.organizer === userData._id ?
                                                     <Dropdown>
                                                         <Dropdown.Toggle variant="primary" style={{ borderColor: 'gray', backgroundColor: "transparent", fontSize: '1px', color: 'white', paddingRight: '6px', paddingLeft: '6px' }} disabled={isConfirmedCancel}>
                                                             <Image src={process.env.PUBLIC_URL + '/more.png'} style={{ maxWidth: '22px' }} fluid />
@@ -380,7 +369,12 @@ function MyComponent({tab}) {
                                                             <Dropdown.Item>Duplicate Event</Dropdown.Item>
                                                             <Dropdown.Item onClick={openDishRecognizePopup}>What's the Dish?</Dropdown.Item>
                                                         </Dropdown.Menu>
-                                                    </Dropdown>
+                                                    </Dropdown> : 
+                                                    <div>
+                                                    <Button variant="primary" style={{borderColor: '#A39A9A', backgroundColor: "transparent", color: '#4D515A', fontSize: '15px', marginRight: '5px' }}  onClick={openDishRecognizePopup}>
+                                                        What's the Dish?
+                                                    </Button>
+                                                    </div>}
                                                 </Col>
                                             </Row>
                                             {eventDetails && <Card.Subtitle className="mb-2 text-muted">{eventDetails.date} | {eventDetails.startTime} - {eventDetails.endTime}</Card.Subtitle>}

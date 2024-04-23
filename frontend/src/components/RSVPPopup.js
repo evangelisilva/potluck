@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Form, Button } from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
 import '../styles/modal.css';
 import axios from 'axios';
 
 
 const RSVPPopup = ({ onClose, eventId, userId }) => {
+    const navigate = useNavigate();
     const [attendance, setAttendance] = useState('');
     const [userMessage, setUserMessage] = useState('');
     const [rsvpStatus, setRsvpStatus] = useState();
@@ -73,12 +75,23 @@ const RSVPPopup = ({ onClose, eventId, userId }) => {
               // Handle success, if needed
               console.log("Update RSVP response: ");
               console.log(response.data);
+
+              if (response.data.status === 'attending') {
+                navigate(`/events/${eventId}`); 
+            } else {
+                navigate(`/dashboard`); 
+            }
             })
+
+            
             .catch(error => {
               // Handle error, if needed
               console.error(error);
             });
         }
+
+        
+        
 
         onClose();
     };

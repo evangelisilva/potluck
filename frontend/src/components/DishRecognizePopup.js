@@ -134,7 +134,7 @@ const DishRecognizePopup = ({ onClose, eventId }) => {
                                                         marginLeft: '30%',
                                                     }}
                                                 >
-                                                    Recognize
+                                                    Recognise
                                                 </Button>
                                             )}
                                         </Col>

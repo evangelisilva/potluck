@@ -26,8 +26,8 @@ const eventSchema = new mongoose.Schema({
     contactNumber: {type: String},
     organizer: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
     invitedGuests: [{ type: String }],
-    status: { type: String, enum: ['active', 'cancelled'], default: 'active' },
-    visibility: { type: String, enum: ['public', 'private'], default: 'public' },
+    status: { type: String, enum: ['Active', 'Cancelled'], default: 'active' },
+    visibility: { type: String, enum: ['Public', 'Private'], default: 'public' },
     dishCategory: [dishCategoryQuantitySchema],
     coverImage: { type: String }, 
 });
