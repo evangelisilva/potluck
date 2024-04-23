@@ -1,15 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Row, Form, Button, Col, Image, Card } from 'react-bootstrap';
 
+import DeleteComponent from '../components/DeleteComponent';
+
+
 import axios from 'axios';
 
-const RecapTab = ({userId, eventId}) => {
+const RecapTab = ({userId, eventId, eventCallback}) => {
 
     /* EVENT RECAP SECTION */
 
 const [s3FileData, setS3FileData] = useState({metaData : [], userMatch : [], userName : []})
 
 console.log("Original user id in this class: ", userId)
+
+
+
+// so make a state array
+const [initialDeletes, setInitialDeletes] = useState([])
+
+
 
 /* getting all the file data */
 useEffect(() => {
@@ -20,6 +30,17 @@ useEffect(() => {
         console.log("In useEffect - what is the file data result from the server?");
         console.log(data.data);
         /* for (let i = 0; i < ) */
+        console.log("Number of recaps IN USE EFFECT: ", data.data.metaData.length);
+
+        // create array to add to the state array
+        const initialDeletesArray = []
+        for (let i = 0; i < data.data.metaData.length; i++){
+          initialDeletesArray.push(false);
+        }
+
+        // add the array
+        setInitialDeletes(initialDeletesArray);
+
       })
       .catch(error => {
         console.error('Error fetching data:', error);
@@ -42,6 +63,14 @@ const [fileNameList, setFileNameList] = useState([])
 
 const [showRecap, setShowRecap] = useState(false)
 
+////must be converted to a state variable: let initialDelete = false;
+
+
+
+
+
+// what about if we just create a REGULAR state array? - how do we update the inidivudal elements?
+
 /*
 const [loadingImage, setLoadingImage] = useState(false);
 
@@ -59,6 +88,14 @@ const handleCurrentFileNameChange = (e) => {
 
 const handleFileChange = (e) => {
 
+  // must reset the file and its name fisrt thing
+  setFile(null);
+  setFileName('');
+
+  if (e.target.value === undefined || e.target.files === undefined){
+    return false;
+  }
+
   console.log("Option 1 for setting the file: ")
   console.log(document.getElementById("fileUploaded").value);
   console.log("Option 2 for setting the file: ")
@@ -74,6 +111,10 @@ const handleFileChange = (e) => {
 
 
   const currentFileName = e.target.value.split("\\")[2];
+
+  if (currentFileName === undefined){
+    return false;
+  }
 
   let periodCount = 0;
 
@@ -226,9 +267,8 @@ const handleFileCaptionChange = (e) => {
 let metadataToDelete;
 const handleDelete = () => {
   ////alert("Are you sure you want to delete your post?")
-  const metadata = "";
   /* const response = await axios.delete('https://your-api-endpoint.com/resource-to-delete'); */
-  const response = axios.delete(`http://localhost:8000/api/eventRecap/${metadata}`)
+  const response = axios.delete(`http://localhost:8000/api/eventRecap/${metadataToDelete}`)
   console.log(response);
   
 
@@ -237,11 +277,22 @@ const handleDelete = () => {
   // reload the page
 }
 
-/**
-const storeDeleteData = (dataToDelete) => {
-  metadataToDelete = dataToDelete;
+const [doDelete, setDoDelete] = useState(false)
+
+const toggleDoDelete = () => {
+  setDoDelete(!doDelete)
 }
-*/
+
+////const setInitialDeletesElement = (index) => {
+////  const initialDeletesTemp = initialDeletes;
+////  // Only set to true when you get to the index
+////  for (let i = 0; i < numberOfRecaps; i++){
+////    if (i == index){
+////      initialDeletesTemp[i] = true;
+////    }
+////  }
+////  setInitialDeletes(initialDeletesTemp);
+////}
 
     return (
         <div style={{ marginTop: '20px', marginLeft: '10px', marginRight: '10px' }}>
@@ -249,10 +300,21 @@ const storeDeleteData = (dataToDelete) => {
             <p>Welcome to the recap tab!</p>
             
             {(showRecap === false) ?
-            (<button onClick={recapToggle}><strong>Create Recap</strong></button>) :
+
+            (<Container>
+              <Row>
+              <Button 
+              variant="primary" 
+              onClick={recapToggle} 
+              style={{ float: 'right', borderColor: '#A39A9A', backgroundColor: "transparent", color: '#4D515A', fontSize: '15px', marginRight: '5px'  }}>+ Create Recap</Button>
+              </Row>
+            </Container>
+            ) :
             (<div>
+                <Container>
                 <p>Upload an image to represent your inventory item.</p>
                 <input type="file" id="fileUploaded" onChange={handleFileChange}/>
+                <Row>
                 <input 
                     type="text" 
                     id="fileCaption"
@@ -260,21 +322,29 @@ const storeDeleteData = (dataToDelete) => {
                     value={fileCaption}
                     onChange={handleFileCaptionChange}
                 required />
+                </Row>
+                
                 {fileValidation}
+                <Row>
                 <p>File currently uploaded: </p>
                 {/*{fileNameList.map((name, index) => (<div>{name}</div>))}*/}
                 {fileName}
-                <button onClick={handleFileSubmit}>Submit to Database</button>
-                <button onClick={recapToggle}>Done</button>
-                {submissionValidation}                        
+                </Row>
+                <Row>
+                  <button onClick={handleFileSubmit}>Submit to Database</button>
+                  <button onClick={recapToggle}>Done</button>
+                </Row>
+                {submissionValidation}
+                </Container>                      
             </div>)}
 
             {/*Map all of the recap items to cards*/}
 
             {/* Note: if ynot contained the metadata, you need to reference directly from the S3 data returned*/}
+            {/* style={(Recap.fileKey === undefined) ? ({ fontSize: '16px', width: '620px', height: '1000px' }) : ({ fontSize: '16px', width: '620px', height: '1000px' })*/}
 
             {(s3FileData.metaData === undefined) ? (<></>) : (<div>{s3FileData.metaData.map((Recap, index) => (<Card style={{  marginLeft: '20px' }}>
-            <Card.Body style={{ fontSize: '16px', width: '620px', height: '1000px' }}>
+            <Card.Body style={{ fontSize: '16px', width: '100%', height: '100%' }}>
               <Container>
                 <Row>
                   <p>Recap published by user {s3FileData.userName[index]} </p>
@@ -288,10 +358,45 @@ const storeDeleteData = (dataToDelete) => {
                   {(Recap.imageUrl === undefined) ? (<></>) : (<img src={Recap.imageUrl} alt={"image"} style={{ width: '430px', marginRight: '10px'}} />)}
                 <Row>
                   {/* Delete button (conditional)*/}
-                  {(s3FileData.userMatch[index] === false) ? (<></>) :                   
-                  (<form onSubmit={handleDelete}>
+                  {(s3FileData.userMatch[index] === false || initialDeletes[0] === undefined) ? (<></>) :                   
+                  (<form onSubmit={() => {let initialDeletesTemp = initialDeletes;
+                    
+                        initialDeletesTemp[index] = false;
+                    setInitialDeletes([...initialDeletes]);
+                  axios.delete(`http://localhost:8000/api/eventRecap/${Recap._id}`);
+                  ////eventCallback("recap");
+                  }}>
+
+                    {/* Try to define initial delete as a variable only for the mapping */}
+                    
+
+                    {/* Method of passing parameter from here - likely conditionally call a form for doing delete, and make them form return by setting do delete as false*/}
+                    <button onClick={() => {let initialDeletesTemp = initialDeletes;
+                      console.log("As we're setting it, what is the length: ", initialDeletesTemp.length)
+                      // Only set to true when you get to the index
+                      initialDeletesTemp[index] = true;
+                      console.log("Is it true now?: ", initialDeletesTemp[index])
+                      setInitialDeletes([...initialDeletes]);
+                      console.log("But what about actually AT the index?: ", initialDeletes[index])
+                      }} type="button">Delete</button>
+
+                    {/* Any time you set the initial delete, you have to eventually set it as false somewhere */}
+
+                    {/* Only show the "delete post" button if the inital delete has been checked (is true), and otherwise, show a cencel button*/}
+                    {(initialDeletes[index] === false) ? (<div></div>) : (
+                    <div>
+                    <p>Are you sure you want to delete this post?</p>
+                    <button onClick={() => {let initialDeletesTemp = initialDeletes;
+                        initialDeletesTemp[index] = false;
+                        setInitialDeletes([...initialDeletes]);
+                    }} type="button">Cancel</button> 
                     <button style={{ fontSize: '16px', width: '150px', height: '35px' }} type="submit">Delete post</button>
+                    </div>)}
                   </form>)}
+                  {/* <div>{(doDelete === true) ? (<div></div>) : (<DeleteComponent metadata={Recap._id} returnFunction={toggleDoDelete}/>)}</div> */}
+                  
+                  
+
                 </Row>
               </Container>
               
@@ -301,6 +406,7 @@ const storeDeleteData = (dataToDelete) => {
 
             </Card.Body>
             </Card>))}</div>)}
+            {/* New thing - do a conditional rendering for each card in the mapping (if the image of the recap ojbect is undefined, make the height 500 instead of 1000*/}
 
             
 
