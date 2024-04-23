@@ -1,5 +1,5 @@
 const Event = require('../models/Event');
-const { sendEmail } = require('./emailService');
+const { sendEmail, sendEmail1 } = require('./emailService');
 const NodeGeocoder = require('node-geocoder');
 require('dotenv').config();
 
@@ -135,9 +135,11 @@ exports.sendInvitations = async (eventId, event, invitedGuests) => {
         rsvpLink: 'http://localhost:3000/rsvp/' + eventId
         // rsvpLink: 'http://localhost:3000/rsvp/65d3d557b90bec95e14f1476'
       };
-      console.log(templateData);
-      const response = await sendEmail(guest, 'ICSI518-Potluck-InvitationTemplate', templateData);
-      const responseWithEventId = { eventId, ...response }; 
+      const resres = await sendEmail1();
+
+      console.log(resres)
+      // const response = await sendEmail(guest, 'ICSI518-Potluck-InvitationTemplate', templateData);
+      const responseWithEventId = { eventId, ...resres }; 
       responses.push(responseWithEventId); 
     }
     return responses; 
