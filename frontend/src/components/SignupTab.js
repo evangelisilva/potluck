@@ -13,6 +13,7 @@ const SignupTab = ({ eventDetails, eventGuestData, userData, isConfirmedCancel, 
     const [showPopup, setShowPopup] = useState(false);
     const [itemPopup, seItemPopup] = useState(false);
     const [selectedItem, setSelectedItem] = useState(null);
+        const [popoverItem, setPopoverItem] = useState(null);
 
     useEffect(() => {
         fetchItems();
@@ -20,7 +21,7 @@ const SignupTab = ({ eventDetails, eventGuestData, userData, isConfirmedCancel, 
 
     const fetchItems = async () => {
         try {
-            const itemsResponse = await axios.get(` http://localhost:8000/api/items/${eventDetails._id}`);
+            const itemsResponse = await axios.get(`http://localhost:8000/api/items/${eventDetails._id}`);
             setItems(itemsResponse.data);
             console.log(items);
         } catch (error) {
@@ -36,6 +37,10 @@ const SignupTab = ({ eventDetails, eventGuestData, userData, isConfirmedCancel, 
             photoUrl: user.image
         };
     } 
+
+    const togglePopover = (item) => {
+        setPopoverItem(popoverItem === item ? null : item);
+    };
 
     const handleClick = (guest) => {
         console.log(guest);
@@ -149,8 +154,8 @@ const SignupTab = ({ eventDetails, eventGuestData, userData, isConfirmedCancel, 
                                             {guest.status === 'attending' && (
                                                 <Col className="d-flex justify-content-end" xs={5}>
                                                     <div className="user-action">
-                                                    <Button variant="primary" style={{borderColor: '#A39A9A', backgroundColor: "transparent", color: '#4D515A', fontSize: '15px', marginRight: '5px' }}>
-                                                        <Image src={process.env.PUBLIC_URL + '/chat.png'} style={{ maxWidth: '25px', paddingRight: '5px' }} onClick={() => handleClick(guest.user)}/>
+                                                    <Button variant="primary" style={{borderColor: '#A39A9A', backgroundColor: "transparent", color: '#4D515A', fontSize: '15px', marginRight: '5px' }} onClick={() => handleClick(guest.user)}>
+                                                        <Image src={process.env.PUBLIC_URL + '/chat.png'} style={{ maxWidth: '25px', paddingRight: '5px' }}/>
                                                         Message
                                                     </Button>
                                                     </div>
@@ -197,8 +202,9 @@ const SignupTab = ({ eventDetails, eventGuestData, userData, isConfirmedCancel, 
                             <Col xs={12}>
                                 
                             {items[category].map(item => (
-                                <div key={item._id} onClick={() => toggleItemPopup(item)}>
-                                <Card style={{ marginBottom: '5px', color: isConfirmedCancel ? 'gray' : '#4D515A', borderRadius: '10px', marginBottom: '10px' }}>
+                                // <div key={item._id} onClick={() => toggleItemPopup(item)}>
+                                <div key={item._id}>
+                                <Card style={{ marginBottom: '5px', color: isConfirmedCancel ? 'gray' : '#4D515A', borderRadius: '10px', marginBottom: '10px' }} data-mdb-popover-init data-mdb-ripple-init data-mdb-content="And here's some amazing content. It's very engaging. Right?">
                                     <Card.Body>
                                         <Row>
                                             <Col xs={2}>

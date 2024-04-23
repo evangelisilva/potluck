@@ -39,6 +39,7 @@ function SignupButton({ userData }) {
                     <Dropdown.Item href="/profile">Profile</Dropdown.Item>
                     <Dropdown.Item href="/dashboard">My Dashboard</Dropdown.Item>
                     <Dropdown.Item href="/events/new">Create New Event</Dropdown.Item>
+                    <Dropdown.Item href="/what's-the-dish">What's the Dish?</Dropdown.Item>
                     <div class="dropdown-divider"></div>
                     <Dropdown.Item onClick={handleSignOut}>Sign out</Dropdown.Item>
                 </Dropdown.Menu>

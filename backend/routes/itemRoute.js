@@ -19,7 +19,6 @@ router.get('/:eventId', async (req, res) => {
             acc[category].push(rest);
             return acc;
         }, {});
-
         res.status(200).json(groupedItems);
     } catch (error) {
         console.error('Error getting grouped items by event ID:', error);

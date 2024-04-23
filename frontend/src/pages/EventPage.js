@@ -11,6 +11,7 @@ import DishSignupPopup from '../components/DishSignupPopup';
 import SignupNavbar from '../components/SignupNavbar';
 import SignupTab from '../components/SignupTab';
 import RecapTab from '../components/RecapTab';
+import DishRecognizePopup from '../components/DishRecognizePopup';
 
 let keyTab = "about";
 
@@ -25,6 +26,7 @@ function MyComponent({tab}) {
     const [showEditEventPopup, setShowEditEventPopup] = useState(false);
     const [showCancelEventPopup, setShowCancelEventPopup] = useState(false);
     const [showDishSignupPopup, setDishSignupPopup] = useState(false);
+    const [showDishRecognizePopup, setShowDishRecognizePopup] = useState(false);
     const [selectedCategory, setSelectedCategory] = useState(null);
     
     const [isConfirmedCancel, setIsConfirmedCancel] = useState(false);
@@ -131,6 +133,14 @@ function MyComponent({tab}) {
     // Function to open invitee popup
     const openEditEventPopup = () => {
         setShowEditEventPopup(true);
+    };
+
+    const openDishRecognizePopup = () => {
+        setShowDishRecognizePopup(true);
+    };
+
+    const closeDishRecognizePopup = () => {
+        setShowDishRecognizePopup(false);
     };
 
     // Function to close invitee popup
@@ -306,7 +316,7 @@ function MyComponent({tab}) {
                 });
             } 
             
-            const conversationId = eventId;
+            const conversationId = eventId + "_";
             const conversation = window.talkSession.getOrCreateConversation(conversationId);
             
             conversation.setParticipant(me);
@@ -321,7 +331,6 @@ function MyComponent({tab}) {
     
 
     return (
-
         <div>
             <SignupNavbar userData={userData}/>
             <div style={{ backgroundColor: '#f8f9fa', fontFamily: 'Arial' }}>
@@ -367,8 +376,9 @@ function MyComponent({tab}) {
                                                             <Image src={process.env.PUBLIC_URL + '/more.png'} style={{ maxWidth: '22px' }} fluid />
                                                         </Dropdown.Toggle>
                                                         <Dropdown.Menu>
-                                                            <Dropdown.Item>Duplicate Event</Dropdown.Item>
                                                             <Dropdown.Item onClick={openCancelEventPopup}>Cancel Event</Dropdown.Item>
+                                                            <Dropdown.Item>Duplicate Event</Dropdown.Item>
+                                                            <Dropdown.Item onClick={openDishRecognizePopup}>What's the Dish?</Dropdown.Item>
                                                         </Dropdown.Menu>
                                                     </Dropdown>
                                                 </Col>
@@ -410,6 +420,7 @@ function MyComponent({tab}) {
             {showEditEventPopup && <EditEventPopup onClose={closeEditEventPopup} onSave={handleEditEvent} />}
             {showCancelEventPopup && <CancelEventPopup onClose={closeCancelEventPopup} onConfirm={handleConfirmCancel} />}
             {showDishSignupPopup && <DishSignupPopup onClose={closeDishSignupPopup} userId={userData._id} eventId={eventId}/>}
+            {showDishRecognizePopup && <DishRecognizePopup onClose={closeDishRecognizePopup} eventId={eventId}/>}
         </div>
 
     );

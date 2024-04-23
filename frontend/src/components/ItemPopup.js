@@ -1,5 +1,5 @@
 import React from 'react';
-import { Modal, Button, Container, Row, Col } from 'react-bootstrap';
+import { Modal, Button, Container, Row, Col, Image } from 'react-bootstrap';
 
 const ItemPopup = ({ onClose, userId, eventId, item }) => {
     const handleSignup = () => {
@@ -27,18 +27,17 @@ const ItemPopup = ({ onClose, userId, eventId, item }) => {
                                     paddingRight: '20px',
                                     borderRadius: '30px',
                                     backgroundColor: 'transparent',
-                                    borderColor: '#4D515A',
+                                    border: 'None',
                                     fontFamily: 'Arial',
                                     color: '#4D515A',
                                     marginTop: '10px',
                                     marginBottom: '30px'
                                 }}>
-                                Close
+                                <Image src={process.env.PUBLIC_URL + '/cross.png'} style={{ marginLeft: '30px', maxWidth: '15px' }} fluid />
                             </Button>
                             </Col>
                         </Row>
                    
-                        
                         <hr style={{ borderTop: '1px solid #ccc'}} />
                         
                         <Row>
