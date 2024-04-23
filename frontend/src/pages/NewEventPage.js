@@ -71,8 +71,8 @@ function NewEvent() {
         contactNumber: '',
         organizer: '65d377b4f9c8da33b7f3db73',
         invitedGuests: [],
-        status: 'active',
-        visibility: 'public',
+        status: 'Active',
+        visibility: 'Public',
         coverImage: ''
     });
 

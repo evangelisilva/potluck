@@ -4,7 +4,7 @@ import { Container, Row, Col, Form, Image } from 'react-bootstrap';
 // This component renders a form for creating a new event.
 function NewEventPage1({ handleEventDataChange }) {
     // State variable to track the selected visibility option
-    const [visibility, setVisibility] = useState('public');
+    const [visibility, setVisibility] = useState('Public');
 
     // Function to handle changes in the visibility option
     const handleVisibilityChange = (event) => {
@@ -76,8 +76,8 @@ function NewEventPage1({ handleEventDataChange }) {
                                     style={{ width: '100%' }}
                                     name="visibility"
                                 >
-                                    <option value="public">Public</option>
-                                    <option value="private">Private</option>
+                                    <option value="Public">Public</option>
+                                    <option value="Private">Private</option>
                                 </Form.Select>       
                             </Col>
                         </Row>
