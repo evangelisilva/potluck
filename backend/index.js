@@ -3,6 +3,8 @@ const express = require('express');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const cors = require('cors');
+
+const Event = require('./models/Event');
 const eventRoute = require('./routes/eventRoute');
 const eventRecapRoute = require('./routes/eventRecapRoute')
 const userRoute = require('./routes/userRoute');
@@ -12,10 +14,7 @@ const itemRoute = require('./routes/itemRoute');
 const dishSignupRoute = require('./routes/dishSignupRoute');
 const { sendEmail } = require('./services/emailService');
 const userService = require('./services/userService');
-
 const dishRecommendationTest = require('./models/Dish');
-
-const Event = require('./models/Event');
 
 // Load environment variables from .env file
 dotenv.config();
@@ -31,6 +30,19 @@ app.use(cors());
 app.use(express.json()); 
 app.use(express.urlencoded({ extended: true }));
 
+// Routes
+app.use('/api/events', eventRoute);
+app.use('/api/users', userRoute);
+app.use('/api/dishes', dishRoute);
+app.use('/api/dishSignups', dishSignupRoute);
+app.use('/api/rsvp', rsvpRoutes);
+app.use('/api/eventRecap', eventRecapRoute);
+app.use('/api/items', itemRoute);
+
+app.get('/', (req, res) => {
+  res.send('Server is running'); 
+});  
+
 app.get('/api/auth', (req, res) => {
   try {
     const token = req.header('Authorization');
@@ -44,19 +56,6 @@ app.get('/api/auth', (req, res) => {
     res.status(500).json({ error: 'Internal server error' });
   }
 });
-
-// Routes
-app.use('/api/events', eventRoute);
-app.use('/api/users', userRoute);
-app.use('/api/dishes', dishRoute);
-app.use('/api/dishSignups', dishSignupRoute);
-app.use('/api/rsvp', rsvpRoutes);
-app.use('/api/eventRecap', eventRecapRoute);
-app.use('/api/items', itemRoute);
-
-app.get('/', (req, res) => {
-    res.send('Server is running'); 
-});  
 
 // Endpoint for processing an RSVP request from a user (temporary: needs to be moved to other folder)
 app.post('/api/rsvp-request', (req, res) => {
