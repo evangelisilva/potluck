@@ -125,7 +125,7 @@ exports.editEvent = async (eventId, eventData) => {
 // Service function to cancel an event
 exports.cancelEvent = async (eventId) => {
   try {
-    const event = await Event.findByIdAndUpdate(eventId, { status: 'Cancelled' }, { new: true });
+    const event = await Event.findByIdAndUpdate(eventId, { status: 'Canceled' }, { new: true });
     if (!event) {
       throw new Error('Event not found');
     }

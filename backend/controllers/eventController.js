@@ -75,7 +75,7 @@ exports.editEvent = async (req, res) => {
     const updatedEvent = await Event.findByIdAndUpdate(eventId, req.body, { new: true });
 
     // Check if the event is canceled
-    if (req.body.status === 'canceled') {
+    if (req.body.status === 'Canceled') {
       // Send cancellation email notification
       await eventService.sendCancellationEmail(updatedEvent);
     }
@@ -91,7 +91,7 @@ exports.editEvent = async (req, res) => {
 exports.cancelEvent = async (req, res) => {
   try {
     const { eventId } = req.params;
-    const cancelledEvent = await Event.findByIdAndUpdate(eventId, { status: 'cancelled' }, { new: true });
+    const cancelledEvent = await Event.findByIdAndUpdate(eventId, { status: 'Canceled' }, { new: true });
     res.status(200).json(cancelledEvent);
   } catch (error) {
     console.error('Error cancelling event:', error);

@@ -56,7 +56,7 @@ function RSVP() {
             setUserData(userResponse.data);
 
             const response = await axios.get(`http://localhost:8000/api/events/${eventId}`);
-            if (response.data.status == 'canceled') {
+            if (response.data.status == 'Canceled') {
                 setIsConfirmedCancel(true);
             }
             const formattedEventDetails = {

@@ -34,6 +34,7 @@ function MyComponent({tab}) {
     const [userData, setUserData] = useState(null);
     const [eventGuestData, setEventGuestData] = useState(null);
     const [dishSignupData, setDishSignupData] = useState(null);
+    const [rsvpData, setRsvpData] = useState(null);
 
     const { eventId } = useParams(); 
 
@@ -71,7 +72,7 @@ function MyComponent({tab}) {
             setUserData(userResponse.data);
 
             const response = await axios.get(`http://localhost:8000/api/events/${eventId}`);
-            if (response.data.status == 'canceled') {
+            if (response.data.status == 'Canceled') {
                 setIsConfirmedCancel(true);
             }
             const formattedEventDetails = {
@@ -82,10 +83,12 @@ function MyComponent({tab}) {
             };
             setEventDetails(formattedEventDetails);
 
-            
-
             const eventGuestsResponse = await axios.get(`http://localhost:8000/api/events/chat/${eventId}`);
             setEventGuestData(eventGuestsResponse.data);
+
+            const rsvpResponse = await axios.get(`http://localhost:8000/api/rsvp/${authResponse.data.userId}`);
+            setRsvpData(rsvpResponse.data);
+
         } catch (error) {
             console.error('Error fetching data:', error);
         }
@@ -171,7 +174,7 @@ function MyComponent({tab}) {
     // Function to cancel an event
     const handleCancelInvite = async (eventId) => {
         try {
-            await axios.put(`http://localhost:8000/api/events/${eventId}`, { status: 'cancelled' });
+            await axios.put(`http://localhost:8000/api/events/${eventId}`, { status: 'Canceled' });
             // Event cancellation successful
             console.log('Event canceled successfully');
         } catch (error) {
@@ -336,11 +339,7 @@ function MyComponent({tab}) {
                                                 <Col xs={8}>
                                                     {eventDetails && <Card.Title style={{ fontSize: '25px', marginBottom: '12px', color: isConfirmedCancel? 'gray': 'none' }}>{eventDetails.title}</Card.Title>}
                                                 </Col>
-                                                {/* <Col xs={8}> */}
-                                                    {/* Display cancellation status */}
-                                                    {/* {isConfirmedCancel ? <h3 style={{ color: 'red' }}>Cancelled</h3> : null} */}
-                                                    {/* Rest of your code */}
-                                                {/* </Col> */}
+                                                {!isConfirmedCancel && 
                                                 <Col xs={4} className="d-flex align-items-end justify-content-end">
                                                     {/* Buttons for inviting, editing, and more options */}
                                                     { eventDetails && eventDetails.organizer === userData._id && 
@@ -354,7 +353,7 @@ function MyComponent({tab}) {
                                                         Edit
                                                     </Button>  }  
                                                     <div className="user-action">
-                                                    <Button variant="primary" style={{borderColor: '#A39A9A', backgroundColor: "transparent", color: '#4D515A', fontSize: '15px', marginRight: '5px' }} onClick={() => handleClick()}>
+                                                    <Button variant="primary" style={{borderColor: '#A39A9A', backgroundColor: "transparent", color: '#4D515A', fontSize: '15px', marginRight: '5px' }} onClick={() => handleClick()} disabled={isConfirmedCancel}>
                                                         <Image src={process.env.PUBLIC_URL + '/chat.png'} style={{ maxWidth: '25px', paddingRight: '5px' }} fluid />
                                                         Message
                                                     </Button>
@@ -366,16 +365,15 @@ function MyComponent({tab}) {
                                                         </Dropdown.Toggle>
                                                         <Dropdown.Menu>
                                                             <Dropdown.Item onClick={openCancelEventPopup}>Cancel Event</Dropdown.Item>
-                                                            <Dropdown.Item>Duplicate Event</Dropdown.Item>
                                                             <Dropdown.Item onClick={openDishRecognizePopup}>What's the Dish?</Dropdown.Item>
                                                         </Dropdown.Menu>
                                                     </Dropdown> : 
                                                     <div>
-                                                    <Button variant="primary" style={{borderColor: '#A39A9A', backgroundColor: "transparent", color: '#4D515A', fontSize: '15px', marginRight: '5px' }}  onClick={openDishRecognizePopup}>
+                                                    <Button variant="primary" style={{borderColor: '#A39A9A', backgroundColor: "transparent", color: '#4D515A', fontSize: '15px', marginRight: '5px' }}  onClick={openDishRecognizePopup} disabled={isConfirmedCancel}>
                                                         What's the Dish?
                                                     </Button>
                                                     </div>}
-                                                </Col>
+                                                </Col>}
                                             </Row>
                                             {eventDetails && <Card.Subtitle className="mb-2 text-muted">{eventDetails.date} | {eventDetails.startTime} - {eventDetails.endTime}</Card.Subtitle>}
                                             {eventDetails && <Card.Text style={{ color: isConfirmedCancel? 'gray': '#4D515A' }}><strong>Location: </strong> 
@@ -383,7 +381,7 @@ function MyComponent({tab}) {
                                             </Card.Text>}
                                             {eventDetails && <Card.Text style={{ fontSize: '15px', color: isConfirmedCancel ? 'gray': '#4D515A' }}>{eventDetails.description}</Card.Text>}
                                         </Card.Body>   
-
+                                        {!isConfirmedCancel &&         
                                         <Tabs id="eventtabs" activeKey={activeKey} onSelect={handleTabSelect} style={{ marginTop: '10px'}}>
                                             <Tab eventKey="signup" title={<span style={{ color: activeKey === 'signup' ? 'black' : 'gray' }}>Signup</span>}>
                                                 {eventGuestData && <SignupTab 
@@ -398,7 +396,7 @@ function MyComponent({tab}) {
                                             <Tab eventKey="recap" title={<span style={{ color: activeKey === 'recap' ? 'black' : 'gray' }}>Recap</span>}>
                                                 {userData === null ? <div></div> : <RecapTab userId={userData._id} eventId={eventId}/>}
                                             </Tab>
-                                        </Tabs>
+                                        </Tabs>}
                                         
                                     </Card>
                                 </div>

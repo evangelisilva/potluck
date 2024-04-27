@@ -50,10 +50,9 @@ const DashboardPage = () => {
 
         const rsvpEvents = rsvpResponse.data.map(rsvp => rsvp.event);
         setUserRsvp(rsvpEvents);
-        
-
-
+      
         setLoading(false);
+
       } catch (err) {
         setLoading(false);
         setError(err.message || 'An error occurred');
@@ -140,31 +139,25 @@ const DashboardPage = () => {
                 <Col key={event._id} lg={4} md={6} sm={12} style={cardStyle}>
                   <Link to={`/events/${event._id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
                   <Card>
-                  <div style={{ position: 'relative' }}>
-                      <Card.Img variant="top" src={process.env.PUBLIC_URL + '/cover.png'} />
-                      <div style={{ position: 'absolute', bottom: 0, right: 0, padding: '5px' }}>
-                         <span className="badge rounded-pill bg-success" style={{ borderColor: 'white', borderWidth: '1px', borderStyle: 'solid' }}>{event.visibility}</span>
+                    <div style={{ position: 'relative' }}>
+                    <Card.Img variant="top" src={process.env.PUBLIC_URL + '/cover.png'}style={{ filter: event.status === 'Canceled' ? 'grayscale(100%)' : 'none' }}/>
+                        <div style={{ position: 'absolute', bottom: 0, right: 0, display: 'flex', flexDirection: 'row', gap: '3px', padding: '5px' }}>
+                          {userData._id === event.organizer && (
+                            <span className="badge rounded-pill bg-warning" style={{ borderColor: 'white', borderWidth: '1px', borderStyle: 'solid' }}>Host</span>
+                          )}
+                          {userData._id !== event.organizer && userRsvp.includes(event._id) ? (
+                            <span className="badge rounded-pill bg-warning" style={{ borderColor: 'white', borderWidth: '1px', borderStyle: 'solid' }}>Attending</span>
+                          ) : (
+                            userData._id !== event.organizer && event.invitedGuests.includes(userData.email) && (
+                              <span className="badge rounded-pill bg-warning" style={{ borderColor: 'white', borderWidth: '1px', borderStyle: 'solid' }}>Invited</span>
+                            )
+                          )}
+                          <span className="badge rounded-pill bg-danger" style={{ borderColor: 'white', borderWidth: '1px', borderStyle: 'solid' }}>{event.status}</span>
+                          <span className="badge rounded-pill bg-success" style={{ borderColor: 'white', borderWidth: '1px', borderStyle: 'solid' }}>{event.visibility}</span>
                         </div>
-                        {userData._id === event.organizer && (
-                        <div style={{ position: 'absolute', bottom: 0, right: 60, padding: '5px' }}>
-                         <span className="badge rounded-pill bg-danger" style={{ borderColor: 'white', borderWidth: '1px', borderStyle: 'solid' }}>Host</span>
-                        </div>
-                      )}
-                      {userData._id !== event.organizer && userRsvp.includes(event._id) ? (
-                        <div style={{ position: 'absolute', bottom: 0, right: 60, padding: '5px' }}>
-                          <span className="badge rounded-pill bg-danger" style={{ borderColor: 'white', borderWidth: '1px', borderStyle: 'solid' }}>Attending</span>
-                        </div>
-                      ) : (
-                        userData._id !== event.organizer && event.invitedGuests.includes(userData.email) && event.visibility === 'Private' && (
-                          <div style={{ position: 'absolute', bottom: 0, right: 60, padding: '5px' }}>
-                            <span className="badge rounded-pill bg-danger" style={{ borderColor: 'white', borderWidth: '1px', borderStyle: 'solid' }}>Invited</span>
-                          </div>
-                        )
-                      )}
-                      </div>
+                    </div>
                     <Card.Body>
                       <Card.Title style={{ fontSize: '1.1rem' }}>{event.title}</Card.Title>
-                      <Card.Text>Status: {event.status}</Card.Text>
                       <Card.Text style={{ fontSize: '0.9rem', color: 'gray' }}>
                         {event.date}, {event.startTime} - {event.endTime}
                       </Card.Text>
@@ -191,30 +184,24 @@ const DashboardPage = () => {
                   <Link to={`/events/${event._id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
                   <Card>
                   <div style={{ position: 'relative' }}>
-                      <Card.Img variant="top" src={process.env.PUBLIC_URL + '/cover.png'} />
-                      <div style={{ position: 'absolute', bottom: 0, right: 0, padding: '5px' }}>
-                         <span className="badge rounded-pill bg-success" style={{ borderColor: 'white', borderWidth: '1px', borderStyle: 'solid' }}>{event.visibility}</span>
+                  <Card.Img variant="top" src={process.env.PUBLIC_URL + '/cover.png'}style={{ filter: event.status === 'Canceled' ? 'grayscale(100%)' : 'none' }}/>
+                        <div style={{ position: 'absolute', bottom: 0, right: 0, display: 'flex', flexDirection: 'row', gap: '3px', padding: '5px' }}>
+                          {userData._id === event.organizer && (
+                            <span className="badge rounded-pill bg-warning" style={{ borderColor: 'white', borderWidth: '1px', borderStyle: 'solid' }}>Host</span>
+                          )}
+                          {userData._id !== event.organizer && userRsvp.includes(event._id) ? (
+                            <span className="badge rounded-pill bg-warning" style={{ borderColor: 'white', borderWidth: '1px', borderStyle: 'solid' }}>Attended</span>
+                          ) : (
+                            userData._id !== event.organizer && event.invitedGuests.includes(userData.email) && (
+                              <span className="badge rounded-pill bg-warning" style={{ borderColor: 'white', borderWidth: '1px', borderStyle: 'solid' }}>Invited</span>
+                            )
+                          )}
+                          <span className="badge rounded-pill bg-danger" style={{ borderColor: 'white', borderWidth: '1px', borderStyle: 'solid' }}>{event.status}</span>
+                          <span className="badge rounded-pill bg-success" style={{ borderColor: 'white', borderWidth: '1px', borderStyle: 'solid' }}>{event.visibility}</span>
                         </div>
-                        {userData._id === event.organizer && (
-                        <div style={{ position: 'absolute', bottom: 0, right: 60, padding: '5px' }}>
-                         <span className="badge rounded-pill bg-danger" style={{ borderColor: 'white', borderWidth: '1px', borderStyle: 'solid' }}>Host</span>
-                        </div>
-                      )}
-                      {userData._id !== event.organizer && userRsvp.includes(event._id) ? (
-                        <div style={{ position: 'absolute', bottom: 0, right: 60, padding: '5px' }}>
-                          <span className="badge rounded-pill bg-danger" style={{ borderColor: 'white', borderWidth: '1px', borderStyle: 'solid' }}>Attended</span>
-                        </div>
-                      ) : (
-                        userData._id !== event.organizer && event.invitedGuests.includes(userData.email) && event.visibility === 'Private' && (
-                          <div style={{ position: 'absolute', bottom: 0, right: 60, padding: '5px' }}>
-                            <span className="badge rounded-pill bg-danger" style={{ borderColor: 'white', borderWidth: '1px', borderStyle: 'solid' }}>Invited</span>
-                          </div>
-                        )
-                      )}
-                      </div>
+                    </div>
                     <Card.Body>
                       <Card.Title style={{ fontSize: '1.1rem' }}>{event.title}</Card.Title>
-                      <Card.Text>Status: {event.status}</Card.Text>
                       <Card.Text style={{ fontSize: '0.9rem', color: 'gray' }}>
                         {event.date}, {event.startTime} - {event.endTime}
                       </Card.Text>
