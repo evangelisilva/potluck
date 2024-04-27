@@ -13,7 +13,9 @@ const fileMetadataSchema = new mongoose.Schema({
     event: { type: mongoose.Schema.Types.ObjectId, ref: 'Event', required: true },
     fileKey: {type : String},
     caption: {type: String, required : true},
-    imageUrl: {type : String}
+    imageUrl: {type : String},
+    comments: [String],
+    commentUsernames : [String]
 }, {
     // Add timestamps option (createdAt, updatedAt)
     timestamps: true,

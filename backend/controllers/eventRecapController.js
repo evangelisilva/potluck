@@ -312,6 +312,53 @@ exports.deleteMediaItem = async (req, res) => {
 
     }
 }
+
+exports.createComment = async (req, res) => {
+    try {
+        const storedMetadata = await FileMetadata.findById(req.params.metadataId);
+
+        
+        /** retrieve and create data to add to the update */
+        let comments = [];
+        let commentUsernames = [];
+        // Conditionally retrieve the comments (depending on whether they are stored)
+        if (storedMetadata.comments !== undefined){
+            comments = storedMetadata.comments;
+        }
+        // conditionally retrieve the comment usernames (depdening on whether they are stored)
+        if (storedMetadata.commentUsernames !== undefined){
+            commentUsernames = storedMetadata.commentUsernames;
+        }
+        // Append comment to comment array
+        comments.push(req.body.commentString);
+        // Append Username to username array
+        /// first, get the username based on the user id
+        const currentUser = await User.findById(req.body.userId);
+        const nameOfUser = currentUser.firstName + " " + currentUser.lastName;
+        commentUsernames.push(nameOfUser);
+        
+        
+        
+        /* update the stored metadata */
+        /// issue: can we add a new attribute to a json object on the fly
+        storedMetadata.comments = comments;
+        storedMetadata.commentUsernames = commentUsernames;
+
+        // create a new Mongodb record for the new metadata
+        const fileMetadata = new FileMetadata(storedMetadata);
+
+
+        // save this record
+        await fileMetadata.save();
+        // return
+        res.status(201).json({message : "Item " + req.params.metadataId + " has had a comment added to it."});
+
+
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+}
+
 exports.updateMediaItem = async (req, res) => {
     try {
   
