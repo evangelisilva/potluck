@@ -13,10 +13,9 @@ import SignupTab from '../components/SignupTab';
 import RecapTab from '../components/RecapTab';
 import DishRecognizePopup from '../components/DishRecognizePopup';
 
-let keyTab = "about";
+
 
 function MyComponent({tab}) {
-    ////keyTab = "about";
 
     const navigate = useNavigate();
     const containerRef = useRef(null);
@@ -152,10 +151,6 @@ function MyComponent({tab}) {
     const closeDishSignupPopup = () => {
         setDishSignupPopup(false);
     };
-
-    const changeKeyTab = (eventKey) => {
-        keyTab = eventKey;
-    }
 
     // Inside MyComponent function
     const handleConfirmCancel = async () => {
@@ -314,6 +309,11 @@ function MyComponent({tab}) {
         .catch(e => console.error(e));
     }
 
+    // Upon automtic reload of either the signup or the recap tab, keeps the active key on the current tab
+    const eventCallback = (currentTab) => {
+        setActiveKey(currentTab);
+    }
+
     
 
     return (
@@ -396,7 +396,7 @@ function MyComponent({tab}) {
                                             </Tab>
 
                                             <Tab eventKey="recap" title={<span style={{ color: activeKey === 'recap' ? 'black' : 'gray' }}>Recap</span>}>
-                                                {userData === null ? <div></div> : <RecapTab userId={userData._id} eventId={eventId}/>}
+                                                {userData === null ? <div></div> : <RecapTab userId={userData._id} eventId={eventId} eventCallback={eventCallback}/>}
                                             </Tab>
                                         </Tabs>
                                         

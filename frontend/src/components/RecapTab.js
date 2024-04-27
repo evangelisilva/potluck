@@ -19,7 +19,7 @@ console.log("Original user id in this class: ", userId)
 // so make a state array
 const [initialDeletes, setInitialDeletes] = useState([])
 
-
+const [pullData, setPullData] = useState(true);
 
 /* getting all the file data */
 useEffect(() => {
@@ -45,7 +45,9 @@ useEffect(() => {
       .catch(error => {
         console.error('Error fetching data:', error);
       });
-  }, []);
+  }, [pullData]);
+
+
 
 
 const [file, setFile] = useState(null)
@@ -244,6 +246,9 @@ const handleFileSubmit = (e) => {
             setFile(null);
             setFileName('');
             setSubmissionValidation('');
+
+            // after everything happens, reload the page
+            setPullData(!pullData)
           })
         .catch(error => {
           // Handle error, if needed
@@ -251,7 +256,7 @@ const handleFileSubmit = (e) => {
         });
     
         recapToggle();
-        window.location.reload();
+        
 }
 
 
@@ -339,10 +344,11 @@ const toggleDoDelete = () => {
                 
                 {fileValidation}
 
+                
                   <Button
                     style={{ borderColor: '#A39A9A', backgroundColor: "transparent", color: '#4D515A', marginLeft:'92%', marginBottom:'20px'}}
                     onClick={handleFileSubmit}>Submit</Button>     
-
+                
                 {submissionValidation}
                 </Form>
                 </Container>                      
@@ -381,12 +387,19 @@ const toggleDoDelete = () => {
                 <Row>
                   {/* Delete button (conditional)*/}
                   {(s3FileData.userMatch[index] === false || initialDeletes[0] === undefined) ? (<></>) :                   
-                  (<form onSubmit={() => {let initialDeletesTemp = initialDeletes;
+                  (<form onSubmit={async (e) => {
+                    e.preventDefault();
+                     // callback after reloading
+                    eventCallback("recap");
+                    // better idea than reloading: just set a trigger for pulling all the recaps, and then you don't need to go back to the event page and set the state (just stysa on the recap tab)
+                    let initialDeletesTemp = initialDeletes;
                     
                         initialDeletesTemp[index] = false;
                     setInitialDeletes([...initialDeletes]);
-                  axios.delete(`http://localhost:8000/api/eventRecap/${Recap._id}`);
-                  ////eventCallback("recap");
+                  await axios.delete(`http://localhost:8000/api/eventRecap/${Recap._id}`);
+                  // after deleting, pull again
+                  setPullData(!pullData);
+                 
                   }}>
 
                     {/* Try to define initial delete as a variable only for the mapping */}
