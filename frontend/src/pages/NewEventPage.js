@@ -69,13 +69,13 @@ function NewEvent() {
             zipCode: ''
         },
         contactNumber: '',
-        organizer: '65d377b4f9c8da33b7f3db73',
+        organizer: '',
         invitedGuests: [],
         status: 'Active',
         visibility: 'Public',
         coverImage: '',
         cuisines: [],
-        expectedCount: 0,
+        expectedCount: 0
     });
 
     const handleDishCategoryChange = (newItem) => {
@@ -134,7 +134,8 @@ function NewEvent() {
             !eventData.location.streetAddress1 ||
             !eventData.location.city ||
             !eventData.location.state ||
-            !eventData.location.zipCode ) {
+            !eventData.location.zipCode ||
+            !eventData.expectedCount ) {
             alert('Please fill in all required fields. Required fields are those that are not marked as optional.'); 
             return; 
         }
@@ -142,8 +143,19 @@ function NewEvent() {
         try {
             console.log(items)
             // Send POST request to create event
+            eventData.organizer = userData._id;
             const response = await axios.post('http://localhost:8000/api/events', eventData);
             console.log('Event created successfully:', response.data);
+
+            const createData = {
+                user : userData._id, 
+                status : 'attending', 
+                note : '', 
+                guestsBringing : 2
+            };
+
+            axios.post(`http://localhost:8000/api/rsvp/create/${response.data._id}`, createData);
+
             if (items) {
                 for (const item of items){
                     const itemResponse = await axios.post(`http://localhost:8000/api/items/${response.data._id}`, item);
