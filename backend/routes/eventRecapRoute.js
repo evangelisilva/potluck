@@ -12,6 +12,9 @@ router.get('/:userId/:eventId', eventRecapController.getAllMediaItems);
 // Create a new media item
 router.post('/', upload.single('file'), eventRecapController.createMediaItem);
 
+// Add a new comment to a media item
+router.post('/createComment/:metadataId', eventRecapController.createComment);
+
 // Delete a media item
 router.delete('/:metadataId', eventRecapController.deleteMediaItem);
 

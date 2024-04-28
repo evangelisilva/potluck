@@ -19,7 +19,7 @@ console.log("Original user id in this class: ", userId)
 // so make a state array
 const [initialDeletes, setInitialDeletes] = useState([])
 
-
+const [pullData, setPullData] = useState(true);
 
 /* getting all the file data */
 useEffect(() => {
@@ -45,7 +45,9 @@ useEffect(() => {
       .catch(error => {
         console.error('Error fetching data:', error);
       });
-  }, []);
+  }, [pullData]);
+
+
 
 
 const [file, setFile] = useState(null)
@@ -62,6 +64,15 @@ const [fileList, setFileList] = useState([])
 const [fileNameList, setFileNameList] = useState([])
 
 const [showRecap, setShowRecap] = useState(false)
+
+/// showCommentForm (boolean)
+const [showCommentForm, setShowCommentForm] = useState(false);
+/// commentPostValidation (string)
+const [commentPostValidation, setCommentPostValidation] = useState('');
+
+const [userComment, setUserComment] = useState('');
+
+const [viewComments, setViewComments] = useState(false);
 
 ////must be converted to a state variable: let initialDelete = false;
 
@@ -244,6 +255,9 @@ const handleFileSubmit = (e) => {
             setFile(null);
             setFileName('');
             setSubmissionValidation('');
+
+            // after everything happens, reload the page
+            setPullData(!pullData)
           })
         .catch(error => {
           // Handle error, if needed
@@ -251,7 +265,7 @@ const handleFileSubmit = (e) => {
         });
     
         recapToggle();
-        window.location.reload();
+        
 }
 
 
@@ -339,10 +353,11 @@ const toggleDoDelete = () => {
                 
                 {fileValidation}
 
+                
                   <Button
                     style={{ borderColor: '#A39A9A', backgroundColor: "transparent", color: '#4D515A', marginLeft:'92%', marginBottom:'20px'}}
                     onClick={handleFileSubmit}>Submit</Button>     
-
+                
                 {submissionValidation}
                 </Form>
                 </Container>                      
@@ -379,14 +394,56 @@ const toggleDoDelete = () => {
                   {/* Images (conditional)*/}
                   {(Recap.imageUrl === undefined) ? (<></>) : (<img src={Recap.imageUrl} alt={"image"} style={{ width: '100%', marginRight: '10px', marginBottom: '10px'}} />)}
                 <Row>
+                  {/* Button for adding a comment */}
+                  <Col>
+                  {(showCommentForm === false) ?
+
+                      (<Container>
+                        <Button 
+                        variant="primary" 
+                        onClick={() => setShowCommentForm(!showCommentForm)} 
+                        style={{ marginLeft: '79%', borderColor: '#A39A9A', backgroundColor: "transparent", color: '#4D515A', fontSize: '15px', marginBottom: '20px' }}>Add comment</Button>
+                      </Container>
+                      ) :
+                      (<div>
+                                             
+                      </div>)}
+                    
+                  
+                  </Col>
+                  {/* Button for viewing comments (Note: when we get to this section, the comments should NOT be undefined, so that condition is not checked)*/}
+                  
+                  {/* *How to do the mapping:  (<div>{s3FileData.metaData.map((Recap, index) => (<Card style={{  marginLeft: '10%',  marginRight: '10%', marginBottom: '2%' }}>*/}
+                  
+                  <Col>
+                      
+                      {(viewComments === false) ? 
+                      (<Container>
+                        <Button 
+                        variant="primary" 
+                        onClick={() => setViewComments(true)} 
+                        style={{ marginLeft: '79%', borderColor: '#A39A9A', backgroundColor: "transparent", color: '#4D515A', fontSize: '15px', marginBottom: '20px' }}>View comments</Button>
+                      </Container>) : 
+                      // map over the comments (if they exist)
+                      (<></>)}
+                  </Col>
+
+                  <Col>
                   {/* Delete button (conditional)*/}
                   {(s3FileData.userMatch[index] === false || initialDeletes[0] === undefined) ? (<></>) :                   
-                  (<form onSubmit={() => {let initialDeletesTemp = initialDeletes;
+                  (<form onSubmit={async (e) => {
+                    e.preventDefault();
+                     // callback after reloading
+                    eventCallback("recap");
+                    // better idea than reloading: just set a trigger for pulling all the recaps, and then you don't need to go back to the event page and set the state (just stysa on the recap tab)
+                    let initialDeletesTemp = initialDeletes;
                     
                         initialDeletesTemp[index] = false;
                     setInitialDeletes([...initialDeletes]);
-                  axios.delete(`http://localhost:8000/api/eventRecap/${Recap._id}`);
-                  ////eventCallback("recap");
+                  await axios.delete(`http://localhost:8000/api/eventRecap/${Recap._id}`);
+                  // after deleting, pull again
+                  setPullData(!pullData);
+                 
                   }}>
 
                     {/* Try to define initial delete as a variable only for the mapping */}
@@ -417,16 +474,113 @@ const toggleDoDelete = () => {
                   </form>)}
                   {/* <div>{(doDelete === true) ? (<div></div>) : (<DeleteComponent metadata={Recap._id} returnFunction={toggleDoDelete}/>)}</div> */}
                   
-                  
+                  </Col>
 
                 </Row>
               </Container>
-              
-              
-              
 
 
             </Card.Body>
+
+            {/* Comment add form (in a new nested card beow the other one) */}
+            {(showCommentForm === false) ? (<></>) : 
+            (<Card>
+              <Card.Body>
+            <Container>
+              <Form>
+              <Row>
+              <Col>
+            <Form.Group controlId="formTitle">
+            <Form.Label>Comment</Form.Label>
+                <Form.Control 
+                type="text"  
+                id="fileCaption"
+                placeholder="Write a Comment"
+                value={userComment}
+                onChange={(e) => {setUserComment(e.target.value)}}
+            required />
+             </Form.Group>
+             </Col>
+
+        
+              <Col>
+              <Button
+                style={{ borderColor: '#A39A9A', backgroundColor: "transparent", color: '#4D515A', marginLeft:'92%', marginBottom:'20px'}}
+                onClick={() => {
+                    setCommentPostValidation('');
+                    // First set validation if nothing is entered
+                    if (userComment === ''){
+                      setCommentPostValidation("Please enter text for your comment");
+                      return false;
+                    }
+                    // Params: metadata id
+                    // Body: userId, commentString
+                    axios.post(`http://localhost:8000/api/eventRecap/createComment/${Recap._id}`, {userId : userId, commentString : userComment})
+                     .then(response => {
+                         // Handle success, if needed
+                         console.log("Post comment response: ");
+                         console.log(response.data.message);
+
+                         setUserComment('');
+                         setCommentPostValidation('');
+
+                         // after everything happens, reload the page
+                         setPullData(!pullData)
+                       })
+                     .catch(error => {
+                       // Handle error, if needed
+                       console.error(error);
+                     });
+                }}>Post Comment</Button>
+                </Col>
+
+                <Col>
+                <Button
+                style={{ borderColor: '#A39A9A', backgroundColor: "transparent", color: '#4D515A', marginLeft:'92%', marginBottom:'20px'}}
+                onClick={() => {setShowCommentForm(false)}}>Cancel</Button>
+                </Col>
+
+            {commentPostValidation}
+            </Row>     
+              
+            </Form>
+
+          
+            </Container>   
+            </Card.Body>
+            </Card>)}
+
+            {/*Comment view form (in another lower-nested card) */}
+            {(viewComments === false) ? (<></>) : 
+            (<Card>
+              <Card.Body>
+              {
+                <div>
+                <p>View Comments</p>
+                {(Recap.comments === undefined) ?
+                (<></>) :
+                (<div>
+                 
+                  {Recap.comments.map((comment, index2) => (<Card>
+                  
+                  <Card.Body>
+                    {/* Display the first and last name at the index of the comment (index referring to stuff within the metadata*/}
+                    <b>{Recap.commentUsernames[index2]}</b>
+                    {/* Display the comment post */}
+                    <p>{comment}</p>
+
+                  </Card.Body>
+
+               </Card>
+
+                ))}</div>)}
+                </div>
+              }
+              <Button onClick={() => setViewComments(false)}>Done</Button>
+            </Card.Body>
+            </Card>)}
+
+
             </Card>))}</div>)}
             {/* New thing - do a conditional rendering for each card in the mapping (if the image of the recap ojbect is undefined, make the height 500 instead of 1000*/}
 
