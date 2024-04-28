@@ -135,7 +135,8 @@ function NewEvent() {
             !eventData.location.city ||
             !eventData.location.state ||
             !eventData.location.zipCode ||
-            !eventData.expectedCount ) {
+            !eventData.expectedCount || 
+            !eventData.cuisines) {
             alert('Please fill in all required fields. Required fields are those that are not marked as optional.'); 
             return; 
         }

@@ -1,7 +1,7 @@
 import React, { useRef, useState, useEffect } from 'react';
 import Talk from "talkjs";
 import axios from 'axios';
-import { Row, Col, Card, Button, Image, Container } from 'react-bootstrap';
+import { Row, Col, Card, Button, Image, Container, CardBody } from 'react-bootstrap';
 import { GoogleMap, LoadScript, MarkerF } from '@react-google-maps/api';
 import ItemSignupPopup from './ItemSignupPopup';
 import ItemPopup from './ItemPopup';
@@ -13,7 +13,7 @@ const SignupTab = ({ eventDetails, eventGuestData, userData, isConfirmedCancel, 
     const [showPopup, setShowPopup] = useState(false);
     const [itemPopup, seItemPopup] = useState(false);
     const [selectedItem, setSelectedItem] = useState(null);
-        const [popoverItem, setPopoverItem] = useState(null);
+    const [popoverItem, setPopoverItem] = useState(null);
 
     useEffect(() => {
         fetchItems();
@@ -133,11 +133,38 @@ const SignupTab = ({ eventDetails, eventGuestData, userData, isConfirmedCancel, 
                     </Col>
                 </Row>
 
+               <Card style={{marginBottom: '5px', color: '#4D515A', borderRadius: '10px'}}>
+                    <Card.Body>
+                        <Row>
+                        <Col xs={2}>
+                            {eventDetails.organizer.image ? 
+                                <Image src={eventDetails.organizer.image} style={{ width: '40px', marginTop: '10px' }} /> :
+                                <Image src={process.env.PUBLIC_URL + '/profile.png'} style={{ width: '40px', marginTop: '10px' }} />
+                            }
+                        </Col>  
+                        <Col xs={5} style={{ marginTop: '4%'}}>
+                            <Card.Subtitle>{eventDetails.organizer.firstName} {eventDetails.organizer.lastName}</Card.Subtitle>
+                            <p style={{fontSize: '12px', color:'#6a6a6a'}}>Organizer (Host)</p>
+                         </Col> 
+                         {eventDetails.organizer._id !== userData._id && (
+                         <Col className="d-flex justify-content-end" xs={5}>
+                            <div className="user-action">
+                            <Button variant="primary" style={{borderColor: '#A39A9A', backgroundColor: "transparent", color: '#4D515A', fontSize: '15px', marginRight: '5px', marginTop: '13px' }} onClick={() => handleClick(eventDetails.organizer)}>
+                                <Image src={process.env.PUBLIC_URL + '/chat.png'} style={{ maxWidth: '25px', paddingRight: '5px' }}/>
+                                    Message
+                                </Button>
+                            </div>
+                         </Col> 
+                         )}               
+                        </Row>
+                    </Card.Body>
+               </Card>
                 {/* Guest list */}
                 {eventGuestData
                     // .filter(guest => guest.status !== 'Invited')
                     .filter(guest => guest.status == 'attending' ) // Exclude guests with 'Invited' status
                     .filter(guest => guest.user._id !== userData._id)
+                    .filter(guest => guest.user._id !== eventDetails.organizer._id)
                     .map((guest, index) => (
                         <Row key={index}>
                             <Col>
@@ -171,8 +198,10 @@ const SignupTab = ({ eventDetails, eventGuestData, userData, isConfirmedCancel, 
                         </Row>
                     ))}
                  </Col>}
-
+                
+                
                  <Col xs={7}>
+                 {eventDetails.organizer._id === userData._id &&
                     <Row style={{ marginBottom: '5px'}}>
                         <Col xs={9}>
                         </Col>
@@ -186,9 +215,7 @@ const SignupTab = ({ eventDetails, eventGuestData, userData, isConfirmedCancel, 
                             + Add Items
                         </Button>
                         </Col>
-                        {/* Your content */}
-                    
-                    </Row>
+                    </Row>}
 
                 {items && 
                 <Row>
@@ -207,7 +234,10 @@ const SignupTab = ({ eventDetails, eventGuestData, userData, isConfirmedCancel, 
                             {items[category].map(item => (
                                 // <div key={item._id} onClick={() => toggleItemPopup(item)}>
                                 <div key={item._id}>
-                                <Card style={{ marginBottom: '5px', color: isConfirmedCancel ? 'gray' : '#4D515A', borderRadius: '10px', marginBottom: '10px' }} data-mdb-popover-init data-mdb-ripple-init data-mdb-content="And here's some amazing content. It's very engaging. Right?">
+                                <Card 
+                                    style={{ marginBottom: '5px', color: isConfirmedCancel ? 'gray' : '#4D515A', borderRadius: '10px', marginBottom: '10px', cursor: 'pointer' }} 
+                                    data-mdb-popover-init data-mdb-ripple-init data-mdb-content="And here's some amazing content. It's very engaging. Right?"
+                                    onClick={() => togglePopup(item)}>
                                     <Card.Body>
                                         <Row>
                                             <Col xs={2}>
@@ -266,7 +296,7 @@ const SignupTab = ({ eventDetails, eventGuestData, userData, isConfirmedCancel, 
                 </Row>}
             </Col>
                 </Row>
-                {showPopup && selectedItem && <ItemSignupPopup item={selectedItem} userId={userData._id} eventId={eventDetails._id} onClose={() => setShowPopup(false)} />}
+                {showPopup && selectedItem && <ItemSignupPopup userId={userData._id} item={selectedItem} eventOrganizer={eventDetails.organizer._id} onClose={() => setShowPopup(false)} />}
                 {itemPopup && selectedItem && <ItemPopup item={selectedItem} onClose={() => seItemPopup(false)} />}
                 <div style={{position: 'fixed', bottom: 0, height: '500px', right: '2%', width: '350px'}} ref={containerRef}>
                     <div id="talkjs-container" style={{height: "300px"}}><i></i></div>

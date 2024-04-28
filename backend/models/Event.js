@@ -30,6 +30,7 @@ const eventSchema = new mongoose.Schema({
     visibility: { type: String, enum: ['Public', 'Private'], default: 'Public' },
     dishCategory: [dishCategoryQuantitySchema],
     coverImage: { type: String }, 
+    expectedCount: { type: Number },
 });
 
 const Event = mongoose.model('Event', eventSchema);

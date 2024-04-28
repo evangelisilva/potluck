@@ -361,12 +361,12 @@ function MyComponent({tab}) {
                                                         {/* Buttons for inviting, editing, and more options */}
                                                         {userRsvp && userRsvp.includes(eventId) ? (
                                                             <>
-                                                                {eventDetails && eventDetails.organizer === userData._id && 
+                                                                {eventDetails && eventDetails.organizer._id === userData._id && 
                                                                     <Button variant="primary" style={{ border: 'none', backgroundColor: isConfirmedCancel ? 'gray' : '#E8843C', fontSize: '15px', marginRight: '5px' }} onClick={openInviteePopup} disabled={isConfirmedCancel}>
                                                                         <Image src={process.env.PUBLIC_URL + '/invite.png'} style={{ maxWidth: '25px', paddingRight: '5px' }} fluid />
                                                                         Invite
                                                                     </Button>}
-                                                                {eventDetails && eventDetails.organizer === userData._id && 
+                                                                {eventDetails && eventDetails.organizer._id === userData._id && 
                                                                     <Button variant="primary" style={{ borderColor: 'gray', backgroundColor: "transparent", color: '#4D515A', fontSize: '15px', marginRight: '5px' }} onClick={openEditEventPopup} disabled={isConfirmedCancel}>
                                                                         <Image src={process.env.PUBLIC_URL + '/edit.png'} style={{ maxWidth: '25px', paddingRight: '5px' }} fluid />
                                                                         Edit
@@ -377,7 +377,7 @@ function MyComponent({tab}) {
                                                                         Message
                                                                     </Button>
                                                                 </div>
-                                                                {eventDetails && eventDetails.organizer === userData._id ?
+                                                                {eventDetails && eventDetails.organizer._id === userData._id ?
                                                                     <Dropdown>
                                                                         <Dropdown.Toggle variant="primary" style={{ borderColor: 'gray', backgroundColor: "transparent", fontSize: '1px', color: 'white', paddingRight: '6px', paddingLeft: '6px' }} disabled={isConfirmedCancel}>
                                                                             <Image src={process.env.PUBLIC_URL + '/more.png'} style={{ maxWidth: '22px' }} fluid />
@@ -409,6 +409,10 @@ function MyComponent({tab}) {
                                                 {eventDetails.location}
                                             </Card.Text>}
                                             {eventDetails && <Card.Text style={{ fontSize: '15px', color: isConfirmedCancel ? 'gray': '#4D515A' }}>{eventDetails.description}</Card.Text>}
+                                            {eventDetails && <Card.Text style={{ color: isConfirmedCancel? 'gray': '#4D515A', fontSize: '14px' }}>
+                                                {/* <strong>Host: </strong> {eventDetails.organizer.firstName} {eventDetails.organizer.lastName} <br/> */}
+                                                <strong>Expected Guest Count: </strong> {eventDetails.expectedCount} | <strong>Cuisine(s): </strong> {eventDetails.cuisines.join(', ')}
+                                            </Card.Text>}
                                         </Card.Body>   
                                         {!isConfirmedCancel &&         
                                         <Tabs id="eventtabs" activeKey={activeKey} onSelect={handleTabSelect} style={{ marginTop: '10px'}}>

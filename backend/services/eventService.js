@@ -34,7 +34,7 @@ exports.getAllEvents = async () => {
 // Service function to retrieve event details by event ID
 exports.getEventById = async (eventId) => {
   try {
-    const event = await Event.findById(eventId);
+    const event = await Event.findById(eventId).populate('organizer');
     if (!event) {
       throw new Error('Event not found');
     }

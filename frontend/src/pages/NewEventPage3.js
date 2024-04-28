@@ -65,7 +65,7 @@ function NewEventPage3({handleDishCategoryChange, handleEventDataChange}) {
                                     multiple
                                     options={cuisines}
                                     required
-                                    // onChange={(e) => handleEventDataChange('location.streetAddress1', e.target.value)}
+                                    onChange={(selectedOptions) => handleEventDataChange('cuisines', selectedOptions)}
                                 />   
                             </Col>
                         </Row>
