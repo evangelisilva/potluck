@@ -43,14 +43,14 @@ app.use('/api/rsvp', rsvpRoutes);
 app.use('/api/eventRecap', eventRecapRoute);
 app.use('/api/items', itemRoute);
 
-app.get('/', (req, res) => {
-  res.send('Server is running'); 
-});  
+// app.get('/', (req, res) => {
+//   res.send('Server is running'); 
+// });  
 
 // All remaining requests return the React app, so it can handle routing.
-// app.get('*', (req, res) => {
-//   res.sendFile(path.join(__dirname, 'public', 'index.html'));
-// });
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
 
 app.get('/api/auth', (req, res) => {
   try {

@@ -201,7 +201,7 @@ const SignupTab = ({ eventDetails, eventGuestData, userData, isConfirmedCancel, 
                 
                 
                  <Col xs={7}>
-                 {eventDetails.organizer._id === userData._id &&
+                 {/* {eventDetails.organizer._id === userData._id && */}
                     <Row style={{ marginBottom: '5px'}}>
                         <Col xs={9}>
                         </Col>
@@ -215,7 +215,8 @@ const SignupTab = ({ eventDetails, eventGuestData, userData, isConfirmedCancel, 
                             + Add Items
                         </Button>
                         </Col>
-                    </Row>}
+                    </Row>
+                    {/* } */}
 
                 {items && 
                 <Row>
