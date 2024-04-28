@@ -31,28 +31,29 @@ const DashboardPage = () => {
           },
         });
 
-        const userResponse = await axios.get(`http://ec2-18-222-195-53.us-east-2.compute.amazonaws.com:8000/api/users/${authResponse.data.userId}`);
-        setUserData(userResponse.data);
+        if (authResponse.data) {
+          const userResponse = await axios.get(`http://ec2-18-222-195-53.us-east-2.compute.amazonaws.com:8000/api/users/${authResponse.data.userId}`);
+          setUserData(userResponse.data);
 
-        const eventResponse = await axios.get(`http://ec2-18-222-195-53.us-east-2.compute.amazonaws.com:8000/api/events/u/${authResponse.data.userId}`);
-        // const eventResponse = await axios.get(`http://localhost:8000/api/events`);
-        const formattedEventData = eventResponse.data.map(event => ({
-          ...event,
-          date: formatDate(event.date),
-          startTime: formatTime(event.startTime),
-          endTime: formatTime(event.endTime),
-        }));
+          const eventResponse = await axios.get(`http://ec2-18-222-195-53.us-east-2.compute.amazonaws.com:8000/api/events/u/${authResponse.data.userId}`);
+          // const eventResponse = await axios.get(`http://localhost:8000/api/events`);
+          const formattedEventData = eventResponse.data.map(event => ({
+            ...event,
+            date: formatDate(event.date),
+            startTime: formatTime(event.startTime),
+            endTime: formatTime(event.endTime),
+          }));
 
-        setEventData(formattedEventData);
+          setEventData(formattedEventData);
 
-        const rsvpResponse = await axios.get(`http://ec2-18-222-195-53.us-east-2.compute.amazonaws.com:8000/api/rsvp/${authResponse.data.userId}`);
-        setRsvpData(rsvpResponse.data);
+          const rsvpResponse = await axios.get(`http://ec2-18-222-195-53.us-east-2.compute.amazonaws.com:8000/api/rsvp/${authResponse.data.userId}`);
+          setRsvpData(rsvpResponse.data);
 
-        const rsvpEvents = rsvpResponse.data.map(rsvp => rsvp.event);
-        setUserRsvp(rsvpEvents);
-      
-        setLoading(false);
-
+          const rsvpEvents = rsvpResponse.data.map(rsvp => rsvp.event);
+          setUserRsvp(rsvpEvents);
+        
+          setLoading(false);
+        }
       } catch (err) {
         setLoading(false);
         setError(err.message || 'An error occurred');
