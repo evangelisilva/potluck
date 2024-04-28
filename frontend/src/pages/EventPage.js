@@ -12,6 +12,7 @@ import SignupNavbar from '../components/SignupNavbar';
 import SignupTab from '../components/SignupTab';
 import RecapTab from '../components/RecapTab';
 import DishRecognizePopup from '../components/DishRecognizePopup';
+import RSVPPopup from '../components/RSVPPopup';
 
 let keyTab = "about";
 
@@ -27,6 +28,7 @@ function MyComponent({tab}) {
     const [showCancelEventPopup, setShowCancelEventPopup] = useState(false);
     const [showDishSignupPopup, setDishSignupPopup] = useState(false);
     const [showDishRecognizePopup, setShowDishRecognizePopup] = useState(false);
+    const [showRSVPPopup, setShowRSVPPopup] = useState(false);
     const [selectedCategory, setSelectedCategory] = useState(null);
     
     const [isConfirmedCancel, setIsConfirmedCancel] = useState(false);
@@ -35,6 +37,7 @@ function MyComponent({tab}) {
     const [eventGuestData, setEventGuestData] = useState(null);
     const [dishSignupData, setDishSignupData] = useState(null);
     const [rsvpData, setRsvpData] = useState(null);
+    const [userRsvp, setUserRsvp] = useState(null);
 
     const { eventId } = useParams(); 
 
@@ -88,6 +91,10 @@ function MyComponent({tab}) {
 
             const rsvpResponse = await axios.get(`http://localhost:8000/api/rsvp/${authResponse.data.userId}`);
             setRsvpData(rsvpResponse.data);
+            console.log(rsvpResponse.data);
+
+            const rsvpEvents = rsvpResponse.data.map(rsvp => rsvp.event);
+            setUserRsvp(rsvpEvents);
 
         } catch (error) {
             console.error('Error fetching data:', error);
@@ -107,6 +114,16 @@ function MyComponent({tab}) {
         formattedHours = formattedHours === 0 ? 12 : formattedHours; // Handle 12:00 PM
         const period = parseInt(hours) >= 12 ? 'PM' : 'AM';
         return `${formattedHours}:${minutes} ${period}`;
+    };
+
+    // Function to open invitee popup
+    const openRSVPPopup= () => {
+        setShowRSVPPopup(true);
+    };
+
+    // Function to close invitee popup
+    const closeRSVPPopup = () => {
+        setShowRSVPPopup(false);
     };
     
     // Function to open invitee popup
@@ -339,41 +356,53 @@ function MyComponent({tab}) {
                                                 <Col xs={8}>
                                                     {eventDetails && <Card.Title style={{ fontSize: '25px', marginBottom: '12px', color: isConfirmedCancel? 'gray': 'none' }}>{eventDetails.title}</Card.Title>}
                                                 </Col>
-                                                {!isConfirmedCancel && 
-                                                <Col xs={4} className="d-flex align-items-end justify-content-end">
-                                                    {/* Buttons for inviting, editing, and more options */}
-                                                    { eventDetails && eventDetails.organizer === userData._id && 
-                                                    <Button variant="primary" style={{ border: 'none', backgroundColor: isConfirmedCancel ? 'gray' : '#E8843C', fontSize: '15px', marginRight: '5px' }} onClick={openInviteePopup} disabled={isConfirmedCancel}>
-                                                        <Image src={process.env.PUBLIC_URL + '/invite.png'} style={{ maxWidth: '25px', paddingRight: '5px' }} fluid />
-                                                        Invite
-                                                    </Button> }
-                                                    { eventDetails && eventDetails.organizer === userData._id && 
-                                                     <Button variant="primary" style={{ borderColor: 'gray', backgroundColor: "transparent", color: '#4D515A', fontSize: '15px', marginRight: '5px' }} onClick={openEditEventPopup} disabled={isConfirmedCancel}>
-                                                        <Image src={process.env.PUBLIC_URL + '/edit.png'} style={{ maxWidth: '25px', paddingRight: '5px' }} fluid />
-                                                        Edit
-                                                    </Button>  }  
-                                                    <div className="user-action">
-                                                    <Button variant="primary" style={{borderColor: '#A39A9A', backgroundColor: "transparent", color: '#4D515A', fontSize: '15px', marginRight: '5px' }} onClick={() => handleClick()} disabled={isConfirmedCancel}>
-                                                        <Image src={process.env.PUBLIC_URL + '/chat.png'} style={{ maxWidth: '25px', paddingRight: '5px' }} fluid />
-                                                        Message
-                                                    </Button>
-                                                    </div>
-                                                    { eventDetails && eventDetails.organizer === userData._id ?
-                                                    <Dropdown>
-                                                        <Dropdown.Toggle variant="primary" style={{ borderColor: 'gray', backgroundColor: "transparent", fontSize: '1px', color: 'white', paddingRight: '6px', paddingLeft: '6px' }} disabled={isConfirmedCancel}>
-                                                            <Image src={process.env.PUBLIC_URL + '/more.png'} style={{ maxWidth: '22px' }} fluid />
-                                                        </Dropdown.Toggle>
-                                                        <Dropdown.Menu>
-                                                            <Dropdown.Item onClick={openCancelEventPopup}>Cancel Event</Dropdown.Item>
-                                                            <Dropdown.Item onClick={openDishRecognizePopup}>What's the Dish?</Dropdown.Item>
-                                                        </Dropdown.Menu>
-                                                    </Dropdown> : 
-                                                    <div>
-                                                    <Button variant="primary" style={{borderColor: '#A39A9A', backgroundColor: "transparent", color: '#4D515A', fontSize: '15px', marginRight: '5px' }}  onClick={openDishRecognizePopup} disabled={isConfirmedCancel}>
-                                                        What's the Dish?
-                                                    </Button>
-                                                    </div>}
-                                                </Col>}
+                                                    {!isConfirmedCancel ? (
+                                                    <Col xs={4} className="d-flex align-items-end justify-content-end">
+                                                        {/* Buttons for inviting, editing, and more options */}
+                                                        {userRsvp && userRsvp.includes(eventId) ? (
+                                                            <>
+                                                                {eventDetails && eventDetails.organizer === userData._id && 
+                                                                    <Button variant="primary" style={{ border: 'none', backgroundColor: isConfirmedCancel ? 'gray' : '#E8843C', fontSize: '15px', marginRight: '5px' }} onClick={openInviteePopup} disabled={isConfirmedCancel}>
+                                                                        <Image src={process.env.PUBLIC_URL + '/invite.png'} style={{ maxWidth: '25px', paddingRight: '5px' }} fluid />
+                                                                        Invite
+                                                                    </Button>}
+                                                                {eventDetails && eventDetails.organizer === userData._id && 
+                                                                    <Button variant="primary" style={{ borderColor: 'gray', backgroundColor: "transparent", color: '#4D515A', fontSize: '15px', marginRight: '5px' }} onClick={openEditEventPopup} disabled={isConfirmedCancel}>
+                                                                        <Image src={process.env.PUBLIC_URL + '/edit.png'} style={{ maxWidth: '25px', paddingRight: '5px' }} fluid />
+                                                                        Edit
+                                                                    </Button>}
+                                                                <div className="user-action">
+                                                                    <Button variant="primary" style={{ borderColor: '#A39A9A', backgroundColor: "transparent", color: '#4D515A', fontSize: '15px', marginRight: '5px' }} onClick={() => handleClick()} disabled={isConfirmedCancel}>
+                                                                        <Image src={process.env.PUBLIC_URL + '/chat.png'} style={{ maxWidth: '25px', paddingRight: '5px' }} fluid />
+                                                                        Message
+                                                                    </Button>
+                                                                </div>
+                                                                {eventDetails && eventDetails.organizer === userData._id ?
+                                                                    <Dropdown>
+                                                                        <Dropdown.Toggle variant="primary" style={{ borderColor: 'gray', backgroundColor: "transparent", fontSize: '1px', color: 'white', paddingRight: '6px', paddingLeft: '6px' }} disabled={isConfirmedCancel}>
+                                                                            <Image src={process.env.PUBLIC_URL + '/more.png'} style={{ maxWidth: '22px' }} fluid />
+                                                                        </Dropdown.Toggle>
+                                                                        <Dropdown.Menu>
+                                                                            <Dropdown.Item onClick={openCancelEventPopup}>Cancel Event</Dropdown.Item>
+                                                                            <Dropdown.Item onClick={openDishRecognizePopup}>What's the Dish?</Dropdown.Item>
+                                                                        </Dropdown.Menu>
+                                                                    </Dropdown> : 
+                                                                    <div>
+                                                                        <Button variant="primary" style={{ borderColor: '#A39A9A', backgroundColor: "transparent", color: '#4D515A', fontSize: '15px', marginRight: '5px' }}  onClick={openDishRecognizePopup} disabled={isConfirmedCancel}>
+                                                                            What's the Dish?
+                                                                        </Button>
+                                                                    </div>}
+                                                            </>
+                                                        ) : (
+                                                            <Button variant="primary" style={{ border: 'none', backgroundColor: "#E8843C", fontSize: '15px', marginRight: '5px' }} onClick={openRSVPPopup}>
+                                                                <Image src={process.env.PUBLIC_URL + '/rsvp.png'} style={{ maxWidth: '25px', paddingRight: '5px' }} fluid />
+                                                                RSVP
+                                                            </Button>
+                                                        )}
+                                                    </Col>
+                                                ) : null}
+
+                                                
                                             </Row>
                                             {eventDetails && <Card.Subtitle className="mb-2 text-muted">{eventDetails.date} | {eventDetails.startTime} - {eventDetails.endTime}</Card.Subtitle>}
                                             {eventDetails && <Card.Text style={{ color: isConfirmedCancel? 'gray': '#4D515A' }}><strong>Location: </strong> 
@@ -413,6 +442,7 @@ function MyComponent({tab}) {
             {showCancelEventPopup && <CancelEventPopup onClose={closeCancelEventPopup} onConfirm={handleConfirmCancel} />}
             {showDishSignupPopup && <DishSignupPopup onClose={closeDishSignupPopup} userId={userData._id} eventId={eventId}/>}
             {showDishRecognizePopup && <DishRecognizePopup onClose={closeDishRecognizePopup} eventId={eventId}/>}
+            {showRSVPPopup && <RSVPPopup onClose={closeRSVPPopup} eventId={eventId} userId={userData._id} />}
         </div>
 
     );

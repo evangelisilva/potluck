@@ -26,6 +26,56 @@ const RSVPPopup = ({ onClose, eventId, userId }) => {
     }, [])
 
     const handleRSVP = async () => {
+        console.log("RSVP status response", rsvpStatus.data);
+
+        if (rsvpStatus.data.event === undefined) {
+
+            const createData = {
+                user : userId, 
+                status : attendance, 
+                note : userMessage, 
+                guestsBringing : 2
+            };
+
+            try {
+                const response = axios.post(`http://localhost:8000/api/rsvp/create/${eventId}`, createData);
+                console.log("Create RSVP response: " + response.data);
+
+                if (createData.status === 'attending')
+                    window.location.reload();
+                else
+                    navigate('/dashboard');
+
+                onClose()
+            } catch (error) {
+                console.error(error);
+            }
+            
+        } else {
+            const updateData = {
+                status : attendance, 
+                note : userMessage, 
+                guestsBringing : 2
+            };
+
+            try {
+                const response = axios.put(`http://localhost:8000/api/rsvp/update/${rsvpStatus.data._id}`, updateData);
+                console.log("Update RSVP response: " + response.data);
+
+                if (updateData.status === 'attending')
+                    window.location.reload();
+                else
+                    navigate('/dashboard');
+
+                onClose()
+            } catch (error) {
+                console.error(error);
+            }
+        
+        }
+    }
+
+    const handleRSVPP = async () => {
         ////console.log("RSVP:", attendance);
         ////console.log("Message:", userMessage);
 
@@ -76,8 +126,10 @@ const RSVPPopup = ({ onClose, eventId, userId }) => {
               console.log("Update RSVP response: ");
               console.log(response.data);
 
-              if (response.data.status === 'attending') {
-                navigate(`/events/${eventId}`); 
+              window.location.reload();
+              
+            if (updateData.status === 'attending') {
+                window.location.reload();
             } else {
                 navigate(`/dashboard`); 
             }

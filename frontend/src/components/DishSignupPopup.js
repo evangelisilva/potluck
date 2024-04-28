@@ -27,7 +27,7 @@ const DishSignupPopup = ({ onClose, userId, eventId, onSignup }) => {
     const [recommendedDishes, setRecommendedDishes] = useState({})
 
     const categories = ['Appetizer', 'Main course', 'Dessert', 'Beverage', 'Side Dish', 'Salad', 'Utensils', 'Other'];
-    const courses = ['Appetizer', 'Main course', 'Dessert', 'Beverage', 'Side Dish', 'Salad'];
+    const courses = ['Appetizer', 'Main course', 'Dessert', 'Side Dish'];
 
     const allergen = [
         'Milk', 'Eggs', 'Peanuts', 'Tree nuts', 'Fish', 'Shellfish', 'Soy', 'Wheat', 'Sesame seeds', 'Sulfites', 'Mustard', 'Celery', 'Lupin', 'Molluscs', 'Gluten',

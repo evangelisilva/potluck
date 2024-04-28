@@ -1,6 +1,5 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import RSVP from './pages/RSVP';
 // import RSVPPage from './pages/RSVPPage';
 import HomePage from './pages/HomePage';
 import NewEventPage from './pages/NewEventPage';
@@ -34,7 +33,6 @@ const App = () => {
             </Layout>
           }
         />
-        <Route path="/rsvp/:eventId" element={<Layout><RSVP/></Layout>} />
         <Route path="/events/new" element={<Layout><NewEventPage /></Layout>} />
         <Route path="/events/:eventId" element={<Layout><EventPage /></Layout>} />
         <Route path="/signup" element={<Layout><SignupPage /></Layout>} />
