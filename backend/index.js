@@ -3,6 +3,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const cors = require('cors');
+const path = require('path');
 
 const Event = require('./models/Event');
 const eventRoute = require('./routes/eventRoute');
@@ -16,12 +17,15 @@ const { sendEmail } = require('./services/emailService');
 const userService = require('./services/userService');
 const dishRecommendationTest = require('./models/Dish');
 
-// Load environment variables from .env file
-dotenv.config();
-
 // Create Express app
 const app = express();
 app.use(bodyParser.json());
+
+// Serve any other static files
+app.use(express.static(path.join(__dirname, 'public')));
+
+// Load environment variables from .env file
+dotenv.config();
 
 // Allow requests from all origins
 app.use(cors());
@@ -42,6 +46,11 @@ app.use('/api/items', itemRoute);
 app.get('/', (req, res) => {
   res.send('Server is running'); 
 });  
+
+// All remaining requests return the React app, so it can handle routing.
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
 
 app.get('/api/auth', (req, res) => {
   try {
