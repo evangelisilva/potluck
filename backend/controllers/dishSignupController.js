@@ -77,7 +77,7 @@ exports.recommendDishes = async (req, res) => {
         const { spawn } = require('child_process');
 
         // Call of spawn - with the body arguments
-        const pythonProcess = spawn('python3', ['python/dish_recommendation_algorithm.py',
+        const pythonProcess = spawn('python', ['python/dish_recommendation_algorithm.py',
         // userId: will be req.params later
         req.params.userId, 
         // Event id
@@ -88,7 +88,7 @@ exports.recommendDishes = async (req, res) => {
         req.body.preferredPopularity
     ]);
 
-        /*
+        
         pythonProcess.stdout.on('data', (data) => {
           console.log(`stdout: ${data}`);
         });
@@ -96,7 +96,7 @@ exports.recommendDishes = async (req, res) => {
         pythonProcess.stderr.on('data', (data) => {
           console.error(`stderr: ${data}`);
         });
-        */
+        
 
         function waitForEvent() {
             return new Promise((resolve, reject) => {

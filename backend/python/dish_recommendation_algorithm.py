@@ -1,3 +1,5 @@
+print("PYTHON CODE IS RUNNING")
+
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
 from bson.objectid import ObjectId
@@ -10,9 +12,9 @@ client = MongoClient(uri, tlsCAFile=certifi.where())
 # Send a ping to confirm a successful connection
 try:
     client.admin.command('ping')
-    print("Pinged your deployment. You successfully connected to MongoDB!")
-    print("now that we've successfully connected - what is the client: ", client)
-    ####print(client.potluck.dishrecommendationtests)
+    ####print("Pinged your deployment. You successfully connected to MongoDB!")
+    ####print("now that we've successfully connected - what is the client: ", client)
+    ########print(client.potluck.dishrecommendationtests)
 except Exception as e:
     print(e)
 
@@ -88,7 +90,7 @@ def dishSetAllergenFilter(document):
         for userAllergen in user_document['allergens']:
             # If you have any equality, you know that you can't include this document, so return false
             if (dishAllergen == userAllergen):
-                print('In the extra filter allergens section - what is the conflicting allergen?: ', dishAllergen, ", ", userAllergen)
+                ####print('In the extra filter allergens section - what is the conflicting allergen?: ', dishAllergen, ", ", userAllergen)
                 return False
     return True
 
@@ -102,7 +104,7 @@ def dishSetCuisineFilter(document):
         for eventCuisine in event_cuisines:
             # Keep track of the matches
             if (dishCuisine == eventCuisine):
-                print("In the extra filter cusines section. Do we ever have a matching cuisine?: ", dishCuisine, ", ", eventCuisine)
+                ####print("In the extra filter cusines section. Do we ever have a matching cuisine?: ", dishCuisine, ", ", eventCuisine)
                 commonCuisinesList.append(dishCuisine)
     if (len(commonCuisinesList) == 0):
         return False
@@ -117,9 +119,9 @@ def recommend_dishes():
     for dish in dish_set:
         # before computing the score and appending - check whether either of the "extra filters" are false
         if (dishSetAllergenFilter(dish) == False or dishSetCuisineFilter(dish) == False):
-            print("Made it to where the extra filter is false for user: ", user_document['firstName'], user_document['lastName'])
+            ####print("Made it to where the extra filter is false for user: ", user_document['firstName'], user_document['lastName'])
             continue
-        ####print('In the recommend_dishes algorithm. Do we ever make it past the extra filter??')
+        ########print('In the recommend_dishes algorithm. Do we ever make it past the extra filter??')
         score = calculate_score(dish)
         # Append all dishes with their scores
         recommended_dishes.append((dish, score))
@@ -140,12 +142,12 @@ def recommend_dishes():
 
     
         for dish in dish_set2:
-            print("THERE IS A DISH IN THE SECOND DISH SET")
-            print("IT IS: ", dish)
+            ####print("THERE IS A DISH IN THE SECOND DISH SET")
+            ####print("IT IS: ", dish)
             # ONLY check the allergens this time
             if (dishSetAllergenFilter(dish) == False):
                 continue
-            ####print('In the recommend_dishes algorithm. Do we ever make it past the extra filter??')
+            ########print('In the recommend_dishes algorithm. Do we ever make it past the extra filter??')
             score = calculate_score(dish)
             # Append all dishes with their scores
             recommended_dishes_extra.append((dish, score))
@@ -235,13 +237,13 @@ with open(fileName, "w") as file:
             file.write(str(dish['_id']) + '\n')
         count = count + 1
 
-## Final print - what are the arguments?
-####print('Final print - what are the arguments?: ')
-####print(sys.argv[0])
-####print(sys.argv[1])
-####print(sys.argv[2])
-####print("Final print - what are the dishes for the user?: ", dishes_for_user)
-####print("Final print - did we get the event cuisines right?: ", event_cuisines)
-####print("What are the dietaryRestrictions of the user?: ", user_document['dietaryRestrictions'])
+## Final ####print - what are the arguments?
+########print('Final ####print - what are the arguments?: ')
+########print(sys.argv[0])
+########print(sys.argv[1])
+########print(sys.argv[2])
+########print("Final ####print - what are the dishes for the user?: ", dishes_for_user)
+########print("Final ####print - did we get the event cuisines right?: ", event_cuisines)
+########print("What are the dietaryRestrictions of the user?: ", user_document['dietaryRestrictions'])
 
 
