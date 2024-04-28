@@ -3,7 +3,7 @@ import { Container, Row, Col, Form, Image, Button } from 'react-bootstrap';
 import { Typeahead } from 'react-bootstrap-typeahead';
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 
-function NewEventPage3({handleDishCategoryChange}) {
+function NewEventPage3({handleDishCategoryChange, handleEventDataChange}) {
     // State to manage the rows dynamically
     const [rows, setRows] = useState([{ name: '', category: '', slot_count: '', quantity: '', notes: '' }]);
 
@@ -39,8 +39,6 @@ function NewEventPage3({handleDishCategoryChange}) {
         }));
         handleDishCategoryChange(newItem);
     };
-    
-
 
     return (
         <Container>
@@ -54,7 +52,11 @@ function NewEventPage3({handleDishCategoryChange}) {
                         <Row>
                             <Col xs={2}>
                                 <Form.Label>Expected Guest Count</Form.Label>
-                                <Form.Control type="number" required />
+                                <Form.Control 
+                                    type="number" 
+                                    required 
+                                    onChange={(e) => handleEventDataChange('expectedCount', e.target.value)}/>
+                                
                             </Col>
                             <Col xs={10}>
                                 <Form.Label>Cuisines</Form.Label>
@@ -62,6 +64,8 @@ function NewEventPage3({handleDishCategoryChange}) {
                                     id="cuisines"
                                     multiple
                                     options={cuisines}
+                                    required
+                                    // onChange={(e) => handleEventDataChange('location.streetAddress1', e.target.value)}
                                 />   
                             </Col>
                         </Row>

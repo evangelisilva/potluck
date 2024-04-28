@@ -73,7 +73,9 @@ function NewEvent() {
         invitedGuests: [],
         status: 'Active',
         visibility: 'Public',
-        coverImage: ''
+        coverImage: '',
+        cuisines: [],
+        expectedCount: 0,
     });
 
     const handleDishCategoryChange = (newItem) => {
@@ -93,7 +95,7 @@ function NewEvent() {
             case 2:
                 return <NewEventPage2 handleEventDataChange={handleEventDataChange} />;
             case 3:
-                return <NewEventPage3 handleDishCategoryChange={handleDishCategoryChange} />;
+                return <NewEventPage3 handleDishCategoryChange={handleDishCategoryChange} handleEventDataChange={handleEventDataChange} />;
             // case 4:
             //     return <NewEventPage4 />;
             default:
@@ -124,17 +126,30 @@ function NewEvent() {
 
     // Function to create event
     const createEvent = async () => {
+
+        if (!eventData.title || 
+            !eventData.date || 
+            !eventData.startTime || 
+            !eventData.endTime || 
+            !eventData.location.streetAddress1 ||
+            !eventData.location.city ||
+            !eventData.location.state ||
+            !eventData.location.zipCode ) {
+            alert('Please fill in all required fields. Required fields are those that are not marked as optional.'); 
+            return; 
+        }
+
         try {
             console.log(items)
             // Send POST request to create event
             const response = await axios.post('http://localhost:8000/api/events', eventData);
             console.log('Event created successfully:', response.data);
-            
-            for (const item of items){
-                const itemResponse = await axios.post(`http://localhost:8000/api/items/${response.data._id}`, item);
-                console.log('Item list created successfully:', itemResponse.data);
-            }
-            
+            if (items) {
+                for (const item of items){
+                    const itemResponse = await axios.post(`http://localhost:8000/api/items/${response.data._id}`, item);
+                    console.log('Item list created successfully:', itemResponse.data);
+                }
+            }   
             navigate(`/events/${response.data._id}`); // Navigate to event page
         } catch (error) {
             console.error('Error creating event:', error);

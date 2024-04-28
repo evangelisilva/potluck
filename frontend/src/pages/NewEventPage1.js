@@ -17,8 +17,10 @@ function NewEventPage1({ handleEventDataChange }) {
                 {/* Left column */}
                 <Col md={7} style={{ paddingTop: '50px', paddingLeft: '70px', color: '#4D515A', fontFamily: 'Arial' }}>
                     {/* Event Title */}
-                    <h2 style={{ fontFamily: 'Times New Roman', fontSize: '45px', marginBottom: '20px' }}>Start a Potluck</h2>
+                    <h2 style={{ fontFamily: 'Times New Roman', fontSize: '45px' }}>Start a Potluck</h2>
+                    <p style={{ color: 'gray', fontSize: '13px' }}> Please ensure all required fields are filled. Required fields are those not marked as optional. </p>
                     <Form.Group>
+
                         {/* Event Name */}
                         <Form.Label>Event Name</Form.Label>
                         <Form.Control 
