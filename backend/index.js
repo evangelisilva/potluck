@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const cors = require('cors');
 const path = require('path');
+const fs = require('fs');
 
 const Event = require('./models/Event');
 const eventRoute = require('./routes/eventRoute');
@@ -20,9 +21,6 @@ const dishRecommendationTest = require('./models/Dish');
 // Create Express app
 const app = express();
 app.use(bodyParser.json());
-
-// Serve any other static files
-app.use(express.static(path.join(__dirname, 'public')));
 
 // Load environment variables from .env file
 dotenv.config();
@@ -43,14 +41,9 @@ app.use('/api/rsvp', rsvpRoutes);
 app.use('/api/eventRecap', eventRecapRoute);
 app.use('/api/items', itemRoute);
 
-// app.get('/', (req, res) => {
-//   res.send('Server is running'); 
-// });  
-
-// All remaining requests return the React app, so it can handle routing.
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
-});
+app.get('/', (req, res) => {
+  res.send('Server is running'); 
+});  
 
 app.get('/api/auth', (req, res) => {
   try {
