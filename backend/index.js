@@ -48,9 +48,9 @@ app.get('/', (req, res) => {
 });  
 
 // All remaining requests return the React app, so it can handle routing.
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
-});
+// app.get('*', (req, res) => {
+//   res.sendFile(path.join(__dirname, 'public', 'index.html'));
+// });
 
 app.get('/api/auth', (req, res) => {
   try {
