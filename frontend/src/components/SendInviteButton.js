@@ -9,7 +9,7 @@ class SendInviteButton extends React.Component {
 
     try {
       // Fetch event details
-      const response = await axios.get(`http://localhost:8000/api/events/${eventId}`);
+      const response = await axios.get(`http://ec2-18-222-195-53.us-east-2.compute.amazonaws.com:8000/api/events/${eventId}`);
       const event = response.data;
 
       // Construct invitation body
@@ -28,7 +28,7 @@ class SendInviteButton extends React.Component {
       };
 
       // Send invitations
-      const inviteResponse = await axios.post(`http://localhost:8000/api/events/${eventId}/invite`, invitationBody);
+      const inviteResponse = await axios.post(`http://ec2-18-222-195-53.us-east-2.compute.amazonaws.com:8000/api/events/${eventId}/invite`, invitationBody);
       console.log('Invitations sent successfully');
       console.log(inviteResponse);
 

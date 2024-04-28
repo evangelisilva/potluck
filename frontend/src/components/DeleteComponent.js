@@ -4,7 +4,7 @@ import axios from 'axios';
 const DeleteComponent = ({metadata, returnFunction}) => {
 
 
-    axios.delete(`http://localhost:8000/api/eventRecap/${metadata}`);
+    axios.delete(`http://ec2-18-222-195-53.us-east-2.compute.amazonaws.com:8000/api/eventRecap/${metadata}`);
     returnFunction();
 
     

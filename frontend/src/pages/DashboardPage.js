@@ -25,16 +25,16 @@ const DashboardPage = () => {
           return;
         }
 
-        const authResponse = await axios.get('http://localhost:8000/api/auth', {
+        const authResponse = await axios.get('http://ec2-18-222-195-53.us-east-2.compute.amazonaws.com:8000/api/auth', {
           headers: {
             Authorization: token,
           },
         });
 
-        const userResponse = await axios.get(`http://localhost:8000/api/users/${authResponse.data.userId}`);
+        const userResponse = await axios.get(`http://ec2-18-222-195-53.us-east-2.compute.amazonaws.com:8000/api/users/${authResponse.data.userId}`);
         setUserData(userResponse.data);
 
-        const eventResponse = await axios.get(`http://localhost:8000/api/events/u/${authResponse.data.userId}`);
+        const eventResponse = await axios.get(`http://ec2-18-222-195-53.us-east-2.compute.amazonaws.com:8000/api/events/u/${authResponse.data.userId}`);
         // const eventResponse = await axios.get(`http://localhost:8000/api/events`);
         const formattedEventData = eventResponse.data.map(event => ({
           ...event,
@@ -45,7 +45,7 @@ const DashboardPage = () => {
 
         setEventData(formattedEventData);
 
-        const rsvpResponse = await axios.get(`http://localhost:8000/api/rsvp/${authResponse.data.userId}`);
+        const rsvpResponse = await axios.get(`http://ec2-18-222-195-53.us-east-2.compute.amazonaws.com:8000/api/rsvp/${authResponse.data.userId}`);
         setRsvpData(rsvpResponse.data);
 
         const rsvpEvents = rsvpResponse.data.map(rsvp => rsvp.event);

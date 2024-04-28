@@ -22,13 +22,13 @@ function NewEvent() {
                 return;
             }
     
-            const authResponse = await axios.get('http://localhost:8000/api/auth', {
+            const authResponse = await axios.get('http://ec2-18-222-195-53.us-east-2.compute.amazonaws.com:8000/api/auth', {
               headers: {
                 Authorization: token,
               },
             });
     
-            const userResponse = await axios.get(`http://localhost:8000/api/users/${authResponse.data.userId}`);
+            const userResponse = await axios.get(`http://ec2-18-222-195-53.us-east-2.compute.amazonaws.com:8000/api/users/${authResponse.data.userId}`);
             setUserData(userResponse.data);
           } catch (error) {
             console.log(error);
@@ -145,7 +145,7 @@ function NewEvent() {
             console.log(items)
             // Send POST request to create event
             eventData.organizer = userData._id;
-            const response = await axios.post('http://localhost:8000/api/events', eventData);
+            const response = await axios.post('http://ec2-18-222-195-53.us-east-2.compute.amazonaws.com:8000/api/events', eventData);
             console.log('Event created successfully:', response.data);
 
             const createData = {
@@ -155,11 +155,11 @@ function NewEvent() {
                 guestsBringing : 2
             };
 
-            axios.post(`http://localhost:8000/api/rsvp/create/${response.data._id}`, createData);
+            axios.post(`http://ec2-18-222-195-53.us-east-2.compute.amazonaws.com:8000/api/rsvp/create/${response.data._id}`, createData);
 
             if (items) {
                 for (const item of items){
-                    const itemResponse = await axios.post(`http://localhost:8000/api/items/${response.data._id}`, item);
+                    const itemResponse = await axios.post(`http://ec2-18-222-195-53.us-east-2.compute.amazonaws.com:8000/api/items/${response.data._id}`, item);
                     console.log('Item list created successfully:', itemResponse.data);
                 }
             }   
