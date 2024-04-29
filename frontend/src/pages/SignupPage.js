@@ -59,7 +59,7 @@ const SignupPage = () => {
   const handleSubmit = async e => {
     e.preventDefault();
     try {
-      const res = await axios.post('http://ec2-18-222-195-53.us-east-2.compute.amazonaws.com:8000/api/users/signup', formData);
+      const res = await axios.post('http://ec2-3-134-116-74.us-east-2.compute.amazonaws.com:8000/api/users/signup', formData);
       console.log(res.data);
       localStorage.setItem('token', res.data.token);
       navigate('/dashboard');

@@ -31,7 +31,7 @@ const DishRecognizePopup = ({ onClose, onConfirm }) => {
             const formData = new FormData();
             formData.append('image', image);
 
-            const response = await axios.post('http://ec2-18-222-195-53.us-east-2.compute.amazonaws.com:8000/generate-text-from-image', formData, {
+            const response = await axios.post('http://ec2-3-134-116-74.us-east-2.compute.amazonaws.com:8000/generate-text-from-image', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 }
