@@ -30,7 +30,7 @@ const RecapTab = ({userId, eventId, eventCallback}) => {
   /* getting all the file data */
   useEffect(() => {
       // Make GET request to Node.js server
-      axios.get(`http://ec2-3-137-149-41.us-east-2.compute.amazonaws.com:8000/api/eventRecap/${userId}/${eventId}`)
+      axios.get(`http://ec2-3-133-58-38.us-east-2.compute.amazonaws.com:8000/api/eventRecap/${userId}/${eventId}`)
         .then(data => {
           setS3FileData(data.data);
           console.log("In useEffect - what is the file data result from the server?");
@@ -143,7 +143,7 @@ const RecapTab = ({userId, eventId, eventCallback}) => {
           fileData.append('fileExtension', fileName.split(".")[1]);
           fileData.append('caption', fileCaption);
 
-          axios.post(`http://ec2-3-137-149-41.us-east-2.compute.amazonaws.com:8000/api/eventRecap`, fileData
+          axios.post(`http://ec2-3-133-58-38.us-east-2.compute.amazonaws.com:8000/api/eventRecap`, fileData
           , {
           headers: {
               'Content-Type': 'multipart/form-data'
@@ -177,7 +177,7 @@ const RecapTab = ({userId, eventId, eventCallback}) => {
 
   let metadataToDelete;
   const handleDelete = () => {
-    const response = axios.delete(`http://ec2-3-137-149-41.us-east-2.compute.amazonaws.com:8000/api/eventRecap/${metadataToDelete}`)
+    const response = axios.delete(`http://ec2-3-133-58-38.us-east-2.compute.amazonaws.com:8000/api/eventRecap/${metadataToDelete}`)
     console.log(response);
   }
 
@@ -287,7 +287,7 @@ const RecapTab = ({userId, eventId, eventCallback}) => {
                     
                         initialDeletesTemp[index] = false;
                     setInitialDeletes([...initialDeletes]);
-                  await axios.delete(`http://ec2-3-137-149-41.us-east-2.compute.amazonaws.com:8000/api/eventRecap/${Recap._id}`);
+                  await axios.delete(`http://ec2-3-133-58-38.us-east-2.compute.amazonaws.com:8000/api/eventRecap/${Recap._id}`);
                   // after deleting, pull again
                   setPullData(!pullData);
                  
@@ -379,7 +379,7 @@ const RecapTab = ({userId, eventId, eventCallback}) => {
                     }
                     // Params: metadata id
                     // Body: userId, commentString
-                    axios.post(`http://ec2-3-137-149-41.us-east-2.compute.amazonaws.com:8000/api/eventRecap/createComment/${Recap._id}`, {userId : userId, commentString : userComment})
+                    axios.post(`http://ec2-3-133-58-38.us-east-2.compute.amazonaws.com:8000/api/eventRecap/createComment/${Recap._id}`, {userId : userId, commentString : userComment})
                      .then(response => {
                          // Handle success, if needed
                          console.log("Post comment response: ");

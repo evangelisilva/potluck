@@ -88,7 +88,7 @@ const DishSignupPopup = ({ onClose, userId, eventId, onSignup }) => {
         
         
           // Do an axios post request (preqreq: change the route in routes to be a post instead of get)
-          axios.post(`http://ec2-3-137-149-41.us-east-2.compute.amazonaws.com:8000/api/dishSignups/recommendDishes/${userId}`, recommendationData)
+          axios.post(`http://ec2-3-133-58-38.us-east-2.compute.amazonaws.com:8000/api/dishSignups/recommendDishes/${userId}`, recommendationData)
           .then(response => {
             // Handle success, if needed
             console.log("Dish recommendation response: ");
@@ -131,7 +131,7 @@ const DishSignupPopup = ({ onClose, userId, eventId, onSignup }) => {
             };
     
             try {
-                const response = await axios.post(`http://ec2-3-137-149-41.us-east-2.compute.amazonaws.com:8000/api/items/${eventId}`, dishData);
+                const response = await axios.post(`http://ec2-3-133-58-38.us-east-2.compute.amazonaws.com:8000/api/items/${eventId}`, dishData);
                 console.log(response);
                 onClose();
                 window.location.reload();

@@ -11,7 +11,7 @@ const ItemSignupPopup = ({ onClose, userId, item, eventOrganizer }) => {
     const handleSignupItem = async () => {
         try {
             Array.from({ length: slotCount }, () =>
-                axios.put(`http://localhost:8000/api/items/${item._id}/signup`, { userId: userId })
+                axios.put(`http://ec2-3-133-58-38.us-east-2.compute.amazonaws.com:8000/api/items/${item._id}/signup`, { userId: userId })
             );
             onClose();
             window.location.reload();

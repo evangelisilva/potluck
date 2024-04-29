@@ -29,7 +29,7 @@ const DishRecognizePopup = ({ onClose, eventId }) => {
 
             console.log(formData);
 
-            const response = await axios.post(`http://ec2-3-137-149-41.us-east-2.compute.amazonaws.com:8000/api/dishes/recognize-dish/${eventId}`, formData, {
+            const response = await axios.post(`http://ec2-3-133-58-38.us-east-2.compute.amazonaws.com:8000/api/dishes/recognize-dish/${eventId}`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 }

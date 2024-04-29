@@ -12,7 +12,7 @@ const RSVPPopup = ({ onClose, eventId, userId }) => {
     const [rsvpStatus, setRsvpStatus] = useState();
 
     useEffect(() => {
-        axios.get(`http://ec2-3-137-149-41.us-east-2.compute.amazonaws.com:8000/api/rsvp/view-status/${userId}/${eventId}`)
+        axios.get(`http://ec2-3-133-58-38.us-east-2.compute.amazonaws.com:8000/api/rsvp/view-status/${userId}/${eventId}`)
           .then(data => {
             ////console.log("In rsvp popup - axios.get - what is the RSVP status?");
             setRsvpStatus(data);
@@ -38,7 +38,7 @@ const RSVPPopup = ({ onClose, eventId, userId }) => {
             };
 
             try {
-                const response = axios.post(`http://ec2-3-137-149-41.us-east-2.compute.amazonaws.com:8000/api/rsvp/create/${eventId}`, createData);
+                const response = axios.post(`http://ec2-3-133-58-38.us-east-2.compute.amazonaws.com:8000/api/rsvp/create/${eventId}`, createData);
                 console.log("Create RSVP response: " + response.data);
 
                 if (createData.status === 'attending')
@@ -59,7 +59,7 @@ const RSVPPopup = ({ onClose, eventId, userId }) => {
             };
 
             try {
-                const response = axios.put(`http://ec2-3-137-149-41.us-east-2.compute.amazonaws.com:8000/api/rsvp/update/${rsvpStatus.data._id}`, updateData);
+                const response = axios.put(`http://ec2-3-133-58-38.us-east-2.compute.amazonaws.com:8000/api/rsvp/update/${rsvpStatus.data._id}`, updateData);
                 console.log("Update RSVP response: " + response.data);
 
                 if (updateData.status === 'attending')
@@ -102,7 +102,7 @@ const RSVPPopup = ({ onClose, eventId, userId }) => {
             /* New params needed: user, response, message, guests_count */
             const createData = {user : userId, status : attendance, note : userMessage, guestsBringing : 2};
             
-            axios.post(`http://ec2-3-137-149-41.us-east-2.compute.amazonaws.com:8000/api/rsvp/create/${eventId}`, createData)
+            axios.post(`http://ec2-3-133-58-38.us-east-2.compute.amazonaws.com:8000/api/rsvp/create/${eventId}`, createData)
             .then(response => {
               // Handle success, if needed
               console.log("Create RSVP response: ");
@@ -120,7 +120,7 @@ const RSVPPopup = ({ onClose, eventId, userId }) => {
 
             const updateData = {status : attendance, note : userMessage, guestsBringing : 2};
             
-            axios.put(`http://ec2-3-137-149-41.us-east-2.compute.amazonaws.com:8000/api/rsvp/update/${rsvpStatus.data._id}`, updateData)
+            axios.put(`http://ec2-3-133-58-38.us-east-2.compute.amazonaws.com:8000/api/rsvp/update/${rsvpStatus.data._id}`, updateData)
             .then(response => {
               // Handle success, if needed
               console.log("Update RSVP response: ");

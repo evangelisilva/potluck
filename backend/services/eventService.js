@@ -152,8 +152,8 @@ exports.sendInvitations = async (eventId, event, invitedGuests) => {
         state: event.location.state,
         zipCode: event.location.zipCode,
         host: 'Evangeli',
-        rsvpLink: 'http://ec2-3-137-149-41.us-east-2.compute.amazonaws.com:3000/events/' + eventId
-        // rsvpLink: 'http://ec2-3-137-149-41.us-east-2.compute.amazonaws.com:3000/rsvp/65d3d557b90bec95e14f1476'
+        rsvpLink: 'http://ec2-3-133-58-38.us-east-2.compute.amazonaws.com:3000/events/' + eventId
+        // rsvpLink: 'http://ec2-3-133-58-38.us-east-2.compute.amazonaws.com:3000/rsvp/65d3d557b90bec95e14f1476'
       };
       console.log(templateData);
       const response = await sendEmail(guest, 'ICSI518-Potluck-InvitationTemplate', templateData);
