@@ -19,13 +19,13 @@ function HomePage() {
               throw new Error('User not authenticated');
             }
     
-            const authResponse = await axios.get('http://ec2-3-134-116-74.us-east-2.compute.amazonaws.com:8000/api/auth', {
+            const authResponse = await axios.get('http://ec2-3-137-149-41.us-east-2.compute.amazonaws.com:8000/api/auth', {
               headers: {
                 Authorization: token,
               },
             });
     
-            const userResponse = await axios.get(`http://ec2-3-134-116-74.us-east-2.compute.amazonaws.com:8000/api/users/${authResponse.data.userId}`);
+            const userResponse = await axios.get(`http://ec2-3-137-149-41.us-east-2.compute.amazonaws.com:8000/api/users/${authResponse.data.userId}`);
             setUserData(userResponse.data);
           } catch (error) {
             console.log(error);

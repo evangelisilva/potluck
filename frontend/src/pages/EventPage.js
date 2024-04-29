@@ -47,7 +47,7 @@ function MyComponent({tab}) {
 
     const fetchSignupsByEventId = async () => {
         try {
-            const signupByEventResponse = await axios.get(`http://ec2-3-134-116-74.us-east-2.compute.amazonaws.com:8000/api/dishSignups?event=${eventId}`);
+            const signupByEventResponse = await axios.get(`http://ec2-3-137-149-41.us-east-2.compute.amazonaws.com:8000/api/dishSignups?event=${eventId}`);
             setDishSignupData(signupByEventResponse.data);
         } catch (error) {
             console.error('Error fetching events:', error);
@@ -63,17 +63,17 @@ function MyComponent({tab}) {
                 return;
             }
     
-            const authResponse = await axios.get('http://ec2-3-134-116-74.us-east-2.compute.amazonaws.com:8000/api/auth', {
+            const authResponse = await axios.get('http://ec2-3-137-149-41.us-east-2.compute.amazonaws.com:8000/api/auth', {
               headers: {
                 Authorization: token,
               },
             });
 
     
-            const userResponse = await axios.get(`http://ec2-3-134-116-74.us-east-2.compute.amazonaws.com:8000/api/users/${authResponse.data.userId}`);
+            const userResponse = await axios.get(`http://ec2-3-137-149-41.us-east-2.compute.amazonaws.com:8000/api/users/${authResponse.data.userId}`);
             setUserData(userResponse.data);
 
-            const response = await axios.get(`http://ec2-3-134-116-74.us-east-2.compute.amazonaws.com:8000/api/events/${eventId}`);
+            const response = await axios.get(`http://ec2-3-137-149-41.us-east-2.compute.amazonaws.com:8000/api/events/${eventId}`);
             if (response.data.status == 'Canceled') {
                 setIsConfirmedCancel(true);
             }
@@ -85,10 +85,10 @@ function MyComponent({tab}) {
             };
             setEventDetails(formattedEventDetails);
 
-            const eventGuestsResponse = await axios.get(`http://ec2-3-134-116-74.us-east-2.compute.amazonaws.com:8000/api/events/chat/${eventId}`);
+            const eventGuestsResponse = await axios.get(`http://ec2-3-137-149-41.us-east-2.compute.amazonaws.com:8000/api/events/chat/${eventId}`);
             setEventGuestData(eventGuestsResponse.data);
 
-            const rsvpResponse = await axios.get(`http://ec2-3-134-116-74.us-east-2.compute.amazonaws.com:8000/api/rsvp/${authResponse.data.userId}`);
+            const rsvpResponse = await axios.get(`http://ec2-3-137-149-41.us-east-2.compute.amazonaws.com:8000/api/rsvp/${authResponse.data.userId}`);
             setRsvpData(rsvpResponse.data);
             console.log(rsvpResponse.data);
 
@@ -186,7 +186,7 @@ function MyComponent({tab}) {
     // Function to cancel an event
     const handleCancelInvite = async (eventId) => {
         try {
-            await axios.put(`http://ec2-3-134-116-74.us-east-2.compute.amazonaws.com:8000/api/events/${eventId}`, { status: 'Canceled' });
+            await axios.put(`http://ec2-3-137-149-41.us-east-2.compute.amazonaws.com:8000/api/events/${eventId}`, { status: 'Canceled' });
             // Event cancellation successful
             console.log('Event canceled successfully');
         } catch (error) {
@@ -198,7 +198,7 @@ function MyComponent({tab}) {
     const handleInviteSuccess = async (emailArray) => {
         try {
             // Make PUT request to update invitedGuests array
-            await axios.put(`http://ec2-3-134-116-74.us-east-2.compute.amazonaws.com:8000/api/events/${eventId}`, {
+            await axios.put(`http://ec2-3-137-149-41.us-east-2.compute.amazonaws.com:8000/api/events/${eventId}`, {
                 invitedGuests: [...eventDetails.invitedGuests, ...emailArray]
             });
             console.log("Invitation sent successfully with email array:", emailArray);
@@ -265,7 +265,7 @@ function MyComponent({tab}) {
         }
 
         try {
-            await axios.put(`http://ec2-3-134-116-74.us-east-2.compute.amazonaws.com:8000/api/events/${eventId}`, editedEventData);
+            await axios.put(`http://ec2-3-137-149-41.us-east-2.compute.amazonaws.com:8000/api/events/${eventId}`, editedEventData);
             console.log('Event modified successfully');
             fetchEventDetails();
         } catch (error) {

@@ -21,7 +21,7 @@ const SignupTab = ({ eventDetails, eventGuestData, userData, isConfirmedCancel, 
 
     const fetchItems = async () => {
         try {
-            const itemsResponse = await axios.get(`http://ec2-3-134-116-74.us-east-2.compute.amazonaws.com:8000/api/items/${eventDetails._id}`);
+            const itemsResponse = await axios.get(`http://ec2-3-137-149-41.us-east-2.compute.amazonaws.com:8000/api/items/${eventDetails._id}`);
             setItems(itemsResponse.data);
             console.log(items);
         } catch (error) {
@@ -59,7 +59,7 @@ const SignupTab = ({ eventDetails, eventGuestData, userData, isConfirmedCancel, 
                 });
             } 
 
-            const res = await axios.get(`http://ec2-3-134-116-74.us-east-2.compute.amazonaws.com:8000/api/events/conversation/${eventDetails._id}/${meData.id}/${otherData.id}`);
+            const res = await axios.get(`http://ec2-3-137-149-41.us-east-2.compute.amazonaws.com:8000/api/events/conversation/${eventDetails._id}/${meData.id}/${otherData.id}`);
             
             const conversationId = res.data.conversationId;
             const conversation = window.talkSession.getOrCreateConversation(conversationId);
