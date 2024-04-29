@@ -137,7 +137,7 @@ const SignupTab = ({ eventDetails, eventGuestData, userData, isConfirmedCancel, 
                     <Card.Body>
                         <Row>
                         <Col xs={2}>
-                            {eventDetails.organizer.image ? 
+                            {eventDetails.organizer.image && eventDetails.organizer.image ? 
                                 <Image src={eventDetails.organizer.image} style={{ width: '40px', marginTop: '10px' }} /> :
                                 <Image src={process.env.PUBLIC_URL + '/profile.png'} style={{ width: '40px', marginTop: '10px' }} />
                             }
@@ -172,7 +172,7 @@ const SignupTab = ({ eventDetails, eventGuestData, userData, isConfirmedCancel, 
                                     <Card.Body>
                                         <Row>
                                             <Col xs={2}>
-                                                {guest.user.image ? 
+                                                {guest.user.image && guest.user.image ? 
                                                     <Image src={guest.user.image} style={{ width: '40px' }} /> :
                                                     <Image src={process.env.PUBLIC_URL + '/profile.png'} style={{ width: '40px' }} />
                                                 }
